@@ -71,10 +71,11 @@ class OptimizelyApiClient
     /**
      * Sends an HTTP request to the given URL and returns response in form of array. 
      * @param string $url The URL of Optimizely endpoint (relative, without host and API version).
+     * @param array $queryParams The list of query parameters.
      * @return array Optimizely response in form of array.
      * @throws \Exception
      */
-    public function sendHttpRequest($url)
+    public function sendHttpRequest($url, $queryParams = array())
     {
         // Check if CURL is initialized (it should have been initialized in 
         // constructor).
@@ -85,10 +86,18 @@ class OptimizelyApiClient
         // Produce absolute URL
         $url = 'https://api.optimizely.com/' . $this->apiVersion . $url;
         
+        // Append query parameters to URL.
+        if (count($queryParams)!=0) {            
+            $query = http_build_query($queryParams);
+            $url .= '?' . $query;
+        }
+        
         // Set HTTP options.
         curl_setopt($this->curlHandle, CURLOPT_URL, $url);
         curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curlHandle, CURLOPT_HEADER, false);
+        $headers = array("Token: " . $this->apiKey);
+        curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $headers);
         
         // Execute HTTP request and get response.
         $result = curl_exec($this->curlHandle);
@@ -101,7 +110,7 @@ class OptimizelyApiClient
         // Check HTTP response code (it should be equal to 200).
         $info = curl_getinfo($this->curlHandle);
         if ($info['http_code']!=200) {
-            throw new \Exception('Unexpected HTTP response code: ' . $info['http_code']);
+            throw new \Exception('Unexpected HTTP response code: ' . $info['http_code'] . '. Response was "' . $result . '"');
         }
         
         // JSON-decode response.

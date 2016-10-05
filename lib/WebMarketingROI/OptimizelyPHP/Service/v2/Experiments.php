@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Experiment;
+
 /**
  * Provides methods for working with Optimizely experiments.
  */
@@ -25,10 +27,38 @@ class Experiments
         $this->client = $client;
     }
     
-    public function listAll()
+    /**
+     * Returns the list of experiments.
+     * @param integer $projectId
+     * @param integer $campaignId
+     * @param boolean $includeClassic
+     * @param integer $page
+     * @param integer $perPage
+     * @return array
+     * @throws \Exception
+     */
+    public function listAll($projectId, $campaignId=null, $includeClassic=false, $page=1, $perPage=10)
     {
-        $response = $client->sendHttpRequest('/experiments');
+        if (empty($projectId) && empty($campaignId)) {
+            throw new \Exception('Project ID or Campaign ID must be not-empty');
+        }
         
+        $response = $this->client->sendHttpRequest('/experiments', 
+                array(
+                    'project_id'=>$projectId, 
+                    'campaign_id'=>$campaignId,
+                    'include_classic'=>$includeClassic,
+                    'page'=>$page,
+                    'per_page'=>$perPage
+                ));
+        
+        $experiments = array();
+        foreach ($response as $experimentInfo) {
+            $experiment = new Experiment($experimentInfo);
+            $experiments[] = $experiment;
+        }
+        
+        return $experiments;
     }
     
     public function get($experimentId)
@@ -37,7 +67,7 @@ class Experiments
             throw new \Exception("Integer experiment ID expected, while got '$experimentId'");
         }
         
-        $response = $client->sendHttpRequest("/experiments/$experimentId");
+        $response = $this->client->sendHttpRequest("/experiments/$experimentId");
     }
 }
 
