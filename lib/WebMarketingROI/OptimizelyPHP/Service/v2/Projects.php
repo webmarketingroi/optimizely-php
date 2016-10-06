@@ -15,7 +15,7 @@ class Projects
 {
     /**
      * Optimizely API Client.
-     * @var WebMarketingROI\OptimizelyPHP\Client
+     * @var WebMarketingROI\OptimizelyPHP\OptimizelyApiClient
      */
     private $client;
     
@@ -36,8 +36,12 @@ class Projects
      */
     public function listAll($page=0, $perPage=10)
     {
-        if (empty($page<0)) {
+        if ($page<0) {
             throw new \Exception('Invalid page number passed');
+        }
+        
+        if ($perPage<0) {
+            throw new \Exception('Invalid page size passed');
         }
         
         $response = $this->client->sendHttpRequest('/projects', 
@@ -48,13 +52,19 @@ class Projects
         
         $projects = array();
         foreach ($response as $projectInfo) {
-            $project = new Experiment($projectInfo);
+            $project = new Project($projectInfo);
             $projects[] = $project;
         }
         
         return $projects;
     }
     
+    /**
+     * Reads a project.
+     * @param type $projectId
+     * @return Project
+     * @throws \Exception
+     */
     public function get($projectId)
     {
         if (!is_int($projectId)) {
@@ -62,6 +72,44 @@ class Projects
         }
         
         $response = $this->client->sendHttpRequest("/projects/$projectId");
+        
+        $project = new Project($response);
+        
+        return $project;
+    }
+    
+    /**
+     * Creates a new project.
+     * @param Project $project
+     */
+    public function create($project)
+    {
+        if (!($project instanceOf \WebMarketingROI\OptimizelyPHP\Resource\v2\Project)) {
+            throw new \Exception("Expected argument of type Project");
+        }
+        
+        $postData = $project->toArray();
+        
+        $response = $this->client->sendHttpRequest("/projects", array(), 'POST', 
+                $postData, array(201));
+    }
+    
+    /**
+     * Updates the given project.
+     * @param integer $projectId
+     * @param Project $project
+     * @throws \Exception
+     */
+    public function update($projectId, $project) 
+    {
+        if (!($project instanceOf \WebMarketingROI\OptimizelyPHP\Resource\v2\Project)) {
+            throw new \Exception("Expected argument of type Project");
+        }
+        
+        $postData = $project->toArray();
+                
+        $response = $this->client->sendHttpRequest("/projects/$projectId", array(), 'PATCH', 
+                $postData, array(200));
     }
 }
 

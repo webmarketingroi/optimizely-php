@@ -15,7 +15,7 @@ class Experiments
 {
     /**
      * Optimizely API Client.
-     * @var WebMarketingROI\OptimizelyPHP\Client
+     * @var WebMarketingROI\OptimizelyPHP\OptimizelyApiClient
      */
     private $client;
     

@@ -72,15 +72,24 @@ class OptimizelyApiClient
      * Sends an HTTP request to the given URL and returns response in form of array. 
      * @param string $url The URL of Optimizely endpoint (relative, without host and API version).
      * @param array $queryParams The list of query parameters.
+     * @param string $method HTTP method (GET or POST).
+     * @param array $postData Data send in request body (only for POST method).
+     * @param array $expectedResponseCodes List of HTTP response codes treated as success.
      * @return array Optimizely response in form of array.
      * @throws \Exception
      */
-    public function sendHttpRequest($url, $queryParams = array())
+    public function sendHttpRequest($url, $queryParams = array(), $method='GET', 
+            $postData = array(), $expectedResponseCodes = array(200))
     {
         // Check if CURL is initialized (it should have been initialized in 
         // constructor).
         if ($this->curlHandle==false) {
             throw new \Exception('CURL is not initialized');
+        }
+        
+        if ($method!='GET' && $method!='POST' && $method!='PUT' && 
+            $method!='PATCH' && $method!='DELETE') {
+            throw new \Exception('Invalid HTTP method passed');
         }
         
         // Produce absolute URL
@@ -94,6 +103,10 @@ class OptimizelyApiClient
         
         // Set HTTP options.
         curl_setopt($this->curlHandle, CURLOPT_URL, $url);
+        curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, $method);
+        if (count($postData)!=0) {
+            curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, $postData);
+        }
         curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curlHandle, CURLOPT_HEADER, false);
         $headers = array("Token: " . $this->apiKey);
@@ -107,9 +120,9 @@ class OptimizelyApiClient
             throw new \Exception("Failed to send HTTP request to '$url', the error code was $code, error message was: '$error'");
         }        
         
-        // Check HTTP response code (it should be equal to 200).
+        // Check HTTP response code.
         $info = curl_getinfo($this->curlHandle);
-        if ($info['http_code']!=200) {
+        if (!in_array($info['http_code'], $expectedResponseCodes)) {
             throw new \Exception('Unexpected HTTP response code: ' . $info['http_code'] . '. Response was "' . $result . '"');
         }
         
