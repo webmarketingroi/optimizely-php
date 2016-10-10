@@ -8,15 +8,15 @@
 namespace WebMarketingROI\OptimizelyPHP;
 
 /**
- * Client for Optimizely REST API https://developers.optimizely.com/rest/v2/.
+ * Client for Optimizely REST API v2.
  */
 class OptimizelyApiClient 
 {
     /**
-     * API key.
-     * @var string
+     * Auth credentials.
+     * @var array
      */
-    private $apiKey;
+    private $authCredentials = array();
     
     /**
      * API version.
@@ -38,20 +38,20 @@ class OptimizelyApiClient
     
     /**
      * Constructor.
-     * @param string $apiKey Optimizely API key.
+     * @param string $authCredentials Auth credentials.
      * @param string $apiVersion Optional. Currently supported 'v2' only.
      */
-    public function __construct($apiKey, $apiVersion='v2')
+    public function __construct($authCredentials, $apiVersion='v2')
     {
-        if (strlen($apiKey)!=41) {
-            throw new \Exception('API key is of wrong length');            
+        if (!is_array($authCredentials) || count($authCredentials)==0) {
+            throw new \Exception('Auth credentials must be an array');            
         }
         
         if ($apiVersion!='v2') {
             throw new \Exception('Invalid API version passed');
         }
         
-        $this->apiKey = $apiKey;
+        $this->authCredentials = $authCredentials;
         $this->apiVersion = $apiVersion;
         
         $this->curlHandle = curl_init();
@@ -69,6 +69,41 @@ class OptimizelyApiClient
     }
     
     /**
+     * Sets API version. 
+     * @param string $apiVersion Currently, 'v2' only.
+     */
+    public function setApiVersion($apiVersion)
+    {
+        if ($apiVersion!='v2') {
+            throw new \Exception('Invalid API version passed');
+        }
+        
+        $this->apiVersion = $apiVersion;
+    }
+    
+    /**
+     * Returns auth credentials
+     * @return array
+     */
+    public function getAuthCredentials()
+    {
+        return $this->authCredentials;
+    }
+    
+    /**
+     * Sets Auth credentials.
+     * @param array $authCredentials
+     */
+    public function setAuthCredentials($authCredentials)
+    {
+        if (!is_array($authCredentials) || count($authCredentials)==0) {
+            throw new \Exception('Auth credentials must be an array');            
+        }
+        
+        $this->authCredentials = $authCredentials;
+    }
+    
+    /**
      * Sends an HTTP request to the given URL and returns response in form of array. 
      * @param string $url The URL of Optimizely endpoint (relative, without host and API version).
      * @param array $queryParams The list of query parameters.
@@ -78,7 +113,28 @@ class OptimizelyApiClient
      * @return array Optimizely response in form of array.
      * @throws \Exception
      */
-    public function sendHttpRequest($url, $queryParams = array(), $method='GET', 
+    public function sendApiRequest($url, $queryParams = array(), $method='GET', 
+            $postData = array(), $expectedResponseCodes = array(200))
+    {
+        // Produce absolute URL
+        $url = 'https://api.optimizely.com/' . $this->apiVersion . $url;
+        
+        $result = $this->sendHttpRequest($url);
+        
+        return $result;
+    }
+    
+    /**
+     * Sends an HTTP request to the given URL and returns response in form of array. 
+     * @param string $url The URL of Optimizely endpoint.
+     * @param array $queryParams The list of query parameters.
+     * @param string $method HTTP method (GET or POST).
+     * @param array $postData Data send in request body (only for POST method).
+     * @param array $expectedResponseCodes List of HTTP response codes treated as success.
+     * @return array Optimizely response in form of array.
+     * @throws \Exception
+     */
+    private function sendHttpRequest($url, $queryParams = array(), $method='GET', 
             $postData = array(), $expectedResponseCodes = array(200))
     {
         // Check if CURL is initialized (it should have been initialized in 
@@ -92,9 +148,11 @@ class OptimizelyApiClient
             throw new \Exception('Invalid HTTP method passed');
         }
         
-        // Produce absolute URL
-        $url = 'https://api.optimizely.com/' . $this->apiVersion . $url;
-        
+        if (!isset($this->authCredentials['access_token'])) {
+            throw new \Exception('OAuth access token is not set. You should pass ' . 
+                    'it to the class constructor when initializing the Optimizely client.');
+        }
+                
         // Append query parameters to URL.
         if (count($queryParams)!=0) {            
             $query = http_build_query($queryParams);
@@ -109,7 +167,7 @@ class OptimizelyApiClient
         }
         curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curlHandle, CURLOPT_HEADER, false);
-        $headers = array("Token: " . $this->apiKey);
+        $headers = array("Authorization: Bearer " . $this->authCredentials['access_token']);
         curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $headers);
         
         // Execute HTTP request and get response.
@@ -134,6 +192,60 @@ class OptimizelyApiClient
         
         // Return the response in form of array.
         return $decodedResult;
+    }
+    
+    /**
+     * Determines whether the access token has expired or not.
+     * @return boolean
+     */
+    public function isAccessTokenExpired() 
+    {
+        if (!isset($this->authCredentials['access_token_expires_in']) || 
+            !isset($this->authCredentials['access_token_timestamp'])) {
+            return true;
+        } 
+        
+        $expiresIn = $this->authCredentials['access_token_expires_in'];
+        $timestamp = $this->authCredentials['access_token_timestamp'];
+        
+        if ($timestamp + $expiresIn < time()) {
+            // Access token has expired.
+            return true;
+        }
+        
+        // Access token is valid.
+        return false;
+    }
+    
+    /**
+     * This method retrieves the access token by refresh token.
+     */
+    public function getAccessTokenByRefreshToken()
+    {
+        if (!isset($this->authCredentials['client_id']))
+            throw new \Exception('OAuth 2.0 client ID is not set');
+        
+        if (!isset($this->authCredentials['client_secret']))
+            throw new \Exception('OAuth 2.0 client secret is not set');
+        
+        if (!isset($this->authCredentials['refresh_token']))
+            throw new \Exception('Refresh token is not set');
+        
+        $clientId = $this->authCredentials['client_id'];
+        $clientSecret = $this->authCredentials['client_secret'];
+        $refreshToken = $this->authCredentials['refresh_token'];
+        
+        $url = "https://app.optimizely.com/oauth2/token?refresh_token=$refreshToken&client_id=$clientId&client_secret=$clientSecret&grant_type=refresh_token";
+        
+        $response = $this->sendHttpRequest($url, [], 'POST');
+        
+        if (!isset($response['access_token'])) {
+            throw new \Exception('Not found access token in response. Response was "' . print_r($response, true). '"');
+        }
+        
+        $this->authCredentials['access_token'] = $response['access_token'];
+        $this->authCredentials['expires_in'] = $response['access_token'];
+        $this->authCredentials['access_token_timestamp'] = time(); 
     }
     
     /**

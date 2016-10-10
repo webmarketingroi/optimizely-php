@@ -44,7 +44,7 @@ class Projects
             throw new \Exception('Invalid page size passed');
         }
         
-        $response = $this->client->sendHttpRequest('/projects', 
+        $response = $this->client->sendApiRequest('/projects', 
                 array(
                     'page'=>$page,
                     'per_page'=>$perPage
@@ -71,7 +71,7 @@ class Projects
             throw new \Exception("Integer project ID expected, while got '$projectId'");
         }
         
-        $response = $this->client->sendHttpRequest("/projects/$projectId");
+        $response = $this->client->sendApiRequest("/projects/$projectId");
         
         $project = new Project($response);
         
@@ -90,7 +90,7 @@ class Projects
         
         $postData = $project->toArray();
         
-        $response = $this->client->sendHttpRequest("/projects", array(), 'POST', 
+        $response = $this->client->sendApiRequest("/projects", array(), 'POST', 
                 $postData, array(201));
     }
     
@@ -108,7 +108,7 @@ class Projects
         
         $postData = $project->toArray();
                 
-        $response = $this->client->sendHttpRequest("/projects/$projectId", array(), 'PATCH', 
+        $response = $this->client->sendApiRequest("/projects/$projectId", array(), 'PATCH', 
                 $postData, array(200));
     }
 }

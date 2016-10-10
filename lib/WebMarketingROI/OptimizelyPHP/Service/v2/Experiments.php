@@ -43,7 +43,7 @@ class Experiments
             throw new \Exception('Project ID or Campaign ID must be not-empty');
         }
         
-        $response = $this->client->sendHttpRequest('/experiments', 
+        $response = $this->client->sendApiRequest('/experiments', 
                 array(
                     'project_id'=>$projectId, 
                     'campaign_id'=>$campaignId,
@@ -67,7 +67,7 @@ class Experiments
             throw new \Exception("Integer experiment ID expected, while got '$experimentId'");
         }
         
-        $response = $this->client->sendHttpRequest("/experiments/$experimentId");
+        $response = $this->client->sendApiRequest("/experiments/$experimentId");
     }
 }
 

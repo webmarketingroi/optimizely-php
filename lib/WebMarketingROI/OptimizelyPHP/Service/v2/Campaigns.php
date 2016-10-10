@@ -45,7 +45,7 @@ class Campaigns
             throw new \Exception('Invalid page size passed');
         }
         
-        $response = $this->client->sendHttpRequest('/campaigns', 
+        $response = $this->client->sendApiRequest('/campaigns', 
                 array(
                     'project_id'=>$projectId,
                     'page'=>$page,
@@ -73,7 +73,7 @@ class Campaigns
             throw new \Exception("Integer campaign ID expected, while got '$campaignId'");
         }
         
-        $response = $this->client->sendHttpRequest("/campaigns/$campaignId");
+        $response = $this->client->sendApiRequest("/campaigns/$campaignId");
         
         $campaign = new Campaign($response);
         
@@ -91,7 +91,7 @@ class Campaigns
             throw new \Exception("Integer campaign ID expected, while got '$campaignId'");
         }
         
-        $response = $this->client->sendHttpRequest("/campaigns/$campaignId/results");
+        $response = $this->client->sendApiRequest("/campaigns/$campaignId/results");
         
         foreach ($response as $result) {
         }
@@ -109,7 +109,7 @@ class Campaigns
         
         $postData = $campaign->toArray();
         
-        $response = $this->client->sendHttpRequest("/campaigns", array(), 'POST', 
+        $response = $this->client->sendApiRequest("/campaigns", array(), 'POST', 
                 $postData, array(201));
     }
     
@@ -127,7 +127,7 @@ class Campaigns
         
         $postData = $campaign->toArray();
                 
-        $response = $this->client->sendHttpRequest("/campaigns/$campaignId", array(), 'PATCH', 
+        $response = $this->client->sendApiRequest("/campaigns/$campaignId", array(), 'PATCH', 
                 $postData, array(200));
     }
     
@@ -138,7 +138,7 @@ class Campaigns
      */
     public function delete($campaignId) 
     {
-        $response = $this->client->sendHttpRequest("/campaigns/$campaignId", array(), 'DELETE', 
+        $response = $this->client->sendApiRequest("/campaigns/$campaignId", array(), 'DELETE', 
                 array(), array(200));
     }
 }

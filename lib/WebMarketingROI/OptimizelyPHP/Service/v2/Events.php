@@ -46,7 +46,7 @@ class Events
             throw new \Exception('Invalid page size passed');
         }
         
-        $response = $this->client->sendHttpRequest('/events', 
+        $response = $this->client->sendApiRequest('/events', 
                 array(
                     'project_id'=>$projectId,
                     'include_classic'=>$includeClassic,
@@ -75,7 +75,7 @@ class Events
             throw new \Exception("Integer event ID expected, while got '$eventId'");
         }
         
-        $response = $this->client->sendHttpRequest("/events/$eventId");
+        $response = $this->client->sendApiRequest("/events/$eventId");
         
         $event = new Event($response);
         
@@ -95,7 +95,7 @@ class Events
         
         $postData = $event->toArray();
         
-        $response = $this->client->sendHttpRequest("/pages/$pageId/click_events", array(), 'POST', 
+        $response = $this->client->sendApiRequest("/pages/$pageId/click_events", array(), 'POST', 
                 $postData, array(201));
     }
         
@@ -114,7 +114,7 @@ class Events
         
         $postData = $event->toArray();
                 
-        $response = $this->client->sendHttpRequest("/pages/$pageId/click_events/$eventId", array(), 'PATCH', 
+        $response = $this->client->sendApiRequest("/pages/$pageId/click_events/$eventId", array(), 'PATCH', 
                 $postData, array(200));
     }
 }

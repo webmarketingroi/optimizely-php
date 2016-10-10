@@ -45,7 +45,7 @@ class Audiences
             throw new \Exception('Invalid page size passed');
         }
         
-        $response = $this->client->sendHttpRequest('/audiences', 
+        $response = $this->client->sendApiRequest('/audiences', 
                 array(
                     'project_id'=>$projectId,
                     'page'=>$page,
@@ -73,7 +73,7 @@ class Audiences
             throw new \Exception("Integer audience ID expected, while got '$audienceId'");
         }
         
-        $response = $this->client->sendHttpRequest("/audiences/$audienceId");
+        $response = $this->client->sendApiRequest("/audiences/$audienceId");
         
         $audience = new Audience($response);
         
@@ -92,7 +92,7 @@ class Audiences
         
         $postData = $audience->toArray();
         
-        $response = $this->client->sendHttpRequest("/audiences", array(), 'POST', 
+        $response = $this->client->sendApiRequest("/audiences", array(), 'POST', 
                 $postData, array(201));
     }
     
@@ -110,7 +110,7 @@ class Audiences
         
         $postData = $audience->toArray();
                 
-        $response = $this->client->sendHttpRequest("/audiences/$audienceId", array(), 'PATCH', 
+        $response = $this->client->sendApiRequest("/audiences/$audienceId", array(), 'PATCH', 
                 $postData, array(200));
     }
 }

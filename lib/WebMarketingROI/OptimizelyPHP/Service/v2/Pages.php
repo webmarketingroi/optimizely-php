@@ -73,7 +73,7 @@ class Pages
             throw new \Exception("Integer page ID expected, while got 'pageId'");
         }
         
-        $response = $this->client->sendHttpRequest("/pages/$pageId");
+        $response = $this->client->sendApiRequest("/pages/$pageId");
         
         $page = new Page($response);
         
@@ -92,7 +92,7 @@ class Pages
         
         $postData = $page->toArray();
         
-        $response = $this->client->sendHttpRequest("/pages", array(), 'POST', 
+        $response = $this->client->sendApiRequest("/pages", array(), 'POST', 
                 $postData, array(201));
     }
     
@@ -110,7 +110,7 @@ class Pages
         
         $postData = $page->toArray();
                 
-        $response = $this->client->sendHttpRequest("/pages/$pageId", array(), 'PATCH', 
+        $response = $this->client->sendApiRequest("/pages/$pageId", array(), 'PATCH', 
                 $postData, array(200));
     }
     
@@ -121,7 +121,7 @@ class Pages
      */
     public function delete($pageId) 
     {
-        $response = $this->client->sendHttpRequest("/pages/$pageId", array(), 'DELETE', 
+        $response = $this->client->sendApiRequest("/pages/$pageId", array(), 'DELETE', 
                 array(), array(200));
     }
 }
