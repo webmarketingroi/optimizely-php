@@ -15,7 +15,7 @@ Installing with Composer:
 First, you need to create an instance of `OptimizelyApiClient` class. You do that
 with the following lines of code:
 
-```
+```php
 <?php
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
 
@@ -38,7 +38,7 @@ credentials in form of array, the second argument represents the API version
 
 Use the following code to retrieve first ten Optimizely projects:
 
-```
+```php
 // Get the first 10 projects
 $page = 0;
 $projects = $client->projects()->listAll($page, 10);
@@ -55,7 +55,7 @@ incrementing `$page` argument.
 
 To add a new project, use the following code:
 
-```
+```php
 <?php
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
