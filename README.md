@@ -1,6 +1,6 @@
 # optimizely-php
 
-A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/)
+A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizely.com/classic/rest/v2/)
 
 ## Installation
 
@@ -23,7 +23,7 @@ $oauthCredentials = array(
     'refresh_token' => 'YOUR_REFRESH_TOKEN',
     // Access token is optional (if not provided, will be retrieved automatically
     // with the refresh token.
-    'access_token' => 'ACCESS_TOKEN'
+    'access_token' => 'YOUR_ACCESS_TOKEN'
 );
 $client = new OptimizelyApiClient($oauthCredentials, 'v2');
 ```

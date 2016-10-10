@@ -6,31 +6,88 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\WebSnippet;
+
 /**
  * An Optimizely project.
  */
 class Project
 {
+    /**
+     * The name of the project
+     * @var string 
+     */
     private $name;
     
+    /**
+     * The account the project is associated with
+     * @var integer 
+     */
     private $accountId;
     
+    /**
+     * The significance level at which you would like to declare winning and 
+     * losing variations. A lower number minimizes the time needed to declare a 
+     * winning or losing variation, but increases the risk that your results 
+     * aren't true winners and losers. The precision for this number is up to 4 
+     * decimal places.
+     * 
+     * @var number 
+     */
+    private $confidenceThreshold;
+    
+    /**
+     * The ID of a Dynamic Customer Profile Service associated with this project.
+     * @var integer 
+     */
     private $dcpServiceId;
     
+    /**
+     * The platform of the project. Can be 'web', 'ios', 'android' or 'custom'.
+     * @var string 
+     */
     private $platform;
     
+    /**
+     * The current status of the project. Can be 'active' or 'archived'.
+     * @var string 
+     */
     private $status;
     
+    /**
+     * Web snippet-specific configuration for this project.
+     * @var WebSnippet 
+     */
     private $webSnippet;
     
+    /**
+     * The time that the project was originally created
+     * @var string 
+     */
     private $created;
     
+    /**
+     * The unique identifier for the project.
+     * @var integer 
+     */
     private $id;
     
+    /**
+     * Whether or not this project was created under Optimizely Classic.
+     * @var boolean 
+     */
     private $isClassic;
     
+    /**
+     * The time the project was last modified
+     * @var string 
+     */
     private $lastModified;
     
+    /**
+     * The token used to identify your mobile app to Optimizely. (mobile only)
+     * @var string 
+     */
     private $socketToken;
     
     /**
@@ -42,10 +99,15 @@ class Project
             switch ($name) {                
                 case 'name': $this->setName($value); break;
                 case 'account_id': $this->setAccountId($value); break;
+                case 'confidence_threshold': $this->setConfidenceThreshold($value); break;
                 case 'dcp_service_id': $this->setDcpServiceId($value); break;
                 case 'platform': $this->setPlatform($value); break;
                 case 'status': $this->setStatus($value); break;
-                case 'web_snippet': $this->setWebSnippet($value); break;
+                case 'web_snippet': {
+                    $webSnippet = new WebSnippet($value);
+                    $this->setWebSnippet($webSnippet); 
+                    break;
+                }
                 case 'created': $this->setCreated($value); break;
                 case 'id': $this->setId($value); break;
                 case 'is_classic': $this->setIsClassic($value); break;
@@ -65,6 +127,7 @@ class Project
         return array(
             'name' => $this->name,
             'account_id' => $this->accountId,
+            'confidence_threshold' => $this->confidenceThreshold,
             'dcp_service_id' => $this->dcpServiceId,
             'platform' => $this->platform,
             'status' => $this->status,
@@ -95,6 +158,16 @@ class Project
     public function setAccountId($accountId)
     {
         $this->accountId = $accountId;
+    }
+    
+    public function getConfidenceThreshold()
+    {
+        return $this->confidenceThreshold;
+    }
+    
+    public function setConfidenceThreshold($confidenceThreshold)
+    {
+        $this->confidenceThreshold = $confidenceThreshold;
     }
     
     public function getDcpServiceId()

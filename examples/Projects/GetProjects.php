@@ -38,15 +38,15 @@ for (;;) {
         $projects = $optimizelyClient->projects()->listAll($page, $perPage);
         
         foreach ($projects as $project) {
-            echo "ID: " . $projects->getId() . "\n";
-            echo "Name: " . $projects->getName() . "\n";
-            echo "Description: " . $projects->getDescription() . "\n";
-            echo "Account ID: " . $projects->getAccountId() . "\n";
-            echo "Platform: " . $projects->getPlatform() . "\n";
-            echo "Status: " . $projects->getStatus() . "\n";
-            echo "Is Classic: " . ($projects->getIsClassic()?"true":"false") . "\n";
-            echo "Created: " . $projects->getCreated() . "\n";
-            echo "Last Modified: " . $projects->getLastModified() . "\n";
+            echo "ID: " . $project->getId() . "\n";
+            echo "Name: " . $project->getName() . "\n";
+            echo "Description: " . $project->getDescription() . "\n";
+            echo "Account ID: " . $project->getAccountId() . "\n";
+            echo "Platform: " . $project->getPlatform() . "\n";
+            echo "Status: " . $project->getStatus() . "\n";
+            echo "Is Classic: " . ($project->getIsClassic()?"true":"false") . "\n";
+            echo "Created: " . $project->getCreated() . "\n";
+            echo "Last Modified: " . $project->getLastModified() . "\n";
         }
         
         echo "\n";
