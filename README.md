@@ -27,12 +27,16 @@ $oauthCredentials = array(
     // with the refresh token.
     'access_token' => 'YOUR_ACCESS_TOKEN'
 );
+
 $client = new OptimizelyApiClient($oauthCredentials, 'v2');
 ```
 
 The first argument of client's constructor should be your Optimizely OAuth 
 credentials in form of array, the second argument represents the API version 
 (currently, only 'v2' is supported).
+
+Note: For information on how to get OAuth 2.0 credentials, please refer to Optimizely
+documentation https://developers.optimizely.com/classic/oauth/.
 
 ### Working with Projects
 
