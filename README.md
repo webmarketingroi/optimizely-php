@@ -17,36 +17,50 @@ with the following lines of code:
 <?php
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
 
-$apiKey = '<YOUR_API_KEY>';
-$client = new OptimizelyApiClient($apiKey, 'v2');
+$oauthCredentials = array(
+    'client_id' => 'YOUR_CLIENT_ID',
+    'client_secret' => 'YOUR_CLIENT_SECRET',
+    'refresh_token' => 'YOUR_REFRESH_TOKEN',
+    // Access token is optional (if not provided, will be retrieved automatically
+    // with the refresh token.
+    'access_token' => 'ACCESS_TOKEN'
+);
+$client = new OptimizelyApiClient($oauthCredentials, 'v2');
 ```
 
-The first argument of client's constructor should be your Optimizely API token, the second argument
-represents the API version (currently, only 'v2' is supported).
+The first argument of client's constructor should be your Optimizely OAuth 
+credentials in form of array, the second argument represents the API version 
+(currently, only 'v2' is supported).
 
-### Working with Experiments
+### Working with Projects
 
-Use the following code to retrieve all Optimizely experiments:
+Use the following code to retrieve first ten Optimizely projects:
 
 ```
-$experiments = $client->experiments()->listAll();
+// Get the first 10 projects
+$page = 0;
+$projects = $client->projects()->listAll($page, 10);
 
-foreach ($experiments as $experiment) {
-    echo "Name: " . $experiment->getName() . "\n";
-    echo "Description: " . $experiment->getDescription() . "\n";
+// Iterate through projects
+foreach ($projects as $project) {
+    echo "Name: " . $project->getName() . "\n";
+    echo "Description: " . $project->getDescription() . "\n";
 }
 ```
 
-To add a new experiment, use the following code:
+Note: If you have >10 projects, you should retrieve next pages of results by 
+incrementing `$page` argument.
+
+To add a new project, use the following code:
 
 ```
 <?php
-use WebMarketingROI\OptimizelyPHP\Resource\v2\Experiment;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
-$experiment = new Experiment();
-$experiment->setName('Test Experiment');
-$experiment->setDescription('A simple A/B test');
+$project = new Project();
+$project->setName('Test Project');
+$project->setDescription('Some description');
 
-$client->experiments()->add($experiment);
+$client->projects()->create($project);
 ```
 
