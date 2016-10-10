@@ -4,6 +4,8 @@ A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizel
 
 ## Installation
 
+This library requires PHP 5.3+ engine with `curl` extension.
+
 Installing with Composer:
 
 `php composer.phar require webmarketingroi/optimizely-php`
