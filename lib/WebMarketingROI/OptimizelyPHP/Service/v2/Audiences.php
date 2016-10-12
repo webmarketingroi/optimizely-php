@@ -28,11 +28,11 @@ class Audiences
     }
     
     /**
-     * Returns the list of audiences.
+     * List Audiences for a Project
      * @param integer $projectId
      * @param integer $page
      * @param integer $perPage
-     * @return array
+     * @return array[Audience]
      * @throws \Exception
      */
     public function listAll($projectId, $page=0, $perPage=10)
@@ -62,7 +62,7 @@ class Audiences
     }
     
     /**
-     * Reads an audience.
+     * Get metadata for a single Audience.
      * @param type $audienceId
      * @return Audience
      * @throws \Exception
@@ -81,7 +81,7 @@ class Audiences
     }
     
     /**
-     * Creates a new audience.
+     * Create an Audience for a Project.
      * @param Audience $audience
      */
     public function create($audience)
@@ -97,7 +97,7 @@ class Audiences
     }
     
     /**
-     * Updates the given audience.
+     * Update an Audience for a Project
      * @param integer $audienceId
      * @param Audience $audience
      * @throws \Exception

@@ -62,8 +62,8 @@ class Campaigns
     }
     
     /**
-     * Reads a project.
-     * @param type $campaignId
+     * Reads a campaign.
+     * @param integer $campaignId
      * @return Campaign
      * @throws \Exception
      */
@@ -81,24 +81,31 @@ class Campaigns
     }
     
     /**
-     * Returns campaign results.
-     * @param type $campaignId
+     * Get campaign results
+     * @param integer $campaignId The id for the campaign you want results for
+     * @param string $starTime The earliest time to count events in results. Defaults to the time that the campaign was first activated.
+     * @param string $endTime The latest time to count events in results. Defaults to the time the campaign was last active or the current time if the campaign is still running.
      * @throws \Exception
      */
-    public function getResults($campaignId)
+    public function getResults($campaignId, $startTime, $endTime)
     {
         if (!is_int($campaignId)) {
             throw new \Exception("Integer campaign ID expected, while got '$campaignId'");
         }
         
-        $response = $this->client->sendApiRequest("/campaigns/$campaignId/results");
+        $response = $this->client->sendApiRequest("/campaigns/$campaignId/results", 
+                array(
+                    'campaign_id' => $campaignId,
+                    'start_time' => $startTime,
+                    'end_time' => $endTime
+                ));
         
         foreach ($response as $result) {
         }
     }
     
     /**
-     * Creates a new campaign.
+     * Create a new Campaign in your account
      * @param Campaign $campaign
      */
     public function create($campaign)
@@ -114,9 +121,9 @@ class Campaigns
     }
     
     /**
-     * Updates the given campaign.
+     * Update a Campaign
      * @param integer $campaignId
-     * @param Project $campaign
+     * @param Campaign $campaign
      * @throws \Exception
      */
     public function update($campaignId, $campaign) 
@@ -132,7 +139,7 @@ class Campaigns
     }
     
     /**
-     * Deletes the given campaign.
+     * Delete Campaign by ID
      * @param integer $campaignId
      * @throws \Exception
      */

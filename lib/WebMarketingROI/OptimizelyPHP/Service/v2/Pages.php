@@ -28,11 +28,11 @@ class Pages
     }
     
     /**
-     * Returns the list of audiences.
+     * List all Pages for a project.
      * @param integer $projectId
      * @param integer $page
      * @param integer $perPage
-     * @return array
+     * @return array[Page]
      * @throws \Exception
      */
     public function listAll($projectId, $page=0, $perPage=10)
@@ -62,15 +62,15 @@ class Pages
     }
     
     /**
-     * Reads a page.
-     * @param type $pageId
+     * Get metadata for a single Page
+     * @param integer $pageId
      * @return Page
      * @throws \Exception
      */
     public function get($pageId)
     {
         if (!is_int($pageId)) {
-            throw new \Exception("Integer page ID expected, while got 'pageId'");
+            throw new \Exception("Integer page ID expected, while got '$pageId'");
         }
         
         $response = $this->client->sendApiRequest("/pages/$pageId");
@@ -81,12 +81,12 @@ class Pages
     }
     
     /**
-     * Creates a new page.
+     * Create a new Page in a provided Project
      * @param Page $page
      */
     public function create($page)
     {
-        if (!($page instanceOf \WebMarketingROI\OptimizelyPHP\Resource\v2\Page)) {
+        if (!($page instanceOf Page)) {
             throw new \Exception("Expected argument of type Page");
         }
         
@@ -97,14 +97,14 @@ class Pages
     }
     
     /**
-     * Updates the given page.
+     * Update a Page in a provided Project
      * @param integer $pageId
      * @param Audience $page
      * @throws \Exception
      */
     public function update($pageId, $page) 
     {
-        if (!($page instanceOf \WebMarketingROI\OptimizelyPHP\Resource\v2\Page)) {
+        if (!($page instanceOf Page)) {
             throw new \Exception("Expected argument of type Page");
         }
         
@@ -115,7 +115,7 @@ class Pages
     }
     
     /**
-     * Deletes the given page.
+     * Delete a Page within a Project by ID.
      * @param integer $pageId
      * @throws \Exception
      */

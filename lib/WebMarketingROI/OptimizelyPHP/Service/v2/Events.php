@@ -28,12 +28,12 @@ class Events
     }
     
     /**
-     * Returns the list of events.
+     * Get all events for a Project
      * @param integer $projectId
      * @param integer $includeClassic
      * @param integer $page
      * @param integer $perPage
-     * @return array
+     * @return array[Event]
      * @throws \Exception
      */
     public function listAll($projectId, $includeClassic, $page=0, $perPage=10)
@@ -64,7 +64,7 @@ class Events
     }
     
     /**
-     * Reads an event.
+     * Get Event by ID
      * @param type $eventId
      * @return Event
      * @throws \Exception
