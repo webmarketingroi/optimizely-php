@@ -7,6 +7,8 @@
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Event;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\ClickEvent;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\CustomEvent;
 
 /**
  * Provides methods for working with Optimizely events.
@@ -83,14 +85,14 @@ class Events
     }
     
     /**
-     * Creates a new click or custom event.
+     * Creates a new click event.
      * @param integer $pageId
-     * @param Event $event
+     * @param ClickEvent $event
      */
-    public function create($pageId, $event)
+    public function createClickEvent($pageId, $event)
     {
-        if (!($event instanceOf \WebMarketingROI\OptimizelyPHP\Resource\v2\Event)) {
-            throw new \Exception("Expected argument of type Event");
+        if (!($event instanceOf ClickEvent)) {
+            throw new \Exception("Expected argument of type ClickEvent");
         }
         
         $postData = $event->toArray();
@@ -98,23 +100,59 @@ class Events
         $response = $this->client->sendApiRequest("/pages/$pageId/click_events", array(), 'POST', 
                 $postData, array(201));
     }
+    
+    /**
+     * Creates a new custom event.
+     * @param integer $pageId
+     * @param CustomEvent $event
+     */
+    public function createCustomEvent($pageId, $event)
+    {
+        if (!($event instanceOf CustomEvent)) {
+            throw new \Exception("Expected argument of type CustomEvent");
+        }
+        
+        $postData = $event->toArray();
+        
+        $response = $this->client->sendApiRequest("/pages/$pageId/custom_events", array(), 'POST', 
+                $postData, array(201));
+    }
         
     /**
-     * Updates the given event (either click event or custom event).
+     * Updates the given click event.
      * @param integer $pageId
      * @param integer $eventId
-     * @param Event $event
+     * @param ClickEvent $event
      * @throws \Exception
      */
-    public function update($pageId, $eventId, $event) 
+    public function updateClickEvent($pageId, $eventId, $event) 
     {
-        if (!($audience instanceOf \WebMarketingROI\OptimizelyPHP\Resource\v2\Event)) {
-            throw new \Exception("Expected argument of type Event");
+        if (!($audience instanceOf ClickEvent)) {
+            throw new \Exception("Expected argument of type ClickEvent");
         }
         
         $postData = $event->toArray();
                 
         $response = $this->client->sendApiRequest("/pages/$pageId/click_events/$eventId", array(), 'PATCH', 
+                $postData, array(200));
+    }
+    
+    /**
+     * Updates the given custom event.
+     * @param integer $pageId
+     * @param integer $eventId
+     * @param CustomEvent $event
+     * @throws \Exception
+     */
+    public function updateCustomEvent($pageId, $eventId, $event) 
+    {
+        if (!($audience instanceOf CustomEvent)) {
+            throw new \Exception("Expected argument of type CustomEvent");
+        }
+        
+        $postData = $event->toArray();
+                
+        $response = $this->client->sendApiRequest("/pages/$pageId/custom_events/$eventId", array(), 'PATCH', 
                 $postData, array(200));
     }
 }
