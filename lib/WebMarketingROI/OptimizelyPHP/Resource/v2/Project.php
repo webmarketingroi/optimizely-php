@@ -124,20 +124,29 @@ class Project
      */
     public function toArray()
     {
-        return array(
-            'name' => $this->name,
-            'account_id' => $this->accountId,
-            'confidence_threshold' => $this->confidenceThreshold,
-            'dcp_service_id' => $this->dcpServiceId,
-            'platform' => $this->platform,
-            'status' => $this->status,
-            'web_snippet' => $this->webSnippet,
-            'created' => $this->created,
-            'id' => $this->id,
-            'is_classic' => $this->isClassic,
-            'last_modified' => $this->lastModified,
-            'socket_token' => $this->socketToken
+        $options = array(
+            'name' => $this->getName(),
+            'account_id' => $this->getAccountId(),
+            'confidence_threshold' => $this->getConfidenceThreshold(),
+            'dcp_service_id' => $this->getDcpServiceId(),
+            'platform' => $this->getPlatform(),
+            'status' => $this->getStatus(),
+            'web_snippet' => $this->getWebSnippet()?$this->getWebSnippet()->toArray():null,
+            'created' => $this->getCreated(),
+            'id' => $this->getId(),
+            'is_classic' => $this->getIsClassic(),
+            'last_modified' => $this->getLastModified(),
+            'socket_token' => $this->getSocketToken()
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getName()

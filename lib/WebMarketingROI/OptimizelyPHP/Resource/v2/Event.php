@@ -11,30 +11,86 @@ namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
  */
 class Event
 {
+    /**
+     * A machine readable name for this Event
+     * @var string
+     */
     private $apiName;
     
+    /**
+     * Whether or not this Event has been archived
+     * @var boolean 
+     */
     private $archived;
     
+    /**
+     * A category for this Event. Can be 'add_to_cart', 'save', 'search', 'share', 
+     * 'purchase', 'convert', 'sign_up', 'subscribe' or 'other'.
+     * @var type 
+     */
     private $category;
     
+    /**
+     * Creation date for this Event
+     * @var string 
+     */
     private $created;
     
+    /**
+     * A description for this Event
+     * @var string 
+     */
     private $description;
     
+    /**
+     * A filter object for this Event
+     * @var EventFilter 
+     */
     private $eventFilter;
     
+    /**
+     * The type of this Event. Can be custom, click, pageview, classic_custom, 
+     * classic_click, classic_pageview, classic_engagement, classic_revenue, 
+     * classic_mobile_tap, classic_mobile_view, classic_mobile_session, 
+     * classic_mobile_session_length or classic_mobile_num_session
+     * @var string 
+     */
     private $eventType;
     
+    /**
+     * A human readable name for this Event
+     * @var string 
+     */
     private $name;
     
+    /**
+     * The Page ID associated with this Event
+     * @var integer 
+     */
     private $pageId;
     
+    /**
+     * The parent Project ID of this Event
+     * @var integer 
+     */
     private $projectId;
     
+    /**
+     * The unique identifier of the Event
+     * @var integer
+     */
     private $id;
     
+    /**
+     * Whether or not this Event is a classic Event
+     * @var boolean 
+     */
     private $isClassic;
     
+    /**
+     * Whether this Event may be edited
+     * @var boolean 
+     */
     private $isEditable;
     
     /**

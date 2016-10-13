@@ -11,22 +11,58 @@ namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
  */
 class Audience
 {
+    /**
+     * The project the Audience was created in
+     * @var integer 
+     */
     private $projectId;
     
+    /**
+     * Whether the Audience has been archived
+     * @var boolean 
+     */
     private $archived;
     
+    /**
+     * A string defining the targeting rules for an audience.
+     * @var string 
+     */
     private $conditions;
     
+    /**
+     * A short description of the Audience
+     * @var string 
+     */
     private $description;
     
+    /**
+     * The name of the Audience
+     * @var string 
+     */
     private $name;
     
+    /**
+     * True if the audiences is available for segmentation on the results page (Platinum only).
+     * @var boolean 
+     */
     private $segmentation;
     
+    /**
+     * The time the Audience was initially created
+     * @var string 
+     */
     private $created;
     
+    /**
+     * The unique identifier for the Audience.
+     * @var integer 
+     */
     private $id;
     
+    /**
+     * The last time the Audience was modified
+     * @var string 
+     */
     private $lastModified;
     
     /**

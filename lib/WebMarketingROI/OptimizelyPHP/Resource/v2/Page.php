@@ -11,16 +11,40 @@ namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
  */
 class Page
 {
+    /**
+     * URL of the Page
+     * @var string
+     */
     private $editUrl;
     
+    /**
+     * Name of the Page
+     * @var string 
+     */
     private $name;
     
+    /**
+     * ID of the Page's project
+     * @var integer 
+     */
     private $projectId;
     
+    /**
+     * Code to determine Experiment start
+     * @var string 
+     */
     private $activationCode;
     
+    /**
+     * Page activation type. Can be immediate, manual, polling or callback
+     * @var string 
+     */
     private $activationType;
     
+    /**
+     *
+     * @var string 
+     */
     private $apiName;
     
     private $archived;

@@ -16,10 +16,10 @@ use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
 include dirname(__FILE__) . '/../../vendor/autoload.php';
 
 // Get OAuth 2.0 credentials from file.
-$credentials = file_get_contents(dirname(__FILE__) . '/auth_credentials.json');
+$credentials = file_get_contents(dirname(__FILE__) . '/../auth_credentials.json');
 $credentials = json_decode($credentials, true);
 if (!is_array($credentials)) {
-    echo 'Invalid auth credentials';
+    echo "Invalid auth credentials\n";
     exit;
 }
 
@@ -29,6 +29,7 @@ $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
 // Get projects.
 echo "The list of Optimizely projects\n";
 echo "===============================\n";
+echo "\n";
 
 $page = 0;
 $perPage = 10;
@@ -40,16 +41,15 @@ for (;;) {
         foreach ($projects as $project) {
             echo "ID: " . $project->getId() . "\n";
             echo "Name: " . $project->getName() . "\n";
-            echo "Description: " . $project->getDescription() . "\n";
             echo "Account ID: " . $project->getAccountId() . "\n";
             echo "Platform: " . $project->getPlatform() . "\n";
             echo "Status: " . $project->getStatus() . "\n";
             echo "Is Classic: " . ($project->getIsClassic()?"true":"false") . "\n";
             echo "Created: " . $project->getCreated() . "\n";
             echo "Last Modified: " . $project->getLastModified() . "\n";
+            
+            echo "\n";
         }
-        
-        echo "\n";
         
     } catch (\Exception $e) {
         echo "Exception caught: " . $e->getMessage() . "\n";
@@ -58,5 +58,9 @@ for (;;) {
     
     $page ++;
 }
+
+// Save access token for later use
+$credentials = $optimizelyClient->getAuthCredentials();
+
 
 echo "Done!";

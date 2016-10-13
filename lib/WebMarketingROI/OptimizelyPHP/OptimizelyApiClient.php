@@ -119,7 +119,8 @@ class OptimizelyApiClient
         // Produce absolute URL
         $url = 'https://api.optimizely.com/' . $this->apiVersion . $url;
         
-        $result = $this->sendHttpRequest($url);
+        $result = $this->sendHttpRequest($url, $queryParams, $method, 
+                $postData, $expectedResponseCodes);
         
         return $result;
     }
@@ -140,17 +141,17 @@ class OptimizelyApiClient
         // Check if CURL is initialized (it should have been initialized in 
         // constructor).
         if ($this->curlHandle==false) {
-            throw new \Exception('CURL is not initialized');
+            throw new \Exception('CURL is not initialized', -1);
         }
         
         if ($method!='GET' && $method!='POST' && $method!='PUT' && 
             $method!='PATCH' && $method!='DELETE') {
-            throw new \Exception('Invalid HTTP method passed');
+            throw new \Exception('Invalid HTTP method passed: ' . $method, -1);
         }
         
         if (!isset($this->authCredentials['access_token'])) {
             throw new \Exception('OAuth access token is not set. You should pass ' . 
-                    'it to the class constructor when initializing the Optimizely client.');
+                    'it to the class constructor when initializing the Optimizely client.', -1);
         }
                 
         // Append query parameters to URL.
@@ -175,19 +176,22 @@ class OptimizelyApiClient
         if ($result === false) {
             $code = curl_errno($this->curlHandle);
             $error = curl_error($this->curlHandle);
-            throw new \Exception("Failed to send HTTP request to '$url', the error code was $code, error message was: '$error'");
+            throw new \Exception("Failed to send HTTP request to '$url', the error code was $code, error message was: '$error'", -1);
         }        
         
         // Check HTTP response code.
         $info = curl_getinfo($this->curlHandle);
         if (!in_array($info['http_code'], $expectedResponseCodes)) {
-            throw new \Exception('Unexpected HTTP response code: ' . $info['http_code'] . '. Response was "' . $result . '"');
+            throw new \Exception('Unexpected HTTP response code: ' . $info['http_code'] . 
+                    '. Request URL was "' . $url . '". Response was "' . $result . '"',
+                    $info['http_code']);
         }
         
         // JSON-decode response.
         $decodedResult = json_decode($result, true);
         if (!is_array($decodedResult)) {
-            throw new \Exception('Could not JSON-decode the Optimizely response. The response was: "' . $result . '"');
+            throw new \Exception('Could not JSON-decode the Optimizely response. The response was: "' . $result . '"',
+                    $info['http_code']);
         }
         
         // Return the response in form of array.

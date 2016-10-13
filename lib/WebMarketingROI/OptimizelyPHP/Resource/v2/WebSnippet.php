@@ -106,7 +106,7 @@ class WebSnippet
      */
     public function toArray()
     {
-        return array(
+        $options = array(
             'enable_force_variation' => $this->enableForceVariation,
             'exclude_disabled_experiments' => $this->excludeDisabledExperiments,
             'exclude_names' => $this->excludeNames,
@@ -118,6 +118,15 @@ class WebSnippet
             'code_revision' => $this->codeRevision,
             'js_file_size' => $this->jsFileSize
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getEnableForceVariation()
@@ -197,7 +206,7 @@ class WebSnippet
     
     public function setProjectJavascript($projectJavascript)
     {
-        $this->projectJavascript;
+        $this->projectJavascript = $projectJavascript;
     }
     
     public function getCodeRevision()
