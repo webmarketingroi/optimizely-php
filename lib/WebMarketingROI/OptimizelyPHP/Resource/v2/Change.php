@@ -20,16 +20,49 @@ class Change
     private $type;
     
     /**
+     * Whether or not to allow additional redirects after redirecting to 
+     * destination. Required for changes of type redirect.
+     * @var boolean
+     */
+    private $allowAdditionalRedirect;
+    
+    /**
      * Indicates whether or not to execute the change asyncronously.
      * @var boolean
      */
     private $async;
     
     /**
+     * CSS selector to determine where changes are applied. Required for changes 
+     * of type custom_css, insert_html and insert_image.
+     * @var string
+     */
+    private $cssSelector;
+    
+    /**
      * A list of dependent change IDs that must happen before this change
-     * @var array
+     * @var array[string]
      */
     private $dependencies;
+    
+    /**
+     * URL to redirect to. Required for changes of type redirect.
+     * @var string 
+     */
+    private $destination;
+    
+    /**
+     * ID of the extension to insert. Required for changes of type extension.
+     * @var string
+     */
+    private $extensionId;
+    
+    /**
+     * Whether or not to preserve parameters from original request when 
+     * redirecting to new destination URL. Required for changes of type redirect.
+     * @var boolean 
+     */
+    private $preserveParameters;
     
     /**
      * The Page ID to apply changes to
@@ -57,8 +90,13 @@ class Change
         foreach ($options as $name=>$value) {
             switch ($name) {                
                 case 'type': $this->setType($value); break;
+                case 'allow_additional_redirect': $this->setAllowAdditionalRedirect($value); break;
                 case 'async': $this->setAsync($value); break;
+                case 'css_selector': $this->setCssSelector($value); break;
                 case 'dependencies': $this->setDependencies($value); break;
+                case 'destination': $this->setDestination($value); break;
+                case 'extension_id': $this->setExtensionId($value); break;
+                case 'preserve_parameters': $this->setPreserveParameters($value); break;
                 case 'src': $this->setSrc($value); break;
                 case 'value': $this->setValue($value); break;
                 case 'id': $this->setId($value); break;
@@ -73,14 +111,28 @@ class Change
      */
     public function toArray()
     {
-        return array(
-            'type' => $this->type,
-            'async' => $this->async,
-            'dependencies' => $this->dependencies,
-            'src' => $this->src,
-            'value' => $this->value,
-            'id' => $this->id,            
+        $options = array(
+            'type' => $this->getType(),
+            'allow_additional_redirect' => $this->getAllowAdditionalRedirect(),
+            'async' => $this->getAsync(),
+            'css_selector' => $this->getCssSelector(),
+            'dependencies' => $this->getDependencies(),
+            'destination' => $this->getDestination(),
+            'extension_id' => $this->getExtensionId(),
+            'preserve_parameters' => $this->getPreserveParameters(),
+            'src' => $this->getSrc(),
+            'value' => $this->getValue(),
+            'id' => $this->getId(),            
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getType()
@@ -93,6 +145,16 @@ class Change
         $this->type = $type;
     }
     
+    public function getAllowAdditionalRedirect()
+    {
+        return $this->allowAdditionalRedirect;
+    }
+    
+    public function setAllowAdditionalRedirect($allowAdditionalRedirect)
+    {
+        $this->allowAdditionalRedirect = $allowAdditionalRedirect;
+    }
+    
     public function getAsync()
     {
         return $this->async;
@@ -103,6 +165,16 @@ class Change
         $this->async = $async;
     }
     
+    public function getCssSelector()
+    {
+        return $this->cssSelector;
+    }
+    
+    public function setCssSelector($cssSelector)
+    {
+        $this->cssSelector = $cssSelector;
+    }
+    
     public function getDependencies()
     {
         return $this->dependencies;
@@ -111,6 +183,36 @@ class Change
     public function setDependencies($dependencies)
     {
         $this->dependencies = $dependencies;
+    }
+    
+    public function getDestination()
+    {
+        return $this->destination;
+    }
+    
+    public function setDestination($destination)
+    {
+        $this->destination = $destination;
+    }
+    
+    public function getExtensionId()
+    {
+        return $this->extensionId;
+    }
+    
+    public function setExtensionId($extensionId)
+    {
+        $this->extensionId = $extensionId;
+    }
+    
+    public function getPreserveParameters()
+    {
+        return $this->preserveParameters;
+    }
+    
+    public function setPreserveParameters($preserveParameters)
+    {
+        $this->preserveParameters = $preserveParameters;
     }
     
     public function getSrc()

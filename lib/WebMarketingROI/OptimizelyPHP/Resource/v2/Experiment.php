@@ -6,6 +6,11 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Schedule;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Variation;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Metric;
+
 /**
  * An Optimizely experiment.
  */
@@ -54,6 +59,12 @@ class Experiment
      * @var integer 
      */
     private $holdback;
+    
+    /**
+     * Unique string identifier for this experiment within the project.
+     * @var string
+     */
+    private $key;
     
     /**
      * The last time the experiment was modified
@@ -114,16 +125,38 @@ class Experiment
                 case 'project_id': $this->setProjectId($value); break;
                 case 'audience_ids': $this->setAudienceIds($value); break;
                 case 'campaign_id': $this->setCampaignId($value); break;
-                case 'changes': $this->setChanges($value); break;
+                case 'changes': {
+                    $changes = array();
+                    foreach ($value as $changeInfo) {
+                        $changes[] = new Change($changeInfo);
+                    }
+                    $this->setChanges($changes); 
+                    break;
+                }
                 case 'created': $this->setCreated($value); break;    
                 case 'description': $this->setDescription($value); break;    
                 case 'holdback': $this->setHoldback($value); break;    
+                case 'key': $this->setKey($value); break;    
                 case 'last_modified': $this->setLastModified($value); break;    
-                case 'metrics': $this->setMetrics($value); break;    
+                case 'metrics': {
+                    $metrics = array();
+                    foreach ($value as $metricInfo) {
+                        $metrics[] = new Metric($metricInfo);
+                    }
+                    $this->setMetrics($metrics); 
+                    break;    
+                }
                 case 'name': $this->setName($value); break;    
-                case 'schedule': $this->setSchedule($value); break;    
+                case 'schedule': $this->setSchedule(new Schedule($value)); break;    
                 case 'status': $this->setStatus($value); break;
-                case 'variations': $this->setVariations($value); break;
+                case 'variations': {
+                    $variations = array();
+                    foreach ($value as $variationInfo) {
+                        $variations[] = new Variation($variationInfo);
+                    }
+                    $this->setVariations($variations); 
+                    break;
+                }
                 case 'id': $this->setId($value); break;
                 case 'is_classic': $this->setIsClassic($value); break;                
                 default:
@@ -137,23 +170,45 @@ class Experiment
      */
     public function toArray()
     {
-        return array(
-            'project_id' => $this->projectId,
-            'audience_ids' => $this->audicenceIds,
-            'campaign_id' => $this->campaignId,
-            'changes' => $this->changes,
-            'created' => $this->created,
-            'description' => $this->description,
-            'holdback' => $this->holdback,
-            'last_modified' => $this->lastModified,
-            'metrics' => $this->metrics,
-            'name' => $this->name,
-            'schedule' => $this->schedule,
-            'status' => $this->status,
-            'variations' => $this->variations,
-            'id' => $this->id,
-            'is_classic' => $this->isClassic,
+        $options = array(
+            'project_id' => $this->getProjectId(),
+            'audience_ids' => $this->getAudienceIds(),
+            'campaign_id' => $this->getCampaignId(),
+            'changes' => array(),
+            'created' => $this->getCreated(),
+            'description' => $this->getDescription(),
+            'holdback' => $this->getHoldback(),
+            'key' => $this->getKey(),
+            'last_modified' => $this->getLastModified(),
+            'metrics' => array(),
+            'name' => $this->getName(),
+            'schedule' => $this->getSchedule()?$this->getSchedule()->toArray():null,
+            'status' => $this->getStatus(),
+            'variations' => array(),
+            'id' => $this->getId(),
+            'is_classic' => $this->getIsClassic(),
         );
+        
+        foreach ($this->getChanges() as $change) {
+            $options['changes'][] = $change->toArray();
+        }
+        
+        foreach ($this->getMetrics() as $metric) {
+            $options['metrics'][] = $metric->toArray();
+        }
+        
+        foreach ($this->getVariations() as $variation) {
+            $options['variations'][] = $variation->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getProjectId()
@@ -224,6 +279,16 @@ class Experiment
     public function setHoldback($holdback)
     {
         $this->holdback = $holdback;
+    }
+    
+    public function getKey()
+    {
+        return $this->key;
+    }
+    
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
     
     public function getLastModified()

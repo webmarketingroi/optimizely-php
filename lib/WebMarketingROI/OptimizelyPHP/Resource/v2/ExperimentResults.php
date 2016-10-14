@@ -6,6 +6,9 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentMetricResults;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentVariationReach;
+
 /**
  * Optimizely experiment results.
  */
@@ -60,8 +63,15 @@ class ExperimentResults
                 case 'confidence_threshold': $this->setConfidenceThreshold($value); break;
                 case 'end_time': $this->setEndTime($value); break;
                 case 'experiment_id': $this->setExperimentId($value); break;
-                case 'metrics': $this->setMetrics($value); break;
-                case 'reach': $this->setReach($value); break;
+                case 'metrics': {
+                    $metrics = array();
+                    foreach ($value as $metricInfo) {
+                        $metrics[] = new ExperimentMetricResults($metricInfo);                        
+                    }
+                    $this->setMetrics($metrics); 
+                    break;
+                }
+                case 'reach': $this->setReach(new ExperimentVariationReach($value)); break;
                 case 'start_time': $this->setStartTime($value); break;
                 default:
                     throw new \Exception('Unknown option: ' . $name);
@@ -74,14 +84,27 @@ class ExperimentResults
      */
     public function toArray()
     {
-        return array(
+        $options = array(
             'confidence_threshold' => $this->getConfidenceThreshold(),
             'end_time' => $this->getEndTime(),
             'experiment_id' => $this->getExperimentId(),
-            'metrics' => $this->getMetrics(),
-            'reach' => $this->getReach(),
+            'metrics' => array(),
+            'reach' => $this->getReach()?$this->getReach()->toArray():null,
             'start_time' => $this->getStartTime()
         );
+        
+        foreach ($this->getMetrics() as $metric) {
+            $options['metrics'][] = $metric->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getConfidenceThreshold()

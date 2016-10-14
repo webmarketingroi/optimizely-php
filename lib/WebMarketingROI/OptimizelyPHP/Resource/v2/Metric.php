@@ -43,10 +43,19 @@ class Metric
      */
     public function toArray()
     {
-        return array(
-            'kind' => $this->kind,
-            'id' => $this->id,            
+        $options = array(
+            'kind' => $this->getKind(),
+            'id' => $this->getId(),            
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getKind()

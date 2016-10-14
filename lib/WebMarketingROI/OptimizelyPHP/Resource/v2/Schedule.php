@@ -36,7 +36,7 @@ class Schedule
     {
         foreach ($options as $name=>$value) {
             switch ($name) {                
-                case 'start_time': $this->setStatTime($value); break;
+                case 'start_time': $this->setStartTime($value); break;
                 case 'stop_time': $this->setStopTime($value); break;
                 case 'time_zone': $this->setTimezone($value); break;
                 default:
@@ -50,11 +50,20 @@ class Schedule
      */
     public function toArray()
     {
-        return array(
-            'start_time' => $this->startTime,
-            'stop_time' => $this->stopTime,
-            'time_zone' => $this->timezone,            
+        $options = array(
+            'start_time' => $this->getStartTime(),
+            'stop_time' => $this->getStopTime(),
+            'time_zone' => $this->getTimezone(),            
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getStartTime()

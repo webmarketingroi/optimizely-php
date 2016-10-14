@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\VariationReach;
+
 /**
  * Optimizely experiment variation reach.
  */
@@ -43,7 +45,7 @@ class ExperimentVariationReach
     
     /**
      * A map of reach for each Variation keyed by Variation ID
-     * @var array[VariationREach]
+     * @var array[VariationReach]
      */
     private $variations;
     
@@ -59,7 +61,14 @@ class ExperimentVariationReach
                 case 'total_count': $this->setTotalCount($value); break;
                 case 'treatment_count': $this->setTreatmentCount($value); break;
                 case 'treatment_reach': $this->setTreatmentReach($value); break;
-                case 'variations': $this->setVariations($value); break;                
+                case 'variations': {
+                    $variations = array();
+                    foreach ($value as $name=>$variationInfo) {
+                        $variations[$name] = new VariationReach($variationInfo);
+                    }
+                    $this->setVariations($variations); 
+                    break;                
+                }
                 default:
                     throw new \Exception('Unknown option: ' . $name);
             }
@@ -71,14 +80,27 @@ class ExperimentVariationReach
      */
     public function toArray()
     {
-        return array(
+        $options = array(
             'baseline_count' => $this->getBaselineCount(),
             'baseline_reach' => $this->getBaselineReach(),
             'total_count' => $this->getTotalCount(),
             'treatment_count' => $this->getTreatmentCount(),
             'treatment_reach' => $this->getTreatmentReach(),
-            'variations' => $this->getVariations(),            
+            'variations' => array(),            
         );
+        
+        foreach ($this->getVariations() as $name=>$variation) {
+            $options['variations'][$name] = $variation->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getBaselineCount()
@@ -128,7 +150,7 @@ class ExperimentVariationReach
     
     public function setTreatmentReach($treatmentReach)
     {
-        $this->treatmentReach;
+        $this->treatmentReach = $treatmentReach;
     }
     
     public function getVariations()

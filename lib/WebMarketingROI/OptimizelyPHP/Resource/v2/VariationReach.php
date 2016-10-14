@@ -57,12 +57,21 @@ class VariationReach
      */
     public function toArray()
     {
-        return array(
+        $options = array(
             'count' => $this->getCount(),
             'name' => $this->getName(),
             'variation_id' => $this->getVariationId(),
             'variation_reach' => $this->getVariationReach(),            
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getCount()

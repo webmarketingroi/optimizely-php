@@ -92,7 +92,7 @@ class Audience
      */
     public function toArray()
     {
-        return array(
+        $options = array(
             'project_id' => $this->projectId,
             'archived' => $this->archived,
             'conditions' => $this->conditions,
@@ -103,6 +103,15 @@ class Audience
             'id' => $this->id,
             'last_modified' => $this->lastModified
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getProjectId()

@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\CampaignMetricResults;
+
 /**
  * Optimizely campaign results.
  */
@@ -34,7 +36,7 @@ class CampaignResults
     
     /**
      * The breakdown of campaign results by metric.
-     * @var array
+     * @var array[CampaignMetricResults]
      */
     private $metrics;
     
@@ -54,7 +56,14 @@ class CampaignResults
                 case 'campaign_id': $this->setCampaignId($value); break;
                 case 'confidence_threshold': $this->setConfidenceThreshold($value); break;
                 case 'end_time': $this->setEndTime($value); break;
-                case 'metrics': $this->setMetrics($value); break;
+                case 'metrics': {
+                    $metrics = array();
+                    foreach ($value as $metricInfo) {
+                        $metrics[] = new CampaignMetricResults($metricInfo);
+                    }
+                    $this->setMetrics($metrics); 
+                    break;
+                }
                 case 'start_time': $this->setStartTime($value); break;
                 default:
                     throw new \Exception('Unknown option: ' . $name);
@@ -67,13 +76,26 @@ class CampaignResults
      */
     public function toArray()
     {
-        return array(
-            'campaign_id' => $this->campaignId,
-            'confidence_threshold' => $this->confidenceThreshold,
-            'end_time' => $this->endTime,
-            'metrics' => $this->metrics,
-            'start_time' => $this->startTime
+        $options = array(
+            'campaign_id' => $this->getCampaignId(),
+            'confidence_threshold' => $this->getConfidenceThreshold(),
+            'end_time' => $this->getEndTime(),
+            'metrics' => array(),
+            'start_time' => $this->getStartTime()
         );
+        
+        foreach ($this->getMetrics() as $metric) {
+            $options['metrics'][] = $metric->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getCampaignId()

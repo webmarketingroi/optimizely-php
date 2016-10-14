@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
+
 /**
  * Optimizely action.
  */
@@ -30,7 +32,13 @@ class Action
     {
         foreach ($options as $name=>$value) {
             switch ($name) {                
-                case 'changes': $this->setChanges($value); break;
+                case 'changes': {
+                    $changes = array();
+                    foreach ($value as $changeInfo) {
+                        $changes[] = new Change($changeInfo);
+                    }
+                    $this->setChanges($changes); break;
+                }
                 case 'page_id': $this->setPageId($value); break;
                 default:
                     throw new \Exception('Unknown option: ' . $name);
@@ -43,10 +51,23 @@ class Action
      */
     public function toArray()
     {
-        return array(
-            'changes' => $this->changes,
-            'page_id' => $this->pageId,            
+        $options = array(
+            'changes' => array(),
+            'page_id' => $this->getPageId(),            
         );
+        
+        foreach ($this->getChanges() as $change) {
+            $options['changes'][] = $change->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getChanges()

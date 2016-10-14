@@ -64,6 +64,7 @@ class Datapoint
                 case 'is_significant': $this->setIsSignificant($value); break;
                 case 'significance': $this->setSignificance($value); break;
                 case 'value': $this->setValue($value); break;
+                case 'visitors_remaining': $this->setVisitorsRemaining($value); break;
                 default:
                     throw new \Exception('Unknown option: ' . $name);
             }
@@ -75,13 +76,23 @@ class Datapoint
      */
     public function toArray()
     {
-        return array(
-            'confidence_interval' => $this->confidenceInterval,
-            'is_most_conclusive' => $this->isMostConclusive,
-            'is_significant' => $this->isSignificant,
-            'significance' => $this->significance,
-            'value' => $this->value,            
+        $options = array(
+            'confidence_interval' => $this->getConfidenceInterval(),
+            'is_most_conclusive' => $this->getIsMostConclusive(),
+            'is_significant' => $this->getIsSignificant(),
+            'significance' => $this->getSignificance(),
+            'value' => $this->getValue(),            
+            'visitors_remaining' => $this->getVisitorsRemaining(),            
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getConfidenceInterval()
@@ -131,7 +142,17 @@ class Datapoint
     
     public function setValue($value)
     {
-        $this->rate = $value;
+        $this->value = $value;
+    }
+    
+    public function getVisitorsRemaining()
+    {
+        return $this->visitorsRemaining;
+    }
+    
+    public function setVisitorsRemaining($visitorsRemaining)
+    {
+        $this->visitorsRemaining = $visitorsRemaining;
     }
 }
 

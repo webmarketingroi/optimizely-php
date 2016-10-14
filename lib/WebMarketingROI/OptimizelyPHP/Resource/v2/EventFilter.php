@@ -43,10 +43,19 @@ class EventFilter
      */
     public function toArray()
     {
-        return array(
+        $options = array(
             'filter_type' => $this->getFilterType(),
             'selector' => $this->getSelector(),            
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getFilterType()

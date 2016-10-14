@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Action;
+
 /**
  * Optimizely variation.
  */
@@ -22,6 +24,12 @@ class Variation
      * @var boolean
      */
     private $archived;
+    
+    /**
+     * Unique string identifier for this variation within the experiment
+     * @var string
+     */
+    private $key;
     
     /**
      * The name of the variation
@@ -49,8 +57,15 @@ class Variation
     {
         foreach ($options as $name=>$value) {
             switch ($name) {                
-                case 'actions': $this->setActions($value); break;
+                case 'actions': {
+                    $actions = array();
+                    foreach ($value as $actionInfo) {
+                        $actions[] = new Action($actionInfo);
+                    }
+                    $this->setActions($actions); break;
+                }
                 case 'archived': $this->setArchived($value); break;
+                case 'key': $this->setKey($value); break;
                 case 'name': $this->setName($value); break;
                 case 'variation_id': $this->setVariationId($value); break;
                 case 'weight': $this->setWeight($value); break;
@@ -65,13 +80,27 @@ class Variation
      */
     public function toArray()
     {
-        return array(
-            'actions' => $this->actions,
-            'archived' => $this->archived,
-            'name' => $this->name,
-            'variation_id' => $this->variationId,
-            'weight' => $this->weight
+        $options = array(
+            'actions' => array(),
+            'archived' => $this->getArchived(),
+            'key' => $this->getKey(),
+            'name' => $this->getName(),
+            'variation_id' => $this->getVariationId(),
+            'weight' => $this->getWeight()
         );
+        
+        foreach ($this->getActions() as $action) {
+            $options['actions'][] = $action->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getActions()
@@ -92,6 +121,16 @@ class Variation
     public function setArchived($archived)
     {
         $this->archived = $archived;
+    }
+    
+    public function getKey()
+    {
+        return $this->key;
+    }
+    
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
     
     public function getName()

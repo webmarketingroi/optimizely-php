@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\VariantResults;
+
 /**
  * Optimizely campaign metric results.
  */
@@ -53,7 +55,7 @@ class CampaignMetricResults
      * in experience across all Experiments in the Campaign. The special variant 
      * 'campaign' represents the aggregated effect of all experiments included in 
      * the Campaign.
-     * @var array
+     * @var VariantResults
      */
     private $results;
     
@@ -73,9 +75,16 @@ class CampaignMetricResults
                 case 'event': $this->setEvent($value); break;
                 case 'event_name': $this->setEventName($value); break;
                 case 'measure': $this->setMeasure($value); break;
-                case 'metricId': $this->setMetricId($value); break;
+                case 'metric_id': $this->setMetricId($value); break;
                 case 'priority': $this->setPriority($value); break;
-                case 'results': $this->setResults($value); break;
+                case 'results': {
+                    $results = array();
+                    foreach ($value as $name=>$info) {
+                        $results[$name] = new VariantResults($info);
+                    }
+                    $this->setResults($results); 
+                    break;
+                }
                 case 'unit': $this->setUnit($value); break;
                 default:
                     throw new \Exception('Unknown option: ' . $name);
@@ -88,15 +97,28 @@ class CampaignMetricResults
      */
     public function toArray()
     {
-        return array(
-            'event' => $this->event,
-            'event_name' => $this->eventName,
-            'measure' => $this->measure,
-            'metric_id' => $this->metricId,
-            'priority' => $this->priority,
-            'results' => $this->results,
-            'unit' => $unit
+        $options = array(
+            'event' => $this->getEvent(),
+            'event_name' => $this->getEventName(),
+            'measure' => $this->getMeasure(),
+            'metric_id' => $this->getMetricId(),
+            'priority' => $this->getPriority(),
+            'results' => array(),
+            'unit' => $this->getUnit()
         );
+        
+        foreach ($this->getResults() as $name=>$result) {
+            $options['results'][$name] = $result->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getEvent()

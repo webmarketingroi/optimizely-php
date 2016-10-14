@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\EventFilter;
+
 /**
  * An Optimizely event.
  */
@@ -58,6 +60,12 @@ class Event
     private $eventType;
     
     /**
+     * Unique string identifier for this event within the project.
+     * @var string
+     */
+    private $key;
+    
+    /**
      * A human readable name for this Event
      * @var string 
      */
@@ -105,8 +113,9 @@ class Event
                 case 'category': $this->setCategory($value); break;
                 case 'created': $this->setCreated($value); break;
                 case 'description': $this->setDescription($value); break;
-                case 'event_filter': $this->setEventFilter($value); break;
+                case 'event_filter': $this->setEventFilter(new EventFilter($value)); break;
                 case 'event_type': $this->setEventType($value); break;
+                case 'key': $this->setKey($value); break;
                 case 'name': $this->setName($value); break;
                 case 'page_id': $this->setPageId($value); break;
                 case 'project_id': $this->setProjectId($value); break;
@@ -124,21 +133,31 @@ class Event
      */
     public function toArray()
     {
-        return array(
-            'api_name' => $this->apiName,
-            'archived' => $this->archived,
-            'category' => $this->category,
-            'created' => $this->created,
-            'description' => $this->description,
-            'event_filter' => $this->eventFilter,
-            'event_type' => $this->eventType,
-            'name' => $this->name,
-            'page_id' => $this->pageId,
-            'project_id' => $this->projectId,
-            'id' => $this->id,
-            'is_classic' => $this->isClassic,
-            'is_editable' => $this->isEditable
+        $options = array(
+            'api_name' => $this->getApiName(),
+            'archived' => $this->getArchived(),
+            'category' => $this->getCategory(),
+            'created' => $this->getCreated(),
+            'description' => $this->getDescription(),
+            'event_filter' => $this->getEventFilter()?$this->getEventFilter()->toArray():null,
+            'event_type' => $this->getEventType(),
+            'key' => $this->getKey(),
+            'name' => $this->getName(),
+            'page_id' => $this->getPageId(),
+            'project_id' => $this->getProjectId(),
+            'id' => $this->getId(),
+            'is_classic' => $this->getIsClassic(),
+            'is_editable' => $this->getIsEditable()
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getApiName()
@@ -209,6 +228,16 @@ class Event
     public function setEventType($eventType)
     {
         $this->eventType = $eventType;
+    }
+    
+    public function getKey()
+    {
+        return $this->key;
+    }
+    
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
     
     public function getName()

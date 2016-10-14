@@ -6,6 +6,9 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Metric;
+
 /**
  * An Optimizely campaign.
  */
@@ -104,14 +107,26 @@ class Campaign
         foreach ($options as $name=>$value) {
             switch ($name) {                
                 case 'project_id': $this->setProjectId($value); break;
-                case 'changes': $this->setChanges($value); break;
+                case 'changes': {
+                    $changes = array();
+                    foreach ($value as $changeInfo) {
+                        $changes[] = new Change($changeInfo);
+                    }
+                    $this->setChanges($changes); break;
+                }
                 case 'created': $this->setCreated($value); break;
                 case 'earliest': $this->setEarliest($value); break;
                 case 'experiment_ids': $this->setExperimentIds($value); break;
                 case 'holdback': $this->setHoldback($value); break;
                 case 'last_modified': $this->setLastModified($value); break;
                 case 'latest': $this->setLatest($value); break;
-                case 'metrics': $this->setMetrics($value); break;
+                case 'metrics': {
+                    $metrics = array();
+                    foreach ($value as $metricInfo) {
+                        $metrics[] = new Metric($metricInfo);
+                    }
+                    $this->setMetrics($metrics); break;
+                }
                 case 'name': $this->setName($value); break;
                 case 'page_ids': $this->setPageIds($value); break;
                 case 'status': $this->setStatus($value); break;
@@ -128,22 +143,39 @@ class Campaign
      */
     public function toArray()
     {
-        return array(
-            'project_id' => $this->projectId,
-            'changes' => $this->changes,
-            'created' => $this->created,
-            'earliest' => $this->earliest,
-            'experiment_ids' => $this->experimentIds,
-            'holdback' => $this->holdback,
-            'last_modified' => $this->lastModified,
-            'latest' => $this->latest,
-            'metrics' => $this->metrics,
-            'name' => $this->name,
-            'page_ids' => $this->pageIds,
-            'status' => $this->status,
-            'type' => $this->type,
-            'id' => $this->id
+        $options = array(
+            'project_id' => $this->getProjectId(),
+            'changes' => array(),
+            'created' => $this->getCreated(),
+            'earliest' => $this->getEarliest(),
+            'experiment_ids' => $this->getExperimentIds(),
+            'holdback' => $this->getHoldback(),
+            'last_modified' => $this->getLastModified(),
+            'latest' => $this->getLatest(),
+            'metrics' => array(),
+            'name' => $this->getName(),
+            'page_ids' => $this->getPageIds(),
+            'status' => $this->getStatus(),
+            'type' => $this->getType(),
+            'id' => $this->getId()
         );
+        
+        foreach ($this->getChanges() as $change) {
+            $options['changes'][] = $change->toArray();
+        }
+        
+        foreach ($this->getMetrics() as $metric) {
+            $options['metrics'][] = $metric->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getProjectId()

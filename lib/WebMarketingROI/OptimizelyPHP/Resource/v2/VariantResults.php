@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Datapoint;
+
 /**
  * Optimizely campaign variant results.
  */
@@ -77,11 +79,11 @@ class VariantResults
             switch ($name) {                
                 case 'experiment_id': $this->setExperimentId($value); break;
                 case 'is_baseline': $this->setIsBaseline($value); break;
-                case 'lift': $this->setLift($value); break;
+                case 'lift': $this->setLift(new Datapoint($value)); break;
                 case 'name': $this->setName($value); break;
                 case 'rate': $this->setRate($value); break;
                 case 'scope': $this->setScope($value); break;
-                case 'total_increase': $this->setTotalIncrease($value); break;
+                case 'total_increase': $this->setTotalIncrease(new Datapoint($value)); break;
                 case 'value': $this->setValue($value); break;
                 case 'variation_id': $this->setVariationId($value); break;
                 default:
@@ -95,17 +97,26 @@ class VariantResults
      */
     public function toArray()
     {
-        return array(
-            'experiment_id' => $this->experimentId,
-            'is_baseline' => $this->isBaseline,
-            'lift' => $this->lift,
-            'name' => $this->name,
-            'rate' => $this->rate,
-            'scope' => $this->scope,
-            'total_increase' => $this->totalIncrease,
-            'value' => $this->value,
-            'variation_id' => $this->variationId
+        $options = array(
+            'experiment_id' => $this->getExperimentId(),
+            'is_baseline' => $this->getIsBaseline(),
+            'lift' => $this->getLift()?$this->getLift()->toArray():null,
+            'name' => $this->getName(),
+            'rate' => $this->getRate(),
+            'scope' => $this->getScope(),
+            'total_increase' => $this->getTotalIncrease()?$this->getTotalIncrease()->toArray():null,
+            'value' => $this->getValue(),
+            'variation_id' => $this->getVariationId()
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getExperimentId()

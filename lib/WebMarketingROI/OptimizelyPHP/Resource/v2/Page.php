@@ -47,18 +47,53 @@ class Page
      */
     private $apiName;
     
+    /**
+     * Whether the Page has been archived
+     * @var boolean 
+     */
     private $archived;
     
+    /**
+     * The category this Page is grouped under. Can be article, cart, category, 
+     * checkout, home, landing_page, pricing, product_detail, search_results or other
+     * @var string
+     */
     private $category;
     
+    /**
+     * Conditions that activate the Page
+     * @var string 
+     */
     private $conditions;
     
+    /**
+     * Unique string identifier for this page within the project.
+     * @var string
+     */
+    private $key;
+    
+    /**
+     * Type of Page. Can be single_url, url_set or global
+     * @var string
+     */
     private $pageType;
     
+    /**
+     * Date created
+     * @var string
+     */
     private $created;
     
+    /**
+     * The unique identifier of the Page
+     * @var integer 
+     */
     private $id;
     
+    /**
+     * Date last modified
+     * @var string
+     */
     private $lastModified;
     
     /**
@@ -77,6 +112,7 @@ class Page
                 case 'archived': $this->setArchived($value); break;
                 case 'category': $this->setCategory($value); break;
                 case 'conditions': $this->setConditions($value); break;
+                case 'key': $this->setKey($value); break;
                 case 'page_type': $this->setPageType($value); break;                
                 case 'created': $this->setCreated($value); break;
                 case 'id': $this->setId($value); break;
@@ -92,21 +128,31 @@ class Page
      */
     public function toArray()
     {
-        return array(
-            'edit_url' => $this->editUrl,
-            'name' => $this->name,
-            'project_id' => $this->projectId,
-            'activation_code' => $this->activationCode,
-            'activation_type' => $this->activationType,
-            'api_name' => $this->apiName,
-            'archived' => $this->archived,
-            'category' => $this->category,
-            'conditions' => $this->conditions,
-            'page_type' => $this->page_type,            
-            'created' => $this->created,
-            'id' => $this->id,
-            'last_modified' => $this->lastModified
+        $options = array(
+            'edit_url' => $this->getEditUrl(),
+            'name' => $this->getName(),
+            'project_id' => $this->getProjectId(),
+            'activation_code' => $this->getActivationCode(),
+            'activation_type' => $this->getActivationType(),
+            'api_name' => $this->getApiName(),
+            'archived' => $this->getArchived(),
+            'category' => $this->getCategory(),
+            'conditions' => $this->getConditions(),
+            'key' => $this->getKey(),
+            'page_type' => $this->getPageType(),            
+            'created' => $this->getCreated(),
+            'id' => $this->getId(),
+            'last_modified' => $this->getLastModified()
         );
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getEditUrl()
@@ -197,6 +243,16 @@ class Page
     public function setConditions($conditions)
     {
         $this->conditions = $conditions;
+    }
+    
+    public function getKey()
+    {
+        return $this->key;
+    }
+    
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
     
     public function getPageType()
