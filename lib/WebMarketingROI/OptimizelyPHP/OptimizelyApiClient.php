@@ -104,6 +104,49 @@ class OptimizelyApiClient
     }
     
     /**
+     * Returns access token information as array.
+     * @return array
+     */
+    public function getAccessToken()
+    {
+        $accessToken = array();
+        if (is_array($this->authCredentials)) {
+            if (isset($this->authCredentials['access_token'])) {
+                $accessToken['access_token'] = $this->authCredentials['access_token'];
+            }
+            
+            if (isset($this->authCredentials['access_token_timestamp'])) {
+                $accessToken['access_token_timestamp'] = $this->authCredentials['access_token_timestamp'];
+            }
+            
+            if (isset($this->authCredentials['token_type'])) {
+                $accessToken['token_type'] = $this->authCredentials['token_type'];
+            }
+            
+            if (isset($this->authCredentials['expires_in'])) {
+                $accessToken['expires_in'] = $this->authCredentials['expires_in'];
+            }
+        }
+        
+        return $accessToken;
+    }
+    
+    /**
+     * Returns refresh token.
+     * @return string
+     */
+    public function getRefreshToken()
+    {
+        if (is_array($this->authCredentials)) {
+            if (isset($this->authCredentials['refresh_token'])) {
+                return $this->authCredentials['refresh_token'];
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
      * Sends an HTTP request to the given URL and returns response in form of array. 
      * @param string $url The URL of Optimizely endpoint (relative, without host and API version).
      * @param array $queryParams The list of query parameters.
@@ -116,6 +159,11 @@ class OptimizelyApiClient
     public function sendApiRequest($url, $queryParams = array(), $method='GET', 
             $postData = array(), $expectedResponseCodes = array(200))
     {
+        // If access token has expired, try to get another one with refresh token.
+        if ($this->isAccessTokenExpired() && $this->getRefreshToken()!=null) {
+            $this->getAccessTokenByRefreshToken();
+        }
+        
         // Produce absolute URL
         $url = 'https://api.optimizely.com/' . $this->apiVersion . $url;
         
@@ -160,15 +208,24 @@ class OptimizelyApiClient
             $url .= '?' . $query;
         }
         
+        $headers = array(
+            "Authorization: Bearer " . $this->authCredentials['access_token'],
+            "Content-Type: application/json"
+            );
+        $content = '';
+        if (count($postData)!=0) {
+            $content = json_encode($postData);            
+        }
+        $headers[] = "Content-length:" . strlen($content);            
+        
         // Set HTTP options.
         curl_setopt($this->curlHandle, CURLOPT_URL, $url);
-        curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, $method);        
         if (count($postData)!=0) {
-            curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, $content);            
         }
         curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->curlHandle, CURLOPT_HEADER, false);
-        $headers = array("Authorization: Bearer " . $this->authCredentials['access_token']);
+        curl_setopt($this->curlHandle, CURLOPT_HEADER, false);        
         curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $headers);
         
         // Execute HTTP request and get response.
@@ -199,17 +256,22 @@ class OptimizelyApiClient
     }
     
     /**
-     * Determines whether the access token has expired or not.
+     * Determines whether the access token has expired or not. Returns true if 
+     * token has expired; false if token is valid.
      * @return boolean
      */
     public function isAccessTokenExpired() 
     {
-        if (!isset($this->authCredentials['access_token_expires_in']) || 
+        if(!isset($this->authCredentials['access_token'])) {
+            return true; // We do not have access token.
+        }
+        
+        if (!isset($this->authCredentials['expires_in']) || 
             !isset($this->authCredentials['access_token_timestamp'])) {
-            return true;
+            return true; // Assume it has expired, since we can't tell for sure.
         } 
         
-        $expiresIn = $this->authCredentials['access_token_expires_in'];
+        $expiresIn = $this->authCredentials['expires_in'];
         $timestamp = $this->authCredentials['access_token_timestamp'];
         
         if ($timestamp + $expiresIn < time()) {
@@ -244,11 +306,12 @@ class OptimizelyApiClient
         $response = $this->sendHttpRequest($url, [], 'POST');
         
         if (!isset($response['access_token'])) {
-            throw new \Exception('Not found access token in response. Response was "' . print_r($response, true). '"');
+            throw new \Exception('Not found access token in response. Request URL was "' . $url. '". Response was "' . print_r($response, true). '"');
         }
         
         $this->authCredentials['access_token'] = $response['access_token'];
-        $this->authCredentials['expires_in'] = $response['access_token'];
+        $this->authCredentials['token_type'] = $response['token_type'];
+        $this->authCredentials['expires_in'] = $response['expires_in'];
         $this->authCredentials['access_token_timestamp'] = time(); 
     }
     

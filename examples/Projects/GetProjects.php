@@ -1,27 +1,25 @@
 <?php
 /* 
- * This example retrieves all Optimizely projects from the Optimizely account.
+ * This example retrieves all projects from the Optimizely account.
  * 
- * To use this example, you will need to generate OAuth 2.0 access token and refresh 
- * token. See Optimizely REST API documentation for instructions on how to do that.
- * Once you get the OAuth 2.0 credentials, edit the auth_credentials.json file and put your 
- * access token and refresh token there.
+ * To use this example, you will need to use "authorization code grant" and 
+ * generate OAuth 2.0 client ID, client secret, refresh token, and, optionally,
+ * access token. See Optimizely REST API documentation for instructions on how to do that.
+ * Once you get the OAuth 2.0 credentials, edit the auth_credentials.json file 
+ * and put your credentials there.
  * 
  * Usage: 
  *      php GetProjects.php
  */
+
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
 
-// Init PHP autloader.
+// Init class autloading.
 include dirname(__FILE__) . '/../../vendor/autoload.php';
+include dirname(__FILE__) . '/../Utils.php';
 
-// Get OAuth 2.0 credentials from file.
-$credentials = file_get_contents(dirname(__FILE__) . '/../auth_credentials.json');
-$credentials = json_decode($credentials, true);
-if (!is_array($credentials)) {
-    echo "Invalid auth credentials\n";
-    exit;
-}
+// Get OAuth 2.0 credentials from auth_credentials.json and access_token.json files.
+$credentials = load_credentials_from_file();
 
 // Create the Optimizely API client.
 $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
@@ -60,7 +58,7 @@ for (;;) {
 }
 
 // Save access token for later use
-$credentials = $optimizelyClient->getAuthCredentials();
-
+$accessToken = $optimizelyClient->getAccessToken();
+file_put_contents(dirname(__FILE__) . '/../access_token.json', json_encode($accessToken));
 
 echo "Done!";
