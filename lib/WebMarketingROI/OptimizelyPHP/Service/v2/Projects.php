@@ -84,7 +84,8 @@ class Projects
     
     /**
      * Create a new Project in your account.
-     * @param Project $project
+     * @param Project $project Project meta information.
+     * @return Project Created project.
      */
     public function create($project)
     {
@@ -96,16 +97,29 @@ class Projects
         
         $response = $this->client->sendApiRequest("/projects", array(), 'POST', 
                 $postData, array(201));
+        
+        $project = new Project($response);
+        
+        return $project;
     }
     
     /**
      * Update a Project.
      * @param integer $projectId
      * @param Project $project
+     * @return Project Updated project.
      * @throws \Exception
      */
     public function update($projectId, $project) 
     {
+        if (!is_int($projectId)) {
+            throw new \Exception("Integer project ID expected, while got '$projectId'");
+        }
+        
+        if ($projectId<0) {
+            throw new \Exception("A positive project ID expected");
+        }
+        
         if (!($project instanceOf Project)) {
             throw new \Exception("Expected argument of type Project");
         }
@@ -114,6 +128,10 @@ class Projects
                 
         $response = $this->client->sendApiRequest("/projects/$projectId", array(), 
                 'PATCH', $postData, array(200));
+        
+        $project = new Project($response);
+        
+        return $project;
     }
 }
 

@@ -65,6 +65,7 @@ class Experiments
     /**
      * Get metadata for a single Experiment.
      * @param integer $experimentId
+     * @return Experiment 
      * @throws \Exception
      */
     public function get($experimentId)
@@ -74,6 +75,10 @@ class Experiments
         }
         
         $response = $this->client->sendApiRequest("/experiments/$experimentId");
+        
+        $experiment = new Experiment($response);
+        
+        return $experiment;
     }
     
     /**
@@ -84,7 +89,7 @@ class Experiments
      * @param string $endTime The latest time to count events in results. Defaults to the time the experiment was last active or the current time if the experiment is still running.
      * @throws \Exception
      */
-    public function getResults($experimentId, $baselineVariationId, $startTime, $endTime)
+    public function getResults($experimentId, $baselineVariationId = null, $startTime = null, $endTime = null)
     {
         if (!is_int($experimentId)) {
             throw new \Exception("Integer experiment ID expected, while got '$experimentId'");
@@ -113,13 +118,20 @@ class Experiments
             throw new \Exception("Expected argument of type Experiment");
         }
         
-        $postData = array(
-            'publish' => $publish,
-            'body' => $experiment->toArray()
+        if (!is_bool($publish)) {
+            throw new \Exception("Expected boolean publish argument");
+        }
+        
+        $queryParams = array(
+            'publish' => $publish,            
         );
         
-        $response = $this->client->sendApiRequest("/experiments", array(), 'POST', 
+        $postData = $experiment->toArray();
+        
+        $response = $this->client->sendApiRequest("/experiments", $queryParams, 'POST', 
                 $postData, array(201));
+        
+        return new Experiment($response);
     }
     
     /**
@@ -132,18 +144,29 @@ class Experiments
      */
     public function update($experimentId, $experiment, $overrideChanges, $publish) 
     {
+        if (!is_int($experimentId)) {
+            throw new \Exception("Expected argument of type Experiment");
+        }
+        
+        if ($experimentId<0) {
+            throw new \Exception("Expected positive experiment ID argument");
+        }
+        
         if (!($experiment instanceOf Experiment)) {
             throw new \Exception("Expected argument of type Experiment");
         }
         
-        $postData = array(            
-            'body' => $experiment->toArray(),
+        $queryParams = array(
             'override_changes' => $overrideChanges,
             'publish' => $publish
         );
-                
-        $response = $this->client->sendApiRequest("/campaigns/$campaignId", array(), 'PATCH', 
+        
+        $postData = $experiment->toArray();
+              
+        $response = $this->client->sendApiRequest("/experiments/$experimentId", $queryParams, 'PATCH', 
                 $postData, array(200));
+        
+        return new Experiment($response);
     }
     
     /**
@@ -154,7 +177,7 @@ class Experiments
     public function delete($experimentId) 
     {
         $response = $this->client->sendApiRequest("/experiments/$experimentId", array(), 'DELETE', 
-                array(), array(200));
+                array(), array(204));
     }
 }
 

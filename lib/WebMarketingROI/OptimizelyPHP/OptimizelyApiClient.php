@@ -43,7 +43,7 @@ class OptimizelyApiClient
      */
     public function __construct($authCredentials, $apiVersion='v2')
     {
-        if (!is_array($authCredentials) || count($authCredentials)==0) {
+        if (!is_array($authCredentials)) {
             throw new \Exception('Auth credentials must be an array');            
         }
         
@@ -260,7 +260,7 @@ class OptimizelyApiClient
      * token has expired; false if token is valid.
      * @return boolean
      */
-    public function isAccessTokenExpired() 
+    private function isAccessTokenExpired() 
     {
         if(!isset($this->authCredentials['access_token'])) {
             return true; // We do not have access token.
@@ -286,7 +286,7 @@ class OptimizelyApiClient
     /**
      * This method retrieves the access token by refresh token.
      */
-    public function getAccessTokenByRefreshToken()
+    private function getAccessTokenByRefreshToken()
     {
         if (!isset($this->authCredentials['client_id']))
             throw new \Exception('OAuth 2.0 client ID is not set');
