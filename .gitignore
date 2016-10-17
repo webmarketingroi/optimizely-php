@@ -3,4 +3,5 @@ vendor/*
 composer.phar
 composer.lock
 examples/auth_credentials.json
+examples/access_token.json
 coverage
