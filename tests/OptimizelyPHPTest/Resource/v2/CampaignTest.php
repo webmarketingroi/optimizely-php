@@ -48,7 +48,8 @@ class CampaignTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1000, $campaign->getProjectId());        
         $this->assertEquals('Landing Page Optimization', $campaign->getName());        
         $this->assertEquals(2000, $campaign->getId());        
-        $this->assertEquals('string', $campaign->getMetrics()[0]->getKind());        
+        $metrics = $campaign->getMetrics();
+        $this->assertEquals('string', $metrics[0]->getKind());        
         $this->assertEquals('window.someGlobalFunction();', $campaign->getChanges()[0]->getValue());        
     }
     
@@ -99,8 +100,10 @@ class CampaignTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1000, $campaign->getProjectId());        
         $this->assertEquals('2016-10-14T05:08:42.822Z', $campaign->getCreated());        
         $this->assertEquals('a/b', $campaign->getType());
-        $this->assertEquals('string', $campaign->getMetrics()[0]->getKind());
-        $this->assertEquals(524, $campaign->getChanges()[0]->getSrc());
+        $metrics = $campaign->getMetrics();
+        $this->assertEquals('string', $metrics[0]->getKind());
+        $changes = $campaign->getChanges();
+        $this->assertEquals(524, $changes[0]->getSrc());
     }
     
     public function testToArray()

@@ -77,10 +77,13 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('active', $experiment->getStatus());
         $this->assertEquals(true, $experiment->getIsClassic());
         $this->assertEquals(9854, $experiment->getId());
-        $this->assertEquals('custom_code', $experiment->getChanges()[0]->getType());
-        $this->assertEquals('string', $experiment->getMetrics()[0]->getKind());
+        $changes = $experiment->getChanges();
+        $this->assertEquals('custom_code', $changes[0]->getType());
+        $metrics = $experiment->getMetrics();
+        $this->assertEquals('string', $metrics[0]->getKind());
         $this->assertEquals('2016-10-14T03:16:51.754Z', $experiment->getSchedule()->getStartTime());
-        $this->assertEquals('blue_button_variation', $experiment->getVariations()[0]->getKey());
+        $variations = $experiment->getVariations();
+        $this->assertEquals('blue_button_variation', $variations[0]->getKey());
         
     }
     
