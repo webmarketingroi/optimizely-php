@@ -6,6 +6,10 @@ php:
   - 7.0
   
 before_script:
+  # Install Composer 
+  - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  - php composer-setup.php
+  - php -r "unlink('composer-setup.php');"
   # Install Composer dependencies
   - travis_retry php composer.phar self-update
   - travis_retry php composer.phar install
@@ -14,9 +18,6 @@ script:
   # Run unit tests
   - ./vendor/bin/phpunit --configuration tests/phpunit.xml --coverage-text --coverage-clover=coverage.clover
 
-after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  
 notifications:
   email:
     recipients:      
