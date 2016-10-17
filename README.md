@@ -73,8 +73,15 @@ $projects = $client->projects()->listAll($page, 10);
 
 // Iterate through projects
 foreach ($projects as $project) {
+    echo "ID: " . $project->getId() . "\n";
     echo "Name: " . $project->getName() . "\n";
-    echo "Description: " . $project->getDescription() . "\n";
+    echo "Account ID: " . $project->getAccountId() . "\n";
+    echo "Platform: " . $project->getPlatform() . "\n";
+    echo "Status: " . $project->getStatus() . "\n";
+    echo "Is Classic: " . ($project->getIsClassic()?"true":"false") . "\n";
+    echo "Created: " . $project->getCreated() . "\n";
+    echo "Last Modified: " . $project->getLastModified() . "\n";
+    echo "\n";
 }
 ```
 
@@ -89,7 +96,9 @@ use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
 $project = new Project();
 $project->setName('Test Project');
-$project->setDescription('Some description');
+$project->setConfidenceThreshold(0.9);
+$project->setPlatform('web');
+$project->setStatus('active');
 
 $client->projects()->create($project);
 ```

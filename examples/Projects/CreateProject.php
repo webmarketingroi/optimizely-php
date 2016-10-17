@@ -1,6 +1,6 @@
 <?php
 /* 
- * This example retrieves all projects from the Optimizely account.
+ * This example creates a new project in your Optimizely account.
  * 
  * To use this example, you will need to use "authorization code grant" and 
  * generate OAuth 2.0 client ID, client secret, refresh token, and, optionally,
@@ -13,6 +13,7 @@
  */
 
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
 // Init class autloading.
 include dirname(__FILE__) . '/../../vendor/autoload.php';
@@ -26,38 +27,19 @@ $credentials = load_credentials_from_file();
 // Create the Optimizely API client.
 $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
 
-// Get projects.
-echo "The list of Optimizely projects\n";
-echo "===============================\n";
-echo "\n";
-
-$page = 0;
-$perPage = 10;
-
-for (;;) {
-    try {
-        $projects = $optimizelyClient->projects()->listAll($page, $perPage);
-        
-        foreach ($projects as $project) {
-            echo "ID: " . $project->getId() . "\n";
-            echo "Name: " . $project->getName() . "\n";
-            echo "Account ID: " . $project->getAccountId() . "\n";
-            echo "Platform: " . $project->getPlatform() . "\n";
-            echo "Status: " . $project->getStatus() . "\n";
-            echo "Is Classic: " . ($project->getIsClassic()?"true":"false") . "\n";
-            echo "Created: " . $project->getCreated() . "\n";
-            echo "Last Modified: " . $project->getLastModified() . "\n";
-            
-            echo "\n";
-        }
-        
-    } catch (\Exception $e) {
-        echo "Exception caught: " . $e->getMessage() . "\n";
-        break;
-    }    
+try {
     
-    $page ++;
-}
+    $project = new Project();
+    $project->setName('Test Project');
+    $project->setConfidenceThreshold(0.9);
+    $project->setPlatform('web');
+    $project->setStatus('active');
+    
+    $project = $optimizelyClient->projects()->create($project);
+                
+} catch (\Exception $e) {
+    echo "Exception caught: " . $e->getMessage() . "\n";    
+}    
 
 // Save access token for later use
 $accessToken = $optimizelyClient->getAccessToken();
