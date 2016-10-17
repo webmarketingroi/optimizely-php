@@ -303,7 +303,7 @@ class OptimizelyApiClient
         
         $url = "https://app.optimizely.com/oauth2/token?refresh_token=$refreshToken&client_id=$clientId&client_secret=$clientSecret&grant_type=refresh_token";
         
-        $response = $this->sendHttpRequest($url, [], 'POST');
+        $response = $this->sendHttpRequest($url, array(), 'POST');
         
         if (!isset($response['access_token'])) {
             throw new \Exception('Not found access token in response. Request URL was "' . $url. '". Response was "' . print_r($response, true). '"');
