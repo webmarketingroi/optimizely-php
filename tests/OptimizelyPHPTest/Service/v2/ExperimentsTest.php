@@ -12,7 +12,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
     public function testListAll()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder(OptimizelyApiClient::class)
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -114,7 +114,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
     public function testGet()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder(OptimizelyApiClient::class)
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -211,7 +211,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
     public function testGetResults()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder(OptimizelyApiClient::class)
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -292,7 +292,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
     public function testCreate()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder(OptimizelyApiClient::class)
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -461,7 +461,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
     public function testUpdate()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder(OptimizelyApiClient::class)
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
                             ->disableOriginalConstructor()
                             ->getMock();
 
@@ -626,7 +626,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
     public function testDelete()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder(OptimizelyApiClient::class)
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
                             ->disableOriginalConstructor()
                             ->getMock();
 
