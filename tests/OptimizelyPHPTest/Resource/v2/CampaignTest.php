@@ -49,8 +49,9 @@ class CampaignTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Landing Page Optimization', $campaign->getName());        
         $this->assertEquals(2000, $campaign->getId());        
         $metrics = $campaign->getMetrics();
-        $this->assertEquals('string', $metrics[0]->getKind());        
-        $this->assertEquals('window.someGlobalFunction();', $campaign->getChanges()[0]->getValue());        
+        $this->assertEquals('string', $metrics[0]->getKind());      
+        $changes = $campaign->getChanges();
+        $this->assertEquals('window.someGlobalFunction();', $changes[0]->getValue());        
     }
     
     public function testCreateNewCampaignWithOptions()
