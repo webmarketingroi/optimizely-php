@@ -6,7 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
-use WebMarketingROI\OptimizelyPHP\Resource\v2\Campign;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Campaign;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\CampaignResults;
 
 /**
  * Provides methods for working with Optimizely campaigns.
@@ -32,11 +33,19 @@ class Campaigns
      * @param integer $projectId
      * @param integer $page
      * @param integer $perPage
-     * @return array
+     * @return array[Campaign]
      * @throws \Exception
      */
     public function listAll($projectId, $page=0, $perPage=10)
     {
+        if (!is_int($projectId)) {
+            throw new \Exception("Integer project ID expected, while got '$projectId'");
+        }
+        
+        if ($projectId<0) {
+            throw new \Exception("Expected positive integer project ID");
+        }
+        
         if ($page<0) {
             throw new \Exception('Invalid page number passed');
         }
@@ -55,10 +64,10 @@ class Campaigns
         $campaigns = array();
         foreach ($response as $campaignInfo) {
             $campaign = new Campaign($campaignInfo);
-            $projects[] = $project;
+            $campaigns[] = $campaign;
         }
         
-        return $projects;
+        return $campaigns;
     }
     
     /**
@@ -87,10 +96,14 @@ class Campaigns
      * @param string $endTime The latest time to count events in results. Defaults to the time the campaign was last active or the current time if the campaign is still running.
      * @throws \Exception
      */
-    public function getResults($campaignId, $startTime, $endTime)
+    public function getResults($campaignId, $startTime = null, $endTime = null)
     {
         if (!is_int($campaignId)) {
             throw new \Exception("Integer campaign ID expected, while got '$campaignId'");
+        }
+        
+        if ($campaignId<0) {
+            throw new \Exception("Expected positive integer campaign ID");
         }
         
         $response = $this->client->sendApiRequest("/campaigns/$campaignId/results", 
@@ -100,8 +113,9 @@ class Campaigns
                     'end_time' => $endTime
                 ));
         
-        foreach ($response as $result) {
-        }
+        $results = new CampaignResults($response);
+        
+        return $results;
     }
     
     /**
@@ -118,6 +132,8 @@ class Campaigns
         
         $response = $this->client->sendApiRequest("/campaigns", array(), 'POST', 
                 $postData, array(201));
+        
+        return new Campaign($response);
     }
     
     /**
@@ -136,6 +152,8 @@ class Campaigns
                 
         $response = $this->client->sendApiRequest("/campaigns/$campaignId", array(), 'PATCH', 
                 $postData, array(200));
+        
+        return new Campaign($response);
     }
     
     /**

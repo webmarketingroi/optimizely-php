@@ -1,6 +1,6 @@
 # optimizely-php
 
-A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizely.com/classic/rest/v2/)
+A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/)
 
 ## Installation
 
@@ -106,3 +106,11 @@ $client->projects()->create($project);
 ### More Code Examples
 
 For additional code examples, please refer to the *examples* directory.
+
+## Running Unit Tests
+
+This library uses PHPUnit for testing. To run unit tests, use the following command:
+
+```
+./vendor/bin/phpunit -c ./tests/phpunit.xml --coverage-html coverage
+```

@@ -53,7 +53,7 @@ class Audiences
                 ));
         
         $audiences = array();
-        foreach ($response as $audiencesInfo) {
+        foreach ($response as $audienceInfo) {
             $audience = new Audience($audienceInfo);
             $audiences[] = $audience;
         }
@@ -94,6 +94,8 @@ class Audiences
         
         $response = $this->client->sendApiRequest("/audiences", array(), 'POST', 
                 $postData, array(201));
+        
+        return new Audience($response);
     }
     
     /**
@@ -112,6 +114,8 @@ class Audiences
                 
         $response = $this->client->sendApiRequest("/audiences/$audienceId", array(), 'PATCH', 
                 $postData, array(200));
+        
+        return new Audience($response);
     }
 }
 
