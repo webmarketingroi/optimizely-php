@@ -130,3 +130,12 @@ This library uses PHPUnit for testing. To run unit tests, use the following comm
 ```
 ./vendor/bin/phpunit -c ./tests/phpunit.xml --coverage-html coverage
 ```
+
+If you want to run integration tests against real Optimizely account, rename 
+`tests/auth_credentials.json.dist` to `tests/auth_credentials.json` and type
+your credentials in that file. Then create the `OPTIMIZELY_PHP_TEST_INTEGRATION` 
+environment variable as follows
+
+`export OPTIMIZELY_PHP_TEST_INTEGRATION=1`
+
+and then run unit tests.
