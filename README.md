@@ -103,6 +103,22 @@ $project->setStatus('active');
 $client->projects()->create($project);
 ```
 
+or, you can use this (equavalent) code:
+
+```php
+<?php
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
+
+$project = new Project(array(
+        'name' => 'Test Project',
+        'confidence_threshold' => 0.9,
+        'platform' => 'web',
+        'status' => 'active'
+    ));
+
+$client->projects()->create($project);
+```
+
 ### More Code Examples
 
 For additional code examples, please refer to the *examples* directory.
