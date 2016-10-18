@@ -4,6 +4,7 @@
     <testsuites>
         <testsuite name="optimizely-php">
             <directory>./OptimizelyPHPTest</directory>
+            <exclude>BaseServiceTest.php</exclude>            
         </testsuite>
     </testsuites>    
     <filter>

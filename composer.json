@@ -18,6 +18,11 @@
 	"psr-4": {
 	    "WebMarketingROI\\OptimizelyPHP\\": "lib/WebMarketingROI/OptimizelyPHP/"
 	}
+    },
+    "autoload-dev": {
+	"psr-4": {
+	    "OptimizelyPHPTest\\": "tests/OptimizelyPHPTest/"
+	}
     }
 }
 

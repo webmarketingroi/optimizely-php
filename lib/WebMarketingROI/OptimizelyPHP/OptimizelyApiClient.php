@@ -233,21 +233,22 @@ class OptimizelyApiClient
         if ($result === false) {
             $code = curl_errno($this->curlHandle);
             $error = curl_error($this->curlHandle);
-            throw new \Exception("Failed to send HTTP request to '$url', the error code was $code, error message was: '$error'", -1);
+            throw new \Exception("Failed to send HTTP request $method '$url', the error code was $code, error message was: '$error'", -1);
         }        
         
         // Check HTTP response code.
         $info = curl_getinfo($this->curlHandle);
         if (!in_array($info['http_code'], $expectedResponseCodes)) {
             throw new \Exception('Unexpected HTTP response code: ' . $info['http_code'] . 
-                    '. Request URL was "' . $url . '". Response was "' . $result . '"',
+                    '. Request was ' . $method . ' "' . $url . '". Response was "' . $result . '"',
                     $info['http_code']);
         }
         
         // JSON-decode response.
         $decodedResult = json_decode($result, true);
         if (!is_array($decodedResult)) {
-            throw new \Exception('Could not JSON-decode the Optimizely response. The response was: "' . $result . '"',
+            throw new \Exception('Could not JSON-decode the Optimizely response. Request was ' . 
+                    $method . ' "' . $url . '". The response was: "' . $result . '"',
                     $info['http_code']);
         }
         

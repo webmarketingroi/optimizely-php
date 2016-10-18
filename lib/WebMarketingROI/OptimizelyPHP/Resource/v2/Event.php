@@ -108,7 +108,7 @@ class Event
     {
         foreach ($options as $name=>$value) {
             switch ($name) {                
-                case 'apiName': $this->setApiName($value); break;
+                case 'api_name': $this->setApiName($value); break;
                 case 'archived': $this->setArchived($value); break;
                 case 'category': $this->setCategory($value); break;
                 case 'created': $this->setCreated($value); break;

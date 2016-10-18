@@ -45,7 +45,7 @@ class Pages
             throw new \Exception('Invalid page size passed');
         }
         
-        $response = $this->client->sendHttpRequest('/pages', 
+        $response = $this->client->sendApiRequest('/pages', 
                 array(
                     'project_id'=>$projectId,
                     'page'=>$page,
@@ -58,7 +58,7 @@ class Pages
             $pages[] = $page;
         }
         
-        return pages;
+        return $pages;
     }
     
     /**
@@ -94,6 +94,8 @@ class Pages
         
         $response = $this->client->sendApiRequest("/pages", array(), 'POST', 
                 $postData, array(201));
+        
+        return new Page($response);
     }
     
     /**
@@ -112,6 +114,8 @@ class Pages
                 
         $response = $this->client->sendApiRequest("/pages/$pageId", array(), 'PATCH', 
                 $postData, array(200));
+        
+        return new Page($response);
     }
     
     /**

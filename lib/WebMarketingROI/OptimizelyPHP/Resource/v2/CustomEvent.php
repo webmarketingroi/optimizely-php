@@ -13,7 +13,10 @@ use WebMarketingROI\OptimizelyPHP\Resource\v2\Event;
  */
 class CustomEvent extends Event
 {
-    
+    public function __construct($options = array())
+    {
+        parent::__construct($options);
+    }
 }
 
 

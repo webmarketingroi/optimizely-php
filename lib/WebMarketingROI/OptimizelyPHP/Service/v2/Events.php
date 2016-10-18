@@ -99,6 +99,8 @@ class Events
         
         $response = $this->client->sendApiRequest("/pages/$pageId/click_events", array(), 'POST', 
                 $postData, array(201));
+        
+        return new ClickEvent($response);
     }
     
     /**
@@ -116,6 +118,8 @@ class Events
         
         $response = $this->client->sendApiRequest("/pages/$pageId/custom_events", array(), 'POST', 
                 $postData, array(201));
+        
+        return new CustomEvent($response);
     }
         
     /**
@@ -127,7 +131,7 @@ class Events
      */
     public function updateClickEvent($pageId, $eventId, $event) 
     {
-        if (!($audience instanceOf ClickEvent)) {
+        if (!($event instanceOf ClickEvent)) {
             throw new \Exception("Expected argument of type ClickEvent");
         }
         
@@ -135,6 +139,8 @@ class Events
                 
         $response = $this->client->sendApiRequest("/pages/$pageId/click_events/$eventId", array(), 'PATCH', 
                 $postData, array(200));
+        
+        return new ClickEvent($response);
     }
     
     /**
@@ -146,7 +152,7 @@ class Events
      */
     public function updateCustomEvent($pageId, $eventId, $event) 
     {
-        if (!($audience instanceOf CustomEvent)) {
+        if (!($event instanceOf CustomEvent)) {
             throw new \Exception("Expected argument of type CustomEvent");
         }
         
@@ -154,6 +160,8 @@ class Events
                 
         $response = $this->client->sendApiRequest("/pages/$pageId/custom_events/$eventId", array(), 'PATCH', 
                 $postData, array(200));
+        
+        return new CustomEvent($response);
     }
 }
 

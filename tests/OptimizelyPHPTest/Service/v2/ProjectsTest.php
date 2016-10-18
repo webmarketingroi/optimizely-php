@@ -1,12 +1,12 @@
 <?php
 namespace OptimizelyPHPTest\Service\v2;
 
-use PHPUnit_Framework_TestCase;
+use OptimizelyPHPTest\Service\v2\BaseServiceTest;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Projects;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
-class ProjectsTest extends PHPUnit_Framework_TestCase
+class ProjectsTest extends BaseServiceTest
 {
     public function testListAll()
     {
@@ -216,4 +216,77 @@ class ProjectsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($updatedProject->getName()=='Test Project');        
         $this->assertTrue($updatedProject->getAccountId()==12345);        
     }
+    
+    public function testIntegration()
+    {
+        if (!getenv('OPTIMIZELY_PHP_TEST_INTEGRATION')) 
+            $this->markTestSkipped('OPTIMIZELY_PHP_TEST_INTEGRATION env var is not set');
+        
+        $credentials = $this->loadCredentialsFromFile();
+        
+        $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
+        $this->assertTrue($optimizelyClient!=null);
+        
+        // Create new project
+        $curDate = date('Y-m-d H:i:s');
+        $newProject = new Project(array(
+            "name" => "Test Project $curDate",
+            "account_id" => 12345,
+            "confidence_threshold" => 0.9,
+            "platform" => "web",
+            "status" => "active",
+            "web_snippet" => array(
+              "enable_force_variation" => false,
+              "exclude_disabled_experiments" => false,
+              "exclude_names" => true,
+              "include_jquery" => true,
+              "ip_anonymization" => false,
+              "ip_filter" => "^206\\.23\\.100\\.([5-9][0-9]|1([0-4][0-9]|50))$",
+              "library" => "jquery-1.11.3-trim",
+              "project_javascript" => "alert(\"Active Experiment\")"
+            )
+        ));
+        
+        $createdProject = $optimizelyClient->projects()->create($newProject);
+        $this->assertEquals("Test Project $curDate", $createdProject->getName());
+        
+        // List all existing projects and try to find the created project
+        $projectFound = false;
+        $projectId = null;
+        $page = 0;
+        for (;;) {
+            try {
+                $projects = $optimizelyClient->projects()->listAll($page);
+                foreach ($projects as $project) {
+                    if ($project->getName()=="Test Project $curDate") {
+                        $projectId = $project->getId();
+                        $found = true;
+                        break;
+                    }
+                }
+                
+            } catch (\Exception $e) {
+                if ($e->getCode()!=502)
+                    throw $e;
+                break;
+            }
+            $page ++;
+        } 
+        
+        $this->assertTrue($projectFound);
+        
+        // Retrieve project by ID
+        
+        $project = $optimizelyClient->projects()->get($projectId);
+        $this->assertEquals("Test Project $curDate", $project->getName());
+        
+        // Make project archived
+        
+        $project->setStatus('archived');
+        $updatedProject = $optimizelyClient->projects()->update($projectId, $project);
+        
+        $this->assertEquals('archived', $updatedProject->getStatus());
+    }
 }
+
+
