@@ -9,7 +9,7 @@
  * and put your credentials there.
  * 
  * Usage: 
- *      php GetProjects.php
+ *      php CreateProject.php
  */
 
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
@@ -20,6 +20,12 @@ include dirname(__FILE__) . '/../../vendor/autoload.php';
 
 // Include Utils.php - a file containing helper functions
 include dirname(__FILE__) . '/../Utils.php';
+
+// Read project ID from command line.
+if ($argc!=2) {
+    die('Expected 1 command-line argument, while got ' . $argc-1);
+}
+$projectId = $argv[1];
 
 // Get OAuth 2.0 credentials from auth_credentials.json and access_token.json files.
 $credentials = load_credentials_from_file();
@@ -35,7 +41,7 @@ try {
     $project->setPlatform('web');
     $project->setStatus('active');
     
-    $project = $optimizelyClient->projects()->create($project);
+    $createdProject = $optimizelyClient->projects()->create($project);
                 
 } catch (\Exception $e) {
     echo "Exception caught: " . $e->getMessage() . "\n";    
