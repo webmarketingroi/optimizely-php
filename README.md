@@ -1,11 +1,11 @@
 # optimizely-php
 
 [![Build Status](https://travis-ci.org/webmarketingroi/optimizely-php.svg?branch=master)](http://travis-ci.org/webmarketingroi/optimizely-php) 
-[![Code Coverage](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/webmarketingroi/optimizely-php/v/stable.svg)](https://packagist.org/packages/webmarketingroi/optimizely-php) 
 [![Total Downloads](https://poser.pugx.org/webmarketingroi/optimizely-php/downloads.svg)](https://packagist.org/packages/webmarketingroi/optimizely-php) 
 [![Latest Unstable Version](https://poser.pugx.org/webmarketingroi/optimizely-php/v/unstable.svg)](https://packagist.org/packages/webmarketingroi/optimizely-php)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/?branch=master)
 
 A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/)
 
