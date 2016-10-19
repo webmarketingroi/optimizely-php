@@ -38,7 +38,7 @@ class OptimizelyApiClient
     
     /**
      * Constructor.
-     * @param string $authCredentials Auth credentials.
+     * @param array $authCredentials Auth credentials.
      * @param string $apiVersion Optional. Currently supported 'v2' only.
      */
     public function __construct($authCredentials, $apiVersion='v2')
@@ -62,6 +62,7 @@ class OptimizelyApiClient
     
     /**
      * Returns API version (currently it is always 'v2').
+     * @return string
      */
     public function getApiVersion()
     {
@@ -286,6 +287,7 @@ class OptimizelyApiClient
     
     /**
      * This method retrieves the access token by refresh token.
+     * @return array
      */
     private function getAccessTokenByRefreshToken()
     {
@@ -318,6 +320,12 @@ class OptimizelyApiClient
     
     /**
      * Provides access to API services (experiments, campaigns, etc.)
+     * @method Audiences audiences()
+     * @method Campaigns campaigns()
+     * @method Events events()
+     * @method Experiment experiments()
+     * @method Pages pages()
+     * @method Projects projects()
      */
     public function __call($name, $arguments)
     {
