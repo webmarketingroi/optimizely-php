@@ -62,8 +62,8 @@ try {
 }
 ```
 
-The first argument of client's constructor should be your Optimizely OAuth 
-credentials in form of array, the second argument represents the API version 
+The first argument of the `OptimizelyApiClient` constructor should be your Optimizely OAuth 
+credentials in form of an `array`, the second argument represents the API version 
 (currently, only 'v2' is supported).
 
 Note: For information on how to get OAuth 2.0 credentials, please refer to Optimizely
@@ -94,8 +94,8 @@ foreach ($projects as $project) {
 }
 ```
 
-Note: If you have >10 projects, you should retrieve next pages of results by 
-incrementing `$page` argument.
+Note: If you have >10 projects, you should retrieve the next pages of results
+by incrementing the `$page` argument.
 
 #### Adding New Project
 
@@ -115,7 +115,7 @@ $project->setStatus('active');
 $createdProject = $client->projects()->create($project);
 ```
 
-or, you can use this (equavalent) code:
+or, you can use this (equivalent) code:
 
 ```php
 <?php
@@ -156,9 +156,9 @@ This library uses PHPUnit for testing. To run unit tests, use the following comm
 ./vendor/bin/phpunit -c ./tests/phpunit.xml --coverage-html coverage
 ```
 
-If you want to run integration tests against real Optimizely account, rename 
+If you want to run integration tests against a real Optimizely account, rename 
 `tests/auth_credentials.json.dist` to `tests/auth_credentials.json` and type
-your credentials in that file. Then create the `OPTIMIZELY_PHP_TEST_INTEGRATION` 
+your credentials in that file. Then, create the `OPTIMIZELY_PHP_TEST_INTEGRATION` 
 environment variable as follows
 
 `export OPTIMIZELY_PHP_TEST_INTEGRATION=1`
