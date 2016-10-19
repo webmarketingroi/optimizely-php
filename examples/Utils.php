@@ -1,20 +1,27 @@
 <?php
 /**
- * 
+ * Helper utility functions used by examples.
  */
 
+/**
+ * 
+ * Loads OAuth credentials from auth_credentials.json file and (optionally) from
+ * access_token.json file.
+ * @return array
+ * @throws Exception
+ */
 function load_credentials_from_file()
 {
     // Get OAuth 2.0 credentials from auth_credentials.json file.
     $credentials = file_get_contents(dirname(__FILE__) . '/auth_credentials.json');
     if ($credentials===false) {
-        die ("Couldn't read OAuth credentials from auth_credentials.json. Make sure " .
+        throw new \Exception("Couldn't read OAuth credentials from auth_credentials.json. Make sure " .
              "the file exists (if not, copy from auth_credentials.json.dist).");
     }
 
     $credentials = json_decode($credentials, true);
     if (!is_array($credentials)) {
-        die ("Invalid auth credentials\n");    
+        throw new \Exception("Invalid auth credentials\n");    
     }
 
     // Try to read access_token.json and merge it with the rest of credentials.
@@ -23,7 +30,7 @@ function load_credentials_from_file()
 
         $accessToken = json_decode($accessToken, true);
         if (!is_array($accessToken)) {
-            die ("Invalid access token format\n");    
+            throw new Exception("Invalid access token format");    
         }
 
         $credentials = array_merge($credentials, $accessToken);
