@@ -106,6 +106,7 @@ $project->setConfidenceThreshold(0.9);
 $project->setPlatform('web');
 $project->setStatus('active');
 
+// On return, $createdProject variable will contain the data of newly created project
 $createdProject = $client->projects()->create($project);
 ```
 
