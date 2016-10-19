@@ -1,5 +1,7 @@
 # optimizely-php
 
+[![Build Status](https://travis-ci.org/webmarketingroi/optimizely-php.svg?branch=master)](http://travis-ci.org/webmarketingroi/optimizely-php)
+
 A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/)
 
 ## Installation
