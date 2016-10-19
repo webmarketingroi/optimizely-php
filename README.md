@@ -66,6 +66,8 @@ documentation https://developers.optimizely.com/classic/oauth/.
 
 ### Working with Projects
 
+#### Getting List of Projects
+
 Use the following code to retrieve the first ten Optimizely projects:
 
 ```php
@@ -90,6 +92,8 @@ foreach ($projects as $project) {
 Note: If you have >10 projects, you should retrieve next pages of results by 
 incrementing `$page` argument.
 
+#### Adding New Project
+
 To add a new project, use the following code:
 
 ```php
@@ -102,7 +106,7 @@ $project->setConfidenceThreshold(0.9);
 $project->setPlatform('web');
 $project->setStatus('active');
 
-$client->projects()->create($project);
+$createdProject = $client->projects()->create($project);
 ```
 
 or, you can use this (equavalent) code:
@@ -118,7 +122,20 @@ $project = new Project(array(
         'status' => 'active'
     ));
 
-$client->projects()->create($project);
+// On return, $createdProject variable will contain the data of newly created project
+$createdProject = $client->projects()->create($project);
+```
+
+#### Updating Existing Project
+
+```php
+<?php
+
+// We assume that $project is of type Project and that you retrieved it earlier
+$project->setName('New Project Name');
+
+// On return, $updatedProject variable will contain the data of project you just updated
+$updatedProject = $client->projects()->update($project);
 ```
 
 ### More Code Examples
