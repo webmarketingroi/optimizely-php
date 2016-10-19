@@ -1,3 +1,11 @@
+# .scrutinizer.yml
+# Used to enable Code Rating/Code Smells and Test Coverage Badge
+
+checks:
+    php:
+        code_rating: true
+        duplication: true
+
 tools:
     external_code_coverage:
         timeout: 3000
