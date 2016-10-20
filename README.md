@@ -11,7 +11,7 @@ A PHP wrapper library for the Optimizely REST API v2.0 (https://developers.optim
 
 ## Installation
 
-This library requires a PHP 5.3+ engine with `curl` extension.
+This library requires at least version 5.3 of PHP with the `curl` extension installed.
 
 Installing with Composer:
 
@@ -19,7 +19,7 @@ Installing with Composer:
 
 ## Usage
 
-First, you need to create an instance of `OptimizelyApiClient` class. You can do that
+First, you need to create an instance of the `OptimizelyApiClient` class. You can do that
 using the following lines of code:
 
 ```php
