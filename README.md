@@ -7,11 +7,11 @@
 [![Latest Unstable Version](https://poser.pugx.org/webmarketingroi/optimizely-php/v/unstable.svg)](https://packagist.org/packages/webmarketingroi/optimizely-php)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/?branch=master)
 
-A PHP wrapper library for Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/)
+A PHP wrapper library for the Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/)
 
 ## Installation
 
-This library requires PHP 5.3+ engine with `curl` extension.
+This library requires a PHP 5.3+ engine with `curl` extension.
 
 Installing with Composer:
 
@@ -19,8 +19,8 @@ Installing with Composer:
 
 ## Usage
 
-First, you need to create an instance of `OptimizelyApiClient` class. You do that
-with the following lines of code:
+First, you need to create an instance of `OptimizelyApiClient` class. You can do that
+using the following lines of code:
 
 ```php
 <?php
@@ -28,7 +28,7 @@ use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
 
 try {
 
-    // If you use "authorization code" grant, use the following array.
+    // If you use the "authorization code" grant, use the following array.
     $oauthCredentials = array(
         'client_id' => 'YOUR_CLIENT_ID',
         'client_secret' => 'YOUR_CLIENT_SECRET',
@@ -38,7 +38,7 @@ try {
         'access_token' => 'YOUR_ACCESS_TOKEN'
     );
 
-    // Or, if you use "implicit grant", use the following array.
+    // Or, if you use the "implicit grant", use the following array.
     $oauthCredentials = array(
         'access_token' => 'YOUR_ACCESS_TOKEN'
     );
@@ -53,7 +53,7 @@ try {
     // Finally, retrieve the access token from the client.
     $accessToken = $client->getAccessToken();
     
-    // Save the access token somewhere (to file or database) for later use.
+    // Save the access token somewhere (to a file or database) for later use.
     file_put_contents('access_token.json', json_encode($accessToken));
 
 } catch (\Exception $e) {
@@ -63,17 +63,17 @@ try {
 ```
 
 The first argument of the `OptimizelyApiClient` constructor should be your Optimizely OAuth 
-credentials in form of an `array`, the second argument represents the API version 
+credentials in the form of an `array`, the second argument represents the API version 
 (currently, only 'v2' is supported).
 
-Note: For information on how to get OAuth 2.0 credentials, please refer to Optimizely
+Note: For information on how to get OAuth 2.0 credentials, please refer to Optimizely's
 documentation https://developers.optimizely.com/classic/oauth/.
 
 ### Working with Projects
 
 #### Getting List of Projects
 
-Use the following code to retrieve the first ten Optimizely projects:
+Use the following code to retrieve the first 10 x Optimizely projects:
 
 ```php
 // Get the first 10 projects
