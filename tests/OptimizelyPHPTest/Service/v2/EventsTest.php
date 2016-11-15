@@ -3,6 +3,7 @@ namespace OptimizelyPHPTest\Service\v2;
 
 use PHPUnit_Framework_TestCase;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Events;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Event;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ClickEvent;
@@ -17,8 +18,7 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                         array(
                             "archived" => true,
                             "category" => "add_to_cart",
@@ -37,11 +37,15 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             "is_classic" => false,
                             "is_editable" => true
                         )
-                    ));
+                    ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $eventsService = new Events($optimizelyApiClientMock);
         
-        $events = $eventsService->listAll(1000, true);
+        $result = $eventsService->listAll(1000, true);
+        $events = $result->getPayload();
         
         $this->assertTrue(count($events)==1);
         $this->assertTrue($events[0] instanceOf Event);
@@ -55,8 +59,7 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "archived" => true,
                             "category" => "add_to_cart",
                             "description" => "Item added to cart",
@@ -73,11 +76,15 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             "id" => 0,
                             "is_classic" => false,
                             "is_editable" => true
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $eventsService = new Events($optimizelyApiClientMock);
         
-        $event = $eventsService->get(5000);
+        $result = $eventsService->get(5000);
+        $event = $result->getPayload();
         
         $this->assertTrue($event instanceOf Event);
         $this->assertTrue($event->getName()=='Add to Cart');        
@@ -90,8 +97,7 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                               "event_filter" => array(
                                 "filter_type" => "target_selector",
                                 "selector" => ".menu-options"
@@ -108,7 +114,10 @@ class EventsTest extends PHPUnit_Framework_TestCase
                               "is_editable" => true,
                               "page_id" => 0,
                               "project_id" => 1000
-                        ));
+                        ), 201);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $eventsService = new Events($optimizelyApiClientMock);
         
@@ -125,7 +134,8 @@ class EventsTest extends PHPUnit_Framework_TestCase
               "key" => "add_to_cart"
         ));
         
-        $createdEvent = $eventsService->createClickEvent(0, $event);
+        $result = $eventsService->createClickEvent(0, $event);
+        $createdEvent = $result->getPayload();
         
         $this->assertTrue($createdEvent instanceOf ClickEvent);
         $this->assertTrue($createdEvent->getName()=='Add to Cart');                
@@ -138,8 +148,7 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "archived" => true,
                             "category" => "add_to_cart",
                             "description" => "string",
@@ -152,7 +161,10 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             "is_editable" => true,
                             "page_id" => 0,
                             "project_id" => 1000  
-                        ));
+                        ), 201);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $eventsService = new Events($optimizelyApiClientMock);
         
@@ -165,7 +177,8 @@ class EventsTest extends PHPUnit_Framework_TestCase
                 "name" => "Loaded New App"
         ));
         
-        $createdEvent = $eventsService->createCustomEvent(0, $event);
+        $result = $eventsService->createCustomEvent(0, $event);
+        $createdEvent = $result->getPayload();
         
         $this->assertTrue($createdEvent instanceOf CustomEvent);
         $this->assertTrue($createdEvent->getName()=='Loaded New App');                
@@ -178,8 +191,7 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                               "event_filter" => array(
                                 "filter_type" => "target_selector",
                                 "selector" => ".menu-options"
@@ -196,7 +208,10 @@ class EventsTest extends PHPUnit_Framework_TestCase
                               "is_editable" => true,
                               "page_id" => 0,
                               "project_id" => 1000
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $eventsService = new Events($optimizelyApiClientMock);
         
@@ -213,7 +228,8 @@ class EventsTest extends PHPUnit_Framework_TestCase
               "key" => "add_to_cart"
         ));
         
-        $updatedEvent = $eventsService->updateClickEvent(0, 0, $event);
+        $result = $eventsService->updateClickEvent(0, 0, $event);
+        $updatedEvent = $result->getPayload();
         
         $this->assertTrue($updatedEvent instanceOf ClickEvent);
         $this->assertTrue($updatedEvent->getName()=='Add to Cart');                
@@ -226,8 +242,7 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "archived" => true,
                             "category" => "add_to_cart",
                             "description" => "string",
@@ -240,7 +255,10 @@ class EventsTest extends PHPUnit_Framework_TestCase
                             "is_editable" => true,
                             "page_id" => 0,
                             "project_id" => 1000  
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $eventsService = new Events($optimizelyApiClientMock);
         
@@ -253,7 +271,8 @@ class EventsTest extends PHPUnit_Framework_TestCase
                 "name" => "Loaded New App"
         ));
         
-        $updatedEvent = $eventsService->updateCustomEvent(0, 0, $event);
+        $result = $eventsService->updateCustomEvent(0, 0, $event);
+        $updatedEvent = $result->getPayload();
         
         $this->assertTrue($updatedEvent instanceOf CustomEvent);
         $this->assertTrue($updatedEvent->getName()=='Loaded New App');                

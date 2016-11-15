@@ -3,6 +3,7 @@ namespace OptimizelyPHPTest\Service\v2;
 
 use PHPUnit_Framework_TestCase;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Pages;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Page;
 
@@ -15,8 +16,7 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                         array(
                             "edit_url" => "https://www.optimizely.com",
                             "name" => "Home Page",
@@ -32,11 +32,15 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             "id" => 4000,
                             "last_modified" => "2016-10-18T05:07:04.096Z"
                         )
-                    ));
+                    ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $pagesService = new Pages($optimizelyApiClientMock);
         
-        $pages = $pagesService->listAll(1000);
+        $result = $pagesService->listAll(1000);
+        $pages = $result->getPayload();
         
         $this->assertTrue(count($pages)==1);
         $this->assertTrue($pages[0] instanceOf Page);
@@ -50,8 +54,7 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "edit_url" => "https://www.optimizely.com",
                             "name" => "Home Page",
                             "project_id" => 1000,
@@ -65,14 +68,18 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             "created" => "2016-10-18T05:07:04.104Z",
                             "id" => 4000,
                             "last_modified" => "2016-10-18T05:07:04.104Z"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $pagesService = new Pages($optimizelyApiClientMock);
         
-        $page = $pagesService->get(5000);
-        
+        $result = $pagesService->get(5000);
+        $page = $result->getPayload();
+                
         $this->assertTrue($page instanceOf Page);
-        $this->assertTrue($page->getName()=='Home Page');        
+        $this->assertEquals('Home Page', $page->getName());        
     }
     
     public function testCreate()
@@ -82,8 +89,7 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "edit_url" => "https://www.optimizely.com",
                             "name" => "Home Page",
                             "project_id" => 1000,
@@ -97,7 +103,10 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             "created" => "2016-10-18T05:07:04.113Z",
                             "id" => 4000,
                             "last_modified" => "2016-10-18T05:07:04.113Z"
-                        ));
+                        ), 201);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $pagesService = new Pages($optimizelyApiClientMock);
         
@@ -114,7 +123,8 @@ class PagesTest extends PHPUnit_Framework_TestCase
             "page_type" => "single_url"
         ));
         
-        $createdPage = $pagesService->create($page);
+        $result = $pagesService->create($page);
+        $createdPage = $result->getPayload();
         
         $this->assertTrue($createdPage instanceOf Page);
         $this->assertTrue($createdPage->getName()=='Home Page');                
@@ -127,8 +137,7 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "edit_url" => "https://www.optimizely.com",
                             "name" => "Home Page",
                             "project_id" => 1000,
@@ -142,7 +151,10 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             "created" => "2016-10-18T05:07:04.113Z",
                             "id" => 4000,
                             "last_modified" => "2016-10-18T05:07:04.113Z"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $pagesService = new Pages($optimizelyApiClientMock);
         
@@ -159,7 +171,8 @@ class PagesTest extends PHPUnit_Framework_TestCase
             "page_type" => "single_url"
         ));
         
-        $updatedPage = $pagesService->update(1000, $page);
+        $result = $pagesService->update(1000, $page);
+        $updatedPage = $result->getPayload();
         
         $this->assertTrue($updatedPage instanceOf Page);
         $this->assertTrue($updatedPage->getName()=='Home Page');                  
@@ -172,13 +185,16 @@ class PagesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
+        $result = new Result(array(), 200);
+        
         $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(                        
-                        ));
+                    ->willReturn($result);
         
         $pagesService = new Pages($optimizelyApiClientMock);
      
-        $pagesService->delete(1000);
+        $result = $pagesService->delete(1000);
+        
+        $this->assertEquals(200, $result->getHttpCode());
     }
 }
 

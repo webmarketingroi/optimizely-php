@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
+
 /**
  * An Optimizely audience.
  */
@@ -82,7 +84,7 @@ class Audience
                 case 'id': $this->setId($value); break;
                 case 'last_modified': $this->setLastModified($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

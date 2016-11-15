@@ -3,6 +3,7 @@ namespace OptimizelyPHPTest\Service\v2;
 
 use PHPUnit_Framework_TestCase;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Experiments;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Experiment;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentResults;
@@ -18,8 +19,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
 
         $curDate = date('Y-m-d H:i:s');
         
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                         array(
                             "project_id" => 1000,
                             "audience_ids" => array(
@@ -99,12 +99,15 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             "is_classic" => false,
                             "last_modified" => "2016-10-17T07:05:00.070Z"
                           )
-                        )
-                    );
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $experimentsService = new Experiments($optimizelyApiClientMock);
         
-        $experiments = $experimentsService->listAll(1000);
+        $result = $experimentsService->listAll(1000);
+        $experiments = $result->getPayload();
         
         $this->assertTrue(count($experiments)==1);
         $this->assertTrue($experiments[0] instanceOf Experiment);
@@ -118,8 +121,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "audience_ids" => array(
                               1234,
@@ -197,12 +199,15 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             "id" => 3000,
                             "is_classic" => false,
                             "last_modified" => "2016-10-17T07:05:00.070Z"
-                          )
-                        );
+                          ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $experimentsService = new Experiments($optimizelyApiClientMock);
         
-        $experiment = $experimentsService->get(3000);
+        $result = $experimentsService->get(3000);
+        $experiment = $result->getPayload();
         
         $this->assertTrue($experiment instanceOf Experiment);
         $this->assertTrue($experiment->getName()=='Blue Button Experiment');        
@@ -215,8 +220,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "confidence_threshold" => 0.9,
                             "end_time" => "2016-10-17T07:05:00.089Z",
                             "experiment_id" => 3000,
@@ -279,11 +283,15 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                               )
                             ),
                             "start_time" => "2016-10-17T07:05:00.090Z"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $experimentsService = new Experiments($optimizelyApiClientMock);
         
-        $experimentResults = $experimentsService->getResults(3000);
+        $result = $experimentsService->getResults(3000);
+        $experimentResults = $result->getPayload();
         
         $this->assertTrue($experimentResults instanceOf ExperimentResults);
         $this->assertTrue($experimentResults->getConfidenceThreshold()==0.9);        
@@ -296,8 +304,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "audience_ids" => array(
                               1234,
@@ -375,7 +382,10 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             "id" => 3000,
                             "is_classic" => false,
                             "last_modified" => "2016-10-17T07:05:00.099Z"
-                        ));
+                        ), 201);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $experimentsService = new Experiments($optimizelyApiClientMock);
         
@@ -452,7 +462,8 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
             )
         ));
         
-        $createdExperiment = $experimentsService->create($experiment, true);
+        $result = $experimentsService->create($experiment, true);
+        $createdExperiment = $result->getPayload();
         
         $this->assertTrue($createdExperiment instanceOf Experiment);
         $this->assertTrue($createdExperiment->getName()=='Blue Button Experiment');                
@@ -465,8 +476,7 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                         "project_id" => 1000,
                         "audience_ids" => array(
                           1234,
@@ -544,7 +554,10 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                         "id" => 3000,
                         "is_classic" => false,
                         "last_modified" => "2016-10-17T07:05:00.109Z"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $experimentsService = new Experiments($optimizelyApiClientMock);
         
@@ -617,7 +630,8 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
               )
         ));
         
-        $updatedExperiment = $experimentsService->update(1000, $experiment, true, true);
+        $result = $experimentsService->update(1000, $experiment, true, true);
+        $updatedExperiment = $result->getPayload();
         
         $this->assertTrue($updatedExperiment instanceOf Experiment);
         $this->assertTrue($updatedExperiment->getName()=='Blue Button Experiment');                
@@ -630,12 +644,15 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
+        $result = new Result(array(), 200);
+        
         $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(                        
-                        ));
+                    ->willReturn($result);
         
         $experimentsService = new Experiments($optimizelyApiClientMock);
      
-        $experimentsService->delete(1000);
+        $result = $experimentsService->delete(1000);
+        
+        $this->assertEquals(200, $result->getHttpCode());        
     }
 }

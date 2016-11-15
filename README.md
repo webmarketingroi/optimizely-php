@@ -25,77 +25,106 @@ using the following lines of code:
 ```php
 <?php
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Exception;
 
 try {
 
-    // If you use the "authorization code" grant, use the following array.
-    $oauthCredentials = array(
+    // If you use the "OAuth 2.0 authorization code" grant, use the following array.
+    $authCredentials = array(
         'client_id' => 'YOUR_CLIENT_ID',
         'client_secret' => 'YOUR_CLIENT_SECRET',
         'refresh_token' => 'YOUR_REFRESH_TOKEN',
         // Access token is optional (if not provided, will be retrieved automatically
-        // with the refresh token.
+        // with the refresh token).
         'access_token' => 'YOUR_ACCESS_TOKEN'
     );
 
-    // Or, if you use the "implicit grant", use the following array.
-    $oauthCredentials = array(
+    // Or, if you use the "OAuth 2.0 implicit grant" or "Optimizely personal 
+    // token", use the following array. Please note that personal tokens are not
+    // recommended to use in production environments.
+    $authCredentials = array(
         'access_token' => 'YOUR_ACCESS_TOKEN'
     );
 
     // Instantiate the API client.
-    $client = new OptimizelyApiClient($oauthCredentials, 'v2');
+    $client = new OptimizelyApiClient($authCredentials, 'v2');
 
-    // Do something with the client.
+    // Do something with the client (for example, get the projects).
+    $result = $client->projects()->listAll();
 
-    // ...
+    // Check result
+    if ($result->getHttpCode()==200) {
+        // Extract projects from result.
+        $projects = $result->getPayload();
+        
+        foreach ($projects as $project) {
+            // Get project attributes.
+            $name = $project->getName();
+            echo "Name: $name\n";
+        }
+    }
 
-    // Finally, retrieve the access token from the client.
+    // Finally, retrieve the access token from the client (this is only required
+    // if you use "OAuth 2.0 authorization code" grant).
     $accessToken = $client->getAccessToken();
     
     // Save the access token somewhere (to a file or database) for later use.
     file_put_contents('access_token.json', json_encode($accessToken));
 
-} catch (\Exception $e) {
-    // Handle errors.
-    echo "Exception caught: " . $e->getMessage();
+} catch (Exception $e) {
+    // Handle error.
+    $code = $e->getCode();
+    $httpCode = $e->getHttpCode();
+    $message = $e->getMessage();
+    $uuid = $e->getUuid();
+    echo "Exception caught: $message (code=$code http_code=$httpCode uuid=$uuid)\n";
 }
 ```
 
-The first argument of the `OptimizelyApiClient` constructor should be your Optimizely OAuth 
-credentials in the form of an `array`, the second argument represents the API version 
+The first argument of the `OptimizelyApiClient` constructor should be your Optimizely 
+API credentials in the form of an `array`, the second argument represents the API version 
 (currently, only 'v2' is supported).
 
-Note: For information on how to get OAuth 2.0 credentials, please refer to Optimizely's
-documentation https://developers.optimizely.com/classic/oauth/.
+*Note*: For information on how to get OAuth 2.0 credentials or a personal token, 
+please refer to Optimizely's documentation https://developers.optimizely.com/x/authentication/oauth/.
 
 ### Working with Projects
 
 #### Getting List of Projects
 
-Use the following code to retrieve the first 10 x Optimizely projects:
+Use the following code to retrieve all Optimizely projects:
 
 ```php
-// Get the first 10 projects
-$page = 0;
-$projects = $client->projects()->listAll($page, 10);
+$page = 1;
+for (;;)
+{
+    // Get the next page of projects.
+    $result = $client->projects()->listAll($page, 25);
 
-// Iterate through projects
-foreach ($projects as $project) {
-    echo "ID: " . $project->getId() . "\n";
-    echo "Name: " . $project->getName() . "\n";
-    echo "Account ID: " . $project->getAccountId() . "\n";
-    echo "Platform: " . $project->getPlatform() . "\n";
-    echo "Status: " . $project->getStatus() . "\n";
-    echo "Is Classic: " . ($project->getIsClassic()?"true":"false") . "\n";
-    echo "Created: " . $project->getCreated() . "\n";
-    echo "Last Modified: " . $project->getLastModified() . "\n";
-    echo "\n";
+    // Retrieve projects from Result object.
+    $projects = $result->getPayload();
+
+    // Iterate through retrieved projects
+    foreach ($projects as $project) {
+        echo "ID: " . $project->getId() . "\n";
+        echo "Name: " . $project->getName() . "\n";
+        echo "Account ID: " . $project->getAccountId() . "\n";
+        echo "Platform: " . $project->getPlatform() . "\n";
+        echo "Status: " . $project->getStatus() . "\n";
+        echo "Is Classic: " . ($project->getIsClassic()?"true":"false") . "\n";
+        echo "Created: " . $project->getCreated() . "\n";
+        echo "Last Modified: " . $project->getLastModified() . "\n";
+        echo "\n";
+    }
+
+    // Determine if there are more projects.
+    if ($result->getNextPage()==null)
+        break;
+
+    // Increment page counter. 
+    $page ++;
 }
 ```
-
-Note: If you have >10 projects, you should retrieve the next pages of results
-by incrementing the `$page` argument.
 
 #### Adding New Project
 
@@ -111,8 +140,9 @@ $project->setConfidenceThreshold(0.9);
 $project->setPlatform('web');
 $project->setStatus('active');
 
-// On return, $createdProject variable will contain the data of newly created project
-$createdProject = $client->projects()->create($project);
+// On return, $result->getPayload() variable will contain the data of newly created project
+$result = $client->projects()->create($project);
+$createdProject = $result->getPayload();
 ```
 
 or, you can use this (equivalent) code:
@@ -121,15 +151,16 @@ or, you can use this (equivalent) code:
 <?php
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
-$project = new Project(array(
+$result = new Project(array(
         'name' => 'Test Project',
         'confidence_threshold' => 0.9,
         'platform' => 'web',
         'status' => 'active'
     ));
 
-// On return, $createdProject variable will contain the data of newly created project
-$createdProject = $client->projects()->create($project);
+// On return, $result->getPayload() variable will contain the data of newly created project
+$result = $client->projects()->create($project);
+$createdProject = $result->getPayload();
 ```
 
 #### Updating Existing Project
@@ -140,8 +171,9 @@ $createdProject = $client->projects()->create($project);
 // We assume that $project is of type Project and that you retrieved it earlier
 $project->setName('New Project Name');
 
-// On return, $updatedProject variable will contain the data of project you just updated
-$updatedProject = $client->projects()->update($project);
+// On return, $result->getPayload() variable will contain the data of newly created project
+$result = $client->projects()->update($project);
+$createdProject = $result->getPayload();
 ```
 
 ### More Code Examples

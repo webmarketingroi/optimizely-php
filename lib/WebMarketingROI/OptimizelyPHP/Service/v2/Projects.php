@@ -29,109 +29,113 @@ class Projects
     
     /**
      * Get a list of all the Projects in your account, with associated metadata.
-     * @param integer $page Page number (zero-based).
-     * @param integer $perPage Count of projects per page (10 by default).
-     * @return array
-     * @throws \Exception
+     * @param integer $page Page number (1-based).
+     * @param integer $perPage Count of projects per page (25 by default).
+     * @return Result
+     * @throws Exception
      */
-    public function listAll($page=0, $perPage=10)
+    public function listAll($page=1, $perPage=25)
     {
         if ($page<0) {
-            throw new \Exception('Invalid page number passed');
+            throw new Exception('Invalid page number passed');
         }
         
         if ($perPage<0 || $perPage>100) {
-            throw new \Exception('Invalid page size passed');
+            throw new Exception('Invalid page size passed');
         }
         
-        $response = $this->client->sendApiRequest('/projects', 
+        $result = $this->client->sendApiRequest('/projects', 
                 array(
                     'page'=>$page,
                     'per_page'=>$perPage
                 ));
         
         $projects = array();
-        foreach ($response as $projectInfo) {
+        foreach ($result->getDecodedJsonData() as $projectInfo) {
             $project = new Project($projectInfo);
             $projects[] = $project;
         }
+        $result->setPayload($projects);
         
-        return $projects;
+        return $result;
     }
     
     /**
      * Get metadata for a single Project.
      * @param integer $projectId
-     * @return Project
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function get($projectId)
     {
         if (!is_int($projectId)) {
-            throw new \Exception("Integer project ID expected, while got '$projectId'");
+            throw new Exception("Integer project ID expected, while got '$projectId'");
         }
         
         if ($projectId<0) {
-            throw new \Exception("A positive project ID expected");
+            throw new Exception("A positive project ID expected");
         }
         
-        $response = $this->client->sendApiRequest("/projects/$projectId");
+        $result = $this->client->sendApiRequest("/projects/$projectId");
         
-        $project = new Project($response);
+        $project = new Project($result->getDecodedJsonData());
+        $result->setPayload($project);
         
-        return $project;
+        return $result;
     }
     
     /**
      * Create a new Project in your account.
      * @param Project $project Project meta information.
-     * @return Project Created project.
+     * @return Result
      */
     public function create($project)
     {
         if (!($project instanceOf Project)) {
-            throw new \Exception("Expected argument of type Project");
+            throw new Exception("Expected argument of type Project");
         }
         
         $postData = $project->toArray();
         
-        $response = $this->client->sendApiRequest("/projects", array(), 'POST', 
-                $postData, array(201));
+        $result = $this->client->sendApiRequest("/projects", array(), 'POST', 
+                $postData);
         
-        $project = new Project($response);
+        $project = new Project($result->getDecodedJsonData());
+        $result->setPayload($project);
         
-        return $project;
+        return $result;
     }
     
     /**
      * Update a Project.
      * @param integer $projectId
      * @param Project $project
-     * @return Project Updated project.
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function update($projectId, $project) 
     {
         if (!is_int($projectId)) {
-            throw new \Exception("Integer project ID expected, while got '$projectId'");
+            throw new Exception("Integer project ID expected, while got '$projectId'");
         }
         
         if ($projectId<0) {
-            throw new \Exception("A positive project ID expected");
+            throw new Exception("A positive project ID expected");
         }
         
         if (!($project instanceOf Project)) {
-            throw new \Exception("Expected argument of type Project");
+            throw new Exception("Expected argument of type Project");
         }
         
         $postData = $project->toArray();
                 
-        $response = $this->client->sendApiRequest("/projects/$projectId", array(), 
-                'PATCH', $postData, array(200));
+        $result = $this->client->sendApiRequest("/projects/$projectId", array(), 
+                'PATCH', $postData);
         
-        $project = new Project($response);
+        $project = new Project($result->getDecodedJsonData());
+        $result->setPayload($project);
         
-        return $project;
+        return $result;
     }
 }
 

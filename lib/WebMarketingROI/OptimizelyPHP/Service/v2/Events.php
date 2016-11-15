@@ -35,20 +35,22 @@ class Events
      * @param integer $includeClassic
      * @param integer $page
      * @param integer $perPage
-     * @return array[Event]
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
-    public function listAll($projectId, $includeClassic, $page=0, $perPage=10)
+    public function listAll($projectId, $includeClassic, $page=1, $perPage=25)
     {
         if ($page<0) {
-            throw new \Exception('Invalid page number passed');
+            throw new Exception('Invalid page number passed',
+                    Exception::CODE_INVALID_ARG);
         }
         
         if ($perPage<0) {
-            throw new \Exception('Invalid page size passed');
+            throw new Exception('Invalid page size passed',
+                    Exception::CODE_INVALID_ARG);
         }
         
-        $response = $this->client->sendApiRequest('/events', 
+        $result = $this->client->sendApiRequest('/events', 
                 array(
                     'project_id'=>$projectId,
                     'include_classic'=>$includeClassic,
@@ -57,69 +59,84 @@ class Events
                 ));
         
         $events = array();
-        foreach ($response as $eventInfo) {
+        foreach ($result->getDecodedJsonData() as $eventInfo) {
             $event = new Event($eventInfo);
             $events[] = $event;
         }
+        $result->setPayload($events);
         
-        return $events;
+        return $result;
     }
     
     /**
      * Get Event by ID
      * @param type $eventId
-     * @return Event
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function get($eventId)
     {
         if (!is_int($eventId)) {
-            throw new \Exception("Integer event ID expected, while got '$eventId'");
+            throw new Exception("Integer event ID expected, while got '$eventId'",
+                    Exception::CODE_INVALID_ARG);
         }
         
-        $response = $this->client->sendApiRequest("/events/$eventId");
+        $result = $this->client->sendApiRequest("/events/$eventId");
         
-        $event = new Event($response);
+        $event = new Event($result->getDecodedJsonData());
+        $result->setPayload($event);
         
-        return $event;
+        return $result;
     }
     
     /**
      * Creates a new click event.
      * @param integer $pageId
      * @param ClickEvent $event
+     * @return Result
+     * @throws Exception
      */
     public function createClickEvent($pageId, $event)
     {
         if (!($event instanceOf ClickEvent)) {
-            throw new \Exception("Expected argument of type ClickEvent");
+            throw new Exception("Expected argument of type ClickEvent",
+                    Exception::CODE_INVALID_ARG);
         }
         
         $postData = $event->toArray();
         
-        $response = $this->client->sendApiRequest("/pages/$pageId/click_events", array(), 'POST', 
-                $postData, array(201));
+        $result = $this->client->sendApiRequest("/pages/$pageId/click_events", array(), 'POST', 
+                $postData);
         
-        return new ClickEvent($response);
+        $event = new ClickEvent($result->getDecodedJsonData());
+        $result->setPayload($event);
+        
+        return $result;
     }
     
     /**
      * Creates a new custom event.
      * @param integer $pageId
      * @param CustomEvent $event
+     * @return Result
+     * @throws Exception
      */
     public function createCustomEvent($pageId, $event)
     {
         if (!($event instanceOf CustomEvent)) {
-            throw new \Exception("Expected argument of type CustomEvent");
+            throw new Exception("Expected argument of type CustomEvent",
+                    Exception::CODE_INVALID_ARG);
         }
         
         $postData = $event->toArray();
         
-        $response = $this->client->sendApiRequest("/pages/$pageId/custom_events", array(), 'POST', 
-                $postData, array(201));
+        $result = $this->client->sendApiRequest("/pages/$pageId/custom_events", array(), 'POST', 
+                $postData);
         
-        return new CustomEvent($response);
+        $event = new CustomEvent($result->getDecodedJsonData());
+        $result->setPayload($event);
+        
+        return $result;
     }
         
     /**
@@ -127,20 +144,25 @@ class Events
      * @param integer $pageId
      * @param integer $eventId
      * @param ClickEvent $event
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function updateClickEvent($pageId, $eventId, $event) 
     {
         if (!($event instanceOf ClickEvent)) {
-            throw new \Exception("Expected argument of type ClickEvent");
+            throw new Exception("Expected argument of type ClickEvent",
+                    Exception::CODE_INVALID_ARG);
         }
         
         $postData = $event->toArray();
                 
-        $response = $this->client->sendApiRequest("/pages/$pageId/click_events/$eventId", array(), 'PATCH', 
-                $postData, array(200));
+        $result = $this->client->sendApiRequest("/pages/$pageId/click_events/$eventId", array(), 'PATCH', 
+                $postData);
         
-        return new ClickEvent($response);
+        $event = new ClickEvent($result->getDecodedJsonData());
+        $result->setPayload($event);
+        
+        return $result;
     }
     
     /**
@@ -148,20 +170,25 @@ class Events
      * @param integer $pageId
      * @param integer $eventId
      * @param CustomEvent $event
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function updateCustomEvent($pageId, $eventId, $event) 
     {
         if (!($event instanceOf CustomEvent)) {
-            throw new \Exception("Expected argument of type CustomEvent");
+            throw new Exception("Expected argument of type CustomEvent",
+                    Exception::CODE_INVALID_ARG);
         }
         
         $postData = $event->toArray();
                 
-        $response = $this->client->sendApiRequest("/pages/$pageId/custom_events/$eventId", array(), 'PATCH', 
-                $postData, array(200));
+        $result = $this->client->sendApiRequest("/pages/$pageId/custom_events/$eventId", array(), 'PATCH', 
+                $postData);        
         
-        return new CustomEvent($response);
+        $event = new CustomEvent($result->getDecodedJsonData());
+        $result->setPayload($event);
+        
+        return $result;
     }
 }
 

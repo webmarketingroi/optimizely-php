@@ -7,6 +7,7 @@
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Page;
+use WebMarketingROI\OptimizelyPHP\Exception;
 
 /**
  * Provides methods for working with Optimizely project pages.
@@ -32,20 +33,20 @@ class Pages
      * @param integer $projectId
      * @param integer $page
      * @param integer $perPage
-     * @return array[Page]
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
-    public function listAll($projectId, $page=0, $perPage=10)
+    public function listAll($projectId, $page=1, $perPage=25)
     {
         if ($page<0) {
-            throw new \Exception('Invalid page number passed');
+            throw new Exception('Invalid page number passed');
         }
         
         if ($perPage<0) {
-            throw new \Exception('Invalid page size passed');
+            throw new Exception('Invalid page size passed');
         }
         
-        $response = $this->client->sendApiRequest('/pages', 
+        $result = $this->client->sendApiRequest('/pages', 
                 array(
                     'project_id'=>$projectId,
                     'page'=>$page,
@@ -53,31 +54,33 @@ class Pages
                 ));
         
         $pages = array();
-        foreach ($response as $pageInfo) {
+        foreach ($result->getDecodedJsonData() as $pageInfo) {
             $page = new Page($pageInfo);
             $pages[] = $page;
         }
+        $result->setPayload($pages);
         
-        return $pages;
+        return $result;
     }
     
     /**
      * Get metadata for a single Page
      * @param integer $pageId
-     * @return Page
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function get($pageId)
     {
         if (!is_int($pageId)) {
-            throw new \Exception("Integer page ID expected, while got '$pageId'");
+            throw new Exception("Integer page ID expected, while got '$pageId'");
         }
         
-        $response = $this->client->sendApiRequest("/pages/$pageId");
+        $result = $this->client->sendApiRequest("/pages/$pageId");
         
-        $page = new Page($response);
+        $page = new Page($result->getDecodedJsonData());
+        $result->setPayload($page);
         
-        return $page;
+        return $result;
     }
     
     /**
@@ -87,46 +90,56 @@ class Pages
     public function create($page)
     {
         if (!($page instanceOf Page)) {
-            throw new \Exception("Expected argument of type Page");
+            throw new Exception("Expected argument of type Page");
         }
         
         $postData = $page->toArray();
         
-        $response = $this->client->sendApiRequest("/pages", array(), 'POST', 
-                $postData, array(201));
+        $result = $this->client->sendApiRequest("/pages", array(), 'POST', 
+                $postData);
         
-        return new Page($response);
+        $page = new Page($result->getDecodedJsonData());
+        $result->setPayload($page);
+        
+        return $result;
     }
     
     /**
      * Update a Page in a provided Project
      * @param integer $pageId
      * @param Audience $page
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function update($pageId, $page) 
     {
         if (!($page instanceOf Page)) {
-            throw new \Exception("Expected argument of type Page");
+            throw new Exception("Expected argument of type Page");
         }
         
         $postData = $page->toArray();
                 
-        $response = $this->client->sendApiRequest("/pages/$pageId", array(), 'PATCH', 
-                $postData, array(200));
+        $result = $this->client->sendApiRequest("/pages/$pageId", array(), 'PATCH', 
+                $postData);
         
-        return new Page($response);
+        $page = new Page($result->getDecodedJsonData());
+        $result->setPayload($page);
+        
+        return $result;
     }
     
     /**
      * Delete a Page within a Project by ID.
      * @param integer $pageId
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function delete($pageId) 
     {
-        $response = $this->client->sendApiRequest("/pages/$pageId", array(), 'DELETE', 
-                array(), array(200));
+        $result = $this->client->sendApiRequest("/pages/$pageId", array(), 'DELETE', 
+                array());
+        
+        return $result;
     }
 }
 

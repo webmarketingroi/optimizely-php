@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\VariantResults;
 
 /**
@@ -87,7 +88,7 @@ class CampaignMetricResults
                 }
                 case 'unit': $this->setUnit($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

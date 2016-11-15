@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
+
 /**
  * An Optimizely campaign metric.
  */
@@ -33,7 +35,7 @@ class Metric
                 case 'kind': $this->setKind($value); break;
                 case 'id': $this->setId($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

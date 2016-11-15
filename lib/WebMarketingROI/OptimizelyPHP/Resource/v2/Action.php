@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
 
 /**
@@ -41,7 +42,7 @@ class Action
                 }
                 case 'page_id': $this->setPageId($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

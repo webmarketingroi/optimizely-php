@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
+
 /**
  * An Optimizely web snippet configuration.
  */
@@ -96,7 +98,7 @@ class WebSnippet
                 case 'code_revision': $this->setCodeRevision($value); break;
                 case 'js_file_size': $this->setJsFileSize($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

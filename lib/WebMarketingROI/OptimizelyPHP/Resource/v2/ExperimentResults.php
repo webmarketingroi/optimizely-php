@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentMetricResults;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentVariationReach;
 
@@ -74,7 +75,7 @@ class ExperimentResults
                 case 'reach': $this->setReach(new ExperimentVariationReach($value)); break;
                 case 'start_time': $this->setStartTime($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

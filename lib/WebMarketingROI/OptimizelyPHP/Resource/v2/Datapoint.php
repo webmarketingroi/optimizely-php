@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
+
 /**
  * Optimizely datapoint.
  */
@@ -66,7 +68,7 @@ class Datapoint
                 case 'value': $this->setValue($value); break;
                 case 'visitors_remaining': $this->setVisitorsRemaining($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

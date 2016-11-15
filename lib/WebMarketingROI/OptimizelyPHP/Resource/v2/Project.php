@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\WebSnippet;
 
 /**
@@ -114,7 +115,7 @@ class Project
                 case 'last_modified': $this->setLastModified($value); break;
                 case 'socket_token': $this->setSocketToken($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

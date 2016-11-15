@@ -13,6 +13,7 @@
  */
 
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
 // Init class autloading.
@@ -41,10 +42,16 @@ try {
     $project->setPlatform('web');
     $project->setStatus('active');
     
-    $createdProject = $optimizelyClient->projects()->create($project);
+    $result = $optimizelyClient->projects()->create($project);
+    $createdProject = $result->getPayload();
                 
-} catch (\Exception $e) {
-    echo "Exception caught: " . $e->getMessage() . "\n";    
+} catch (Exception $e) {
+    // Handle error.
+    $code = $e->getCode();
+    $httpCode = $e->getHttpCode();
+    $message = $e->getMessage();
+    $uuid = $e->getUuid();
+    echo "Exception caught: $message (code=$code http_code=$httpCode uuid=$uuid)\n";
 }    
 
 // Save access token for later use

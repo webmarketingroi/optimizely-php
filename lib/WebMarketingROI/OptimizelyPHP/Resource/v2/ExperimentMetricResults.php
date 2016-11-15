@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
+
 /**
  * Optimizely experiment metric results.
  */
@@ -72,7 +74,7 @@ class ExperimentMetricResults
                 case 'unit': $this->setUnit($value); break;
                 case 'variation_results': $this->setVariationResults($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Metric;
 
@@ -133,7 +134,7 @@ class Campaign
                 case 'type': $this->setType($value); break;
                 case 'id': $this->setId($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

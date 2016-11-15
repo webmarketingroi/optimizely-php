@@ -6,6 +6,8 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
+
 /**
  * Optimizely event filter.
  */
@@ -33,7 +35,7 @@ class EventFilter
                 case 'filter_type': $this->setFilterType($value); break;
                 case 'selector': $this->setSelector($value); break;
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

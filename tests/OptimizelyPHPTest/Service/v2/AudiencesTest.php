@@ -3,6 +3,7 @@ namespace OptimizelyPHPTest\Service\v2;
 
 use PHPUnit_Framework_TestCase;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Audiences;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Audience;
 
@@ -15,8 +16,7 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                         array(
                             "project_id" => 1000,
                             "archived" => false,
@@ -38,11 +38,16 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             "id" => 5000,
                             "last_modified" => "2016-10-18T05:07:04.066Z"
                         )
-                    ));
+                    ), 200);
+        
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $audiencesService = new Audiences($optimizelyApiClientMock);
         
-        $audiences = $audiencesService->listAll(1000);
+        $result = $audiencesService->listAll(1000);
+        $audiences = $result->getPayload();
         
         $this->assertTrue(count($audiences)==1);
         $this->assertTrue($audiences[0] instanceOf Audience);
@@ -56,8 +61,7 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "archived" => false,
                             "conditions" => array(
@@ -77,11 +81,15 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             "created" => "2016-10-18T05:07:04.073Z",
                             "id" => 5000,
                             "last_modified" => "2016-10-18T05:07:04.074Z"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $audiencesService = new Audiences($optimizelyApiClientMock);
         
-        $audience = $audiencesService->get(5000);
+        $result = $audiencesService->get(5000);
+        $audience = $result->getPayload();
         
         $this->assertTrue($audience instanceOf Audience);
         $this->assertTrue($audience->getName()=='Spanish speaking San Franciscans');        
@@ -94,8 +102,7 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "archived" => false,
                             "conditions" => array(
@@ -115,7 +122,10 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             "created" => "2016-10-18T05:07:04.083Z",
                             "id" => 5000,
                             "last_modified" => "2016-10-18T05:07:04.083Z"
-                        ));
+                        ), 201);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $audiencesService = new Audiences($optimizelyApiClientMock);
         
@@ -138,7 +148,8 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                 "segmentation" => true
         ));
         
-        $createdAudience = $audiencesService->create($audience);
+        $result = $audiencesService->create($audience);
+        $createdAudience = $result->getPayload();
         
         $this->assertTrue($createdAudience instanceOf Audience);
         $this->assertTrue($createdAudience->getName()=='Spanish speaking San Franciscans');                
@@ -151,8 +162,7 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "archived" => false,
                             "conditions" => array(
@@ -172,7 +182,10 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                             "created" => "2016-10-18T05:07:04.083Z",
                             "id" => 5000,
                             "last_modified" => "2016-10-18T05:07:04.083Z"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $audiencesService = new Audiences($optimizelyApiClientMock);
         
@@ -195,9 +208,11 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
                 "segmentation" => true
         ));
         
-        $createdAudience = $audiencesService->update(5000, $audience);
+        $result = $audiencesService->update(5000, $audience);
+        $createdAudience = $result->getPayload();
         
         $this->assertTrue($createdAudience instanceOf Audience);
         $this->assertTrue($createdAudience->getName()=='Spanish speaking San Franciscans');                
     }
 }
+

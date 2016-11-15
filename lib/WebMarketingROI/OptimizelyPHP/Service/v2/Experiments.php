@@ -35,16 +35,17 @@ class Experiments
      * @param boolean $includeClassic
      * @param integer $page
      * @param integer $perPage
-     * @return array
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
-    public function listAll($projectId, $campaignId=null, $includeClassic=false, $page=1, $perPage=10)
+    public function listAll($projectId, $campaignId=null, $includeClassic=false, $page=1, $perPage=25)
     {
         if (empty($projectId) && empty($campaignId)) {
-            throw new \Exception('Project ID or Campaign ID must be non-empty');
+            throw new Exception('Project ID or Campaign ID must be non-empty',
+                    Exception::ERROR_INVALID_ARG);
         }
         
-        $response = $this->client->sendApiRequest('/experiments', 
+        $result = $this->client->sendApiRequest('/experiments', 
                 array(
                     'project_id'=>$projectId, 
                     'campaign_id'=>$campaignId,
@@ -54,31 +55,34 @@ class Experiments
                 ));
         
         $experiments = array();
-        foreach ($response as $experimentInfo) {
+        foreach ($result->getDecodedJsonData() as $experimentInfo) {
             $experiment = new Experiment($experimentInfo);
             $experiments[] = $experiment;
         }
+        $result->setPayload($experiments);
         
-        return $experiments;
+        return $result;
     }
     
     /**
      * Get metadata for a single Experiment.
      * @param integer $experimentId
-     * @return Experiment 
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function get($experimentId)
     {
         if (!is_int($experimentId)) {
-            throw new \Exception("Integer experiment ID expected, while got '$experimentId'");
+            throw new Exception("Integer experiment ID expected, while got '$experimentId'",
+                    Exception::CODE_INVALID_ARG);
         }
         
-        $response = $this->client->sendApiRequest("/experiments/$experimentId");
+        $result = $this->client->sendApiRequest("/experiments/$experimentId");
         
-        $experiment = new Experiment($response);
+        $experiment = new Experiment($result->getDecodedJsonData());
+        $result->setPayload($experiment);
         
-        return $experiment;
+        return $result;
     }
     
     /**
@@ -87,39 +91,46 @@ class Experiments
      * @param integer $baselineVariationId The id of the variation to use as the baseline to compare against other variations. Defaults to the first variation if not provided.
      * @param string $startTime The earliest time to count events in results. Defaults to the time that the experiment was first activated.
      * @param string $endTime The latest time to count events in results. Defaults to the time the experiment was last active or the current time if the experiment is still running.
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function getResults($experimentId, $baselineVariationId = null, $startTime = null, $endTime = null)
     {
         if (!is_int($experimentId)) {
-            throw new \Exception("Integer experiment ID expected, while got '$experimentId'");
+            throw new Exception("Integer experiment ID expected, while got '$experimentId'",
+                    Exception::CODE_INVALID_ARG);
         }
         
-        $response = $this->client->sendApiRequest("/experiments/$experimentId/results",
+        $result = $this->client->sendApiRequest("/experiments/$experimentId/results",
                 array(
                     'baseline_variation_id' => $baselineVariationId,
                     'start_time' => $startTime,
                     'end_time' => $endTime
                 ));
         
-        $results = new ExperimentResults($response);
+        $experimentResults = new ExperimentResults($result->getDecodedJsonData());
+        $result->setPayload($experimentResults);
         
-        return $results;
+        return $result;
     }
     
     /**
      * Create an experiment in a Project.
      * @param Experiment $experiment
      * @param boolean $publish Set to true to make the the experiment live to the world upon creation.
+     * @return Result
+     * @throw Exception
      */
     public function create($experiment, $publish)
     {
         if (!($experiment instanceOf Experiment)) {
-            throw new \Exception("Expected argument of type Experiment");
+            throw new Exception("Expected argument of type Experiment",
+                    Exception::CODE_INVALID_ARG);
         }
         
         if (!is_bool($publish)) {
-            throw new \Exception("Expected boolean publish argument");
+            throw new Exception("Expected boolean publish argument",
+                    Exception::CODE_INVALID_ARG);
         }
         
         $queryParams = array(
@@ -128,10 +139,13 @@ class Experiments
         
         $postData = $experiment->toArray();
         
-        $response = $this->client->sendApiRequest("/experiments", $queryParams, 'POST', 
-                $postData, array(201));
+        $result = $this->client->sendApiRequest("/experiments", $queryParams, 'POST', 
+                $postData);
         
-        return new Experiment($response);
+        $experiment = new Experiment($result->getDecodedJsonData());
+        $result->setPayload($experiment);
+        
+        return $result;
     }
     
     /**
@@ -140,20 +154,21 @@ class Experiments
      * @param Experiment $experiment
      * @param boolean $overrideChanges If there are draft changes already in the experiment, you can override those changes by providing this query parameter.
      * @param boolean $publish Whether to publish the changes to the world.
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function update($experimentId, $experiment, $overrideChanges, $publish) 
     {
         if (!is_int($experimentId)) {
-            throw new \Exception("Expected argument of type Experiment");
+            throw new Exception("Expected argument of type Experiment");
         }
         
         if ($experimentId<0) {
-            throw new \Exception("Expected positive experiment ID argument");
+            throw new Exception("Expected positive experiment ID argument");
         }
         
         if (!($experiment instanceOf Experiment)) {
-            throw new \Exception("Expected argument of type Experiment");
+            throw new Exception("Expected argument of type Experiment");
         }
         
         $queryParams = array(
@@ -163,21 +178,27 @@ class Experiments
         
         $postData = $experiment->toArray();
               
-        $response = $this->client->sendApiRequest("/experiments/$experimentId", $queryParams, 'PATCH', 
-                $postData, array(200));
+        $result = $this->client->sendApiRequest("/experiments/$experimentId", $queryParams, 'PATCH', 
+                $postData);
         
-        return new Experiment($response);
+        $experiment = new Experiment($result->getDecodedJsonData());
+        $result->setPayload($experiment);
+        
+        return $result;
     }
     
     /**
      * Delete Experiment by ID
      * @param integer $experimentId
-     * @throws \Exception
+     * @return Result
+     * @throws Exception
      */
     public function delete($experimentId) 
     {
-        $response = $this->client->sendApiRequest("/experiments/$experimentId", array(), 'DELETE', 
-                array(), array(204));
+        $result = $this->client->sendApiRequest("/experiments/$experimentId", array(), 'DELETE', 
+                array());
+        
+        return $result;
     }
 }
 

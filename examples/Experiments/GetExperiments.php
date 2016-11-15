@@ -13,6 +13,7 @@
  */
 
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Exception;
 
 // Init class autloading.
 include dirname(__FILE__) . '/../../vendor/autoload.php';
@@ -37,12 +38,13 @@ echo "The list of Optimizely experiments\n";
 echo "==================================\n";
 echo "\n";
 
-$page = 0;
-$perPage = 10;
-
-for (;;) {
-    try {
-        $experiments = $optimizelyClient->experiments()->listAll($projectId, null, true, $page, $perPage);
+$page = 1;
+try {
+    
+    for (;;) {
+    
+        $result = $optimizelyClient->experiments()->listAll($projectId, null, true, $page, 25);
+        $experiments = $result->getPayload();
         
         foreach ($experiments as $experiment) {
             echo "Name: " . $experiment->getName() . "\n";
@@ -52,14 +54,23 @@ for (;;) {
             
             echo "\n";
         }
+    
+        // Determine if there are more projects.
+        if ($result->getNextPage()==null)
+            break;
         
-    } catch (\Exception $e) {
-        echo "Exception caught: " . $e->getMessage() . "\n";
-        break;
+        // Increment page counter.
+        $page ++;
     }    
     
-    $page ++;
-}
+} catch (Exception $e) {
+    // Handle error.
+    $code = $e->getCode();
+    $httpCode = $e->getHttpCode();
+    $message = $e->getMessage();
+    $uuid = $e->getUuid();
+    echo "Exception caught: $message (code=$code http_code=$httpCode uuid=$uuid)\n";
+}    
 
 // Save access token for later use
 $accessToken = $optimizelyClient->getAccessToken();

@@ -3,6 +3,7 @@ namespace OptimizelyPHPTest\Service\v2;
 
 use OptimizelyPHPTest\Service\v2\BaseServiceTest;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Projects;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
@@ -17,8 +18,7 @@ class ProjectsTest extends BaseServiceTest
 
         $curDate = date('Y-m-d H:i:s');
         
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                         array(
                             'id' => '1523456',
                             'account_id' => '54321',
@@ -40,11 +40,15 @@ class ProjectsTest extends BaseServiceTest
                                 "js_file_size" => 5004
                             )
                         )
-                    ));
+                    ), 200);
+                        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $projectsService = new Projects($optimizelyApiClientMock);
         
-        $projects = $projectsService->listAll();
+        $result = $projectsService->listAll();
+        $projects = $result->getPayload();
         
         $this->assertTrue(count($projects)==1);
         $this->assertTrue($projects[0] instanceOf Project);
@@ -57,11 +61,10 @@ class ProjectsTest extends BaseServiceTest
         $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
                             ->disableOriginalConstructor()
                             ->getMock();
-
+                
         $curDate = date('Y-m-d H:i:s');
         
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             'id' => '1523456',
                             'account_id' => '54321',
                             'name' => 'Some Optimizely Project',
@@ -81,11 +84,15 @@ class ProjectsTest extends BaseServiceTest
                                 "code_revision" => '123456',
                                 "js_file_size" => 5004
                             )                        
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $projectsService = new Projects($optimizelyApiClientMock);
         
-        $project = $projectsService->get(1523456);
+        $result = $projectsService->get(1523456);
+        $project = $result->getPayload();
         
         $this->assertTrue($project instanceOf Project);
         $this->assertTrue($project->getName()=='Some Optimizely Project');        
@@ -100,8 +107,7 @@ class ProjectsTest extends BaseServiceTest
 
         $curDate = date('Y-m-d H:i:s');
         
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "name" => "Test Project",
                             "account_id" => 12345,
                             "confidence_threshold" => 0.9,
@@ -125,7 +131,9 @@ class ProjectsTest extends BaseServiceTest
                             "is_classic" => true,
                             "last_modified" => "2016-10-17T07:04:59.991Z",
                             "socket_token" => "AABBCCDD~123456789"                   
-                        ));
+                        ), 201);
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $projectsService = new Projects($optimizelyApiClientMock);
         
@@ -148,7 +156,8 @@ class ProjectsTest extends BaseServiceTest
             )
         ));
         
-        $createdProject = $projectsService->create($project);
+        $result = $projectsService->create($project);
+        $createdProject = $result->getPayload();
         
         $this->assertTrue($createdProject instanceOf Project);
         $this->assertTrue($createdProject->getName()=='Test Project');        
@@ -164,8 +173,7 @@ class ProjectsTest extends BaseServiceTest
 
         $curDate = date('Y-m-d H:i:s');
         
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "name" => "Test Project",
                             "account_id" => 12345,
                             "confidence_threshold" => 0.9,
@@ -189,7 +197,10 @@ class ProjectsTest extends BaseServiceTest
                             "is_classic" => true,
                             "last_modified" => "2016-10-17T07:04:59.999Z",
                             "socket_token" => "AABBCCDD~123456789"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $projectsService = new Projects($optimizelyApiClientMock);
         
@@ -210,7 +221,8 @@ class ProjectsTest extends BaseServiceTest
             )
         ));
         
-        $updatedProject = $projectsService->update(121234, $project);
+        $result = $projectsService->update(121234, $project);
+        $updatedProject = $result->getPayload();
         
         $this->assertTrue($updatedProject instanceOf Project);
         $this->assertTrue($updatedProject->getName()=='Test Project');        
@@ -247,43 +259,52 @@ class ProjectsTest extends BaseServiceTest
             )
         ));
         
-        $createdProject = $optimizelyClient->projects()->create($newProject);
+        $result = $optimizelyClient->projects()->create($newProject);
+        
+        $this->assertEquals(200, $result->getHttpCode());
+        
+        $createdProject = $result->getPayload();
+        
         $this->assertEquals("Test Project $curDate", $createdProject->getName());
         
         // List all existing projects and try to find the created project
         $projectFound = false;
         $projectId = null;
-        $page = 0;
-        for (;;) {
-            try {
-                $projects = $optimizelyClient->projects()->listAll($page);
-                foreach ($projects as $project) {
-                    if ($project->getName()=="Test Project $curDate") {
-                        $projectId = $project->getId();
-                        $found = true;
-                        break;
-                    }
+        $page = 1;
+        for (;;) {            
+            $result = $optimizelyClient->projects()->listAll($page);
+            
+            $projects = $result->getPayload();
+
+            foreach ($projects as $project) {
+                if ($project->getName()=="Test Project $curDate") {
+                    $projectId = $project->getId();
+                    $found = true;
+                    break;
                 }
-                
-            } catch (\Exception $e) {
-                if ($e->getCode()!=502)
-                    throw $e;
-                break;
             }
+
+            if ($result->getNextPage()==null)
+                break;
+
             $page ++;
-        } 
+        }
         
         $this->assertTrue($projectFound);
         
         // Retrieve project by ID
         
-        $project = $optimizelyClient->projects()->get($projectId);
+        $result = $optimizelyClient->projects()->get($projectId);
+        
+        $project = $result->getPayload();
+        
         $this->assertEquals("Test Project $curDate", $project->getName());
         
         // Make project archived
         
         $project->setStatus('archived');
-        $updatedProject = $optimizelyClient->projects()->update($projectId, $project);
+        $result = $optimizelyClient->projects()->update($projectId, $project);
+        $updatedProject = $result->getPayload();
         
         $this->assertEquals('archived', $updatedProject->getStatus());
     }

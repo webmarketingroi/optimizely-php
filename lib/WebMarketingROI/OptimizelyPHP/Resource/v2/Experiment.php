@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Schedule;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Variation;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
@@ -160,7 +161,7 @@ class Experiment
                 case 'id': $this->setId($value); break;
                 case 'is_classic': $this->setIsClassic($value); break;                
                 default:
-                    throw new \Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option: ' . $name);
             }
         }
     }

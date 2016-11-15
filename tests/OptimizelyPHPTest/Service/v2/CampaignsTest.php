@@ -3,6 +3,7 @@ namespace OptimizelyPHPTest\Service\v2;
 
 use PHPUnit_Framework_TestCase;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Campaigns;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Campaign;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\CampaignResults;
@@ -16,8 +17,7 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                         array(
                             "project_id" => 1000,
                             "changes" => array(
@@ -60,12 +60,15 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             "type" => "a/b",
                             "id" => 2000
                           )
-                        )
-                    );
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $campaignsService = new Campaigns($optimizelyApiClientMock);
         
-        $campaigns = $campaignsService->listAll(1000);
+        $result = $campaignsService->listAll(1000);
+        $campaigns = $result->getPayload();
         
         $this->assertTrue(count($campaigns)==1);
         $this->assertTrue($campaigns[0] instanceOf Campaign);
@@ -79,8 +82,7 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "changes" => array(
                               array(
@@ -121,11 +123,15 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             "status" => "active",
                             "type" => "a/b",
                             "id" => 2000   
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $campaignsService = new Campaigns($optimizelyApiClientMock);
         
-        $campaign = $campaignsService->get(2000);
+        $result = $campaignsService->get(2000);
+        $campaign = $result->getPayload();
         
         $this->assertTrue($campaign instanceOf Campaign);
         $this->assertTrue($campaign->getName()=='Landing Page Optimization');        
@@ -138,8 +144,7 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "campaign_id" => 0,
                             "confidence_threshold" => 0,
                             "end_time" => "2016-10-18T03:27:04.147Z",
@@ -187,11 +192,15 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                               )
                             ),
                             "start_time" => "2016-10-18T03:27:04.148Z"
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $campaignsService = new Campaigns($optimizelyApiClientMock);
         
-        $campaignResults = $campaignsService->getResults(3000);
+        $result = $campaignsService->getResults(3000);
+        $campaignResults = $result->getPayload();
         
         $this->assertTrue($campaignResults instanceOf CampaignResults);
         $this->assertTrue($campaignResults->getConfidenceThreshold()==0);        
@@ -205,8 +214,7 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "changes" => array(
                               array(
@@ -247,7 +255,10 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             "status" => "active",
                             "type" => "a/b",
                             "id" => 2000
-                        ));
+                        ), 201);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $campaignsService = new Campaigns($optimizelyApiClientMock);
         
@@ -291,7 +302,8 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                 "type" => "a/b"
         ));
         
-        $createdCampaign = $campaignsService->create($campaign);
+        $result = $campaignsService->create($campaign);
+        $createdCampaign = $result->getPayload();
         
         $this->assertTrue($createdCampaign instanceOf Campaign);
         $this->assertTrue($createdCampaign->getName()=='Landing Page Optimization');                
@@ -304,8 +316,7 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
-        $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(
+        $result = new Result(array(
                             "project_id" => 1000,
                             "changes" => array(
                               array(
@@ -346,7 +357,10 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             "status" => "active",
                             "type" => "a/b",
                             "id" => 2000
-                        ));
+                        ), 200);
+        
+        $optimizelyApiClientMock->method('sendApiRequest')
+                    ->willReturn($result);
         
         $campaignsService = new Campaigns($optimizelyApiClientMock);
         
@@ -390,8 +404,9 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                 "type" => "a/b"
         ));
         
-        $updatedCampaign = $campaignsService->update(2000, $campaign);
-        
+        $result = $campaignsService->update(2000, $campaign);
+        $updatedCampaign = $result->getPayload();
+                 
         $this->assertTrue($updatedCampaign instanceOf Campaign);
         $this->assertTrue($updatedCampaign->getName()=='Landing Page Optimization');                
     }
@@ -403,12 +418,16 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
                             ->disableOriginalConstructor()
                             ->getMock();
 
+        $result = new Result(array(), 200);
+        
         $optimizelyApiClientMock->method('sendApiRequest')
-                    ->willReturn(array(                        
-                        ));
+                    ->willReturn($result);
         
         $campaignsService = new Campaigns($optimizelyApiClientMock);
      
-        $campaignsService->delete(1000);
+        $result = $campaignsService->delete(1000);
+        
+        $this->assertEquals(200, $result->getHttpCode());
+        $this->assertEquals(null, $result->getPayload());
     }
 }

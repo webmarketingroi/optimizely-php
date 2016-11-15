@@ -4,6 +4,7 @@ namespace OptimizelyPHPTest;
 use PHPUnit_Framework_TestCase;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Experiments;
+use WebMarketingROI\OptimizelyPHP\Exception;
 
 class OptimizelyApiClientTest extends PHPUnit_Framework_TestCase
 {
@@ -18,7 +19,7 @@ class OptimizelyApiClientTest extends PHPUnit_Framework_TestCase
     }    
     
     /**
-     * @expectedException Exception
+     * @expectedException WebMarketingROI\OptimizelyPHP\Exception
      */
     public function testCreateClientWrongCredentialFormat()
     {
