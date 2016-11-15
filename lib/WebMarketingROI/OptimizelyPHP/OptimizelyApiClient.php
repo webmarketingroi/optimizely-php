@@ -243,6 +243,7 @@ class OptimizelyApiClient
         
         // Save diagnostics info.
         $this->diagnosticsInfo['request']['method'] = $method;
+        $this->diagnosticsInfo['request']['url'] = $url;
         $this->diagnosticsInfo['request']['headers'] = $headers;
         $this->diagnosticsInfo['request']['content'] = $content;        
         
