@@ -71,7 +71,7 @@ class Projects
     {
         $projectId = (string)$projectId;
         
-        if (!preg_match('/\d+/', $projectId)) {
+        if (!preg_match('/^\d+$/', $projectId)) {
             throw new Exception("A positive integer project ID expected, while got $projectId");
         }
         

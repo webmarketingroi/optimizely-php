@@ -132,21 +132,6 @@ class ProjectsTest extends BaseServiceTest
     /**
      * @expectedException Exception
      */
-    public function testGet_NotIntegerProjectId()
-    {
-        // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
-                            ->disableOriginalConstructor()
-                            ->getMock();
-        
-        $projectsService = new Projects($optimizelyApiClientMock);
-        
-        $result = $projectsService->get('1');
-    }
-    
-    /**
-     * @expectedException Exception
-     */
     public function testGet_NegativeProjectId()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
@@ -303,23 +288,6 @@ class ProjectsTest extends BaseServiceTest
         $this->assertTrue($updatedProject instanceOf Project);
         $this->assertTrue($updatedProject->getName()=='Test Project');        
         $this->assertTrue($updatedProject->getAccountId()==12345);        
-    }
-    
-    /**
-     * @expectedException Exception
-     */
-    public function testUpdate_NotIntegerProjectId()
-    {
-        // Mock 'OptimizelyApiClient' object to avoid real API calls
-        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
-                            ->disableOriginalConstructor()
-                            ->getMock();
-        
-        $projectsService = new Projects($optimizelyApiClientMock);
-        
-        $project = new Project();
-        
-        $result = $projectsService->update('1000', $project);
     }
     
     /**
