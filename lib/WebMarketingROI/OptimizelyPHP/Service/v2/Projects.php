@@ -69,12 +69,10 @@ class Projects
      */
     public function get($projectId)
     {
-        if (!is_int($projectId)) {
-            throw new Exception("Integer project ID expected, while got '$projectId'");
-        }
+        $projectId = (string)$projectId;
         
-        if ($projectId<0) {
-            throw new Exception("A positive project ID expected");
+        if (!preg_match('/\d+/', $projectId)) {
+            throw new Exception("A positive integer project ID expected, while got $projectId");
         }
         
         $result = $this->client->sendApiRequest("/projects/$projectId");
@@ -116,8 +114,10 @@ class Projects
      */
     public function update($projectId, $project) 
     {
-        if (!is_int($projectId)) {
-            throw new Exception("Integer project ID expected, while got '$projectId'");
+        $projectId = (string)$projectId;
+        
+        if (!preg_match('/\d+/', $projectId)) {
+            throw new Exception("A positive integer project ID expected, while got $projectId");
         }
         
         if ($projectId<0) {

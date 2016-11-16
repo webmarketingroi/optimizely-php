@@ -52,16 +52,13 @@ try {
     // Do something with the client (for example, get the projects).
     $result = $client->projects()->listAll();
 
-    // Check result
-    if ($result->getHttpCode()==200) {
-        // Extract projects from result.
-        $projects = $result->getPayload();
+    // Extract projects from result.
+    $projects = $result->getPayload();
         
-        foreach ($projects as $project) {
-            // Get project attributes.
-            $name = $project->getName();
-            echo "Name: $name\n";
-        }
+    foreach ($projects as $project) {
+        // Get project attributes.
+        $name = $project->getName();
+        echo "Name: $name\n";
     }
 
     // Finally, retrieve the access token from the client (this is only required

@@ -30,7 +30,7 @@ $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
 
 try {
     
-    $project = new Experiment(array(
+    $experiment = new Experiment(array(
             "project_id" => 1000,
             "audience_ids" => array(
               1234,

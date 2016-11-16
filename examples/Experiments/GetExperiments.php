@@ -49,8 +49,8 @@ try {
         foreach ($experiments as $experiment) {
             echo "Name: " . $experiment->getName() . "\n";
             echo "Description: " . $experiment->getDescription() . "\n";
-            echo "Status: " . $project->getStatus() . "\n";
-            echo "Created: " . $project->getCreated() . "\n";
+            echo "Status: " . $experiment->getStatus() . "\n";
+            echo "Created: " . $experiment->getCreated() . "\n";
             
             echo "\n";
         }

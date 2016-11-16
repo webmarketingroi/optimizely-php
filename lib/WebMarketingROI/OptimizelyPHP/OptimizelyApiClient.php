@@ -231,6 +231,7 @@ class OptimizelyApiClient
         $headers[] = "Content-length:" . strlen($content);            
         
         // Set HTTP options.
+        curl_reset($this->curlHandle);
         curl_setopt($this->curlHandle, CURLOPT_URL, $url);
         curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, $method);        
         if (count($postData)!=0) {
@@ -314,8 +315,7 @@ class OptimizelyApiClient
             
             if (!isset($decodedPayload['message']) || 
                 !isset($decodedPayload['code']) ||
-                !isset($decodedPayload['uuid']) ||
-                $httpCode != !isset($decodedPayload['code'])) {
+                !isset($decodedPayload['uuid'])) {
                 throw new Exception('Optimizely API responded with error code ' . $httpCode . 
                     '. Request was ' . $method . ' "' . $url . '". Response was "' . $body . '"',
                     Exception::CODE_API_ERROR, array(

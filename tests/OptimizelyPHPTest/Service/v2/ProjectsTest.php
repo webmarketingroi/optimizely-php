@@ -363,9 +363,9 @@ class ProjectsTest extends BaseServiceTest
         
         $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
         $this->assertTrue($optimizelyClient!=null);
-        
+                
+        // Create new project        
         $curDate = date('Y-m-d H:i:s');
-        /*// Create new project        
         $newProject = new Project(array(
             "name" => "Test Project $curDate",
             "account_id" => 12345,
@@ -393,14 +393,17 @@ class ProjectsTest extends BaseServiceTest
         
         $createdProject = $result->getPayload();
         
-        $this->assertEquals("Test Project $curDate", $createdProject->getName());*/
+        print_r($optimizelyClient->getDiagnosticsInfo());
+        
+        $this->assertEquals("Test Project $curDate", $createdProject->getName());
         
         // List all existing projects and try to find the created project
+        $projectFound = false;
+        $projectId = null;            
         try {
-            $projectFound = false;
-            $projectId = null;
             $page = 1;
             for (;;) {            
+                echo " = Page $page\n";
                 $result = $optimizelyClient->projects()->listAll($page);
 
                 print_r($optimizelyClient->getDiagnosticsInfo());
@@ -408,9 +411,10 @@ class ProjectsTest extends BaseServiceTest
                 $projects = $result->getPayload();
 
                 foreach ($projects as $project) {
+                    echo "Name: " . $project->getName() . "\n";
                     if ($project->getName()=="Test Project $curDate") {
                         $projectId = $project->getId();
-                        $found = true;
+                        $projectFound = true;
                         break;
                     }
                 }
@@ -422,7 +426,6 @@ class ProjectsTest extends BaseServiceTest
             }
         }
         catch (Exception $e) {
-            print_r($optimizelyClient->getDiagnosticsInfo());
             // Handle error.
             $code = $e->getCode();
             $httpCode = $e->getHttpCode();
@@ -438,8 +441,9 @@ class ProjectsTest extends BaseServiceTest
             $result = $optimizelyClient->projects()->get(12345678);        
         } 
         catch(Exception $e) {
+            //print_r($optimizelyClient->getDiagnosticsInfo());
             $this->assertEquals(Exception::CODE_API_ERROR, $e->getCode());
-            $this->assertEquals(400, $e->getHttpCode());
+            $this->assertEquals('not_found', $e->getHttpCode());
             $this->assertTrue(strlen($e->getUuid())!=0);
             $this->assertTrue($e->getRateLimit()>0);
             $this->assertTrue($e->getRateLimitRemaining()>0);

@@ -45,37 +45,6 @@ try {
     // Print diagnostics information.
     //print_r($optimizelyClient->getDiagnosticsInfo());
     
-    // List all existing projects and try to find the created project
-    try {
-        $page = 1;
-        for (;;) {            
-            $result = $optimizelyClient->projects()->listAll($page);
-
-            //print_r($optimizelyClient->getDiagnosticsInfo());
-
-            $projects = $result->getPayload();
-
-            foreach ($projects as $project) {
-                $name = $project->getName();
-                echo "Project: $name\n";
-            }
-
-            if ($result->getNextPage()==null)
-                break;
-
-            $page ++;
-        }
-    }
-    catch (Exception $e) {
-        print_r($optimizelyClient->getDiagnosticsInfo());
-        // Handle error.
-        $code = $e->getCode();
-        $httpCode = $e->getHttpCode();
-        $message = $e->getMessage();
-        $uuid = $e->getUuid();
-        echo "Exception caught: $message (code=$code http_code=$httpCode uuid=$uuid)\n";
-    }
-    
 } catch (Exception $e) {
     // Handle error.
     $code = $e->getCode();
