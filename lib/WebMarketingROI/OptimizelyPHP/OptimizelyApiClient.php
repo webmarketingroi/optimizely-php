@@ -231,6 +231,14 @@ class OptimizelyApiClient
         $headers[] = "Content-length:" . strlen($content);            
         
         // Set HTTP options.
+        if (!function_exists('curl_reset'))
+        {
+            function curl_reset(&$ch)
+            {
+                $ch = curl_init();
+            }
+        }
+        
         curl_reset($this->curlHandle);
         curl_setopt($this->curlHandle, CURLOPT_URL, $url);
         curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, $method);        
