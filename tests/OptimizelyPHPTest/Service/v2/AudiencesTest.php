@@ -54,6 +54,36 @@ class AudiencesTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($audiences[0]->getName()=='Spanish speaking San Franciscans');        
     }
     
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $audiencesService = new Audiences($optimizelyApiClientMock);
+        
+        $result = $audiencesService->listAll(1000, -1, 25);
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPerPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $audiencesService = new Audiences($optimizelyApiClientMock);
+        
+        $result = $audiencesService->listAll(1000, 1, 1000);
+    }
+    
     public function testGet()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls

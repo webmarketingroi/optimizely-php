@@ -60,8 +60,8 @@ class OptimizelyApiClient
             throw new Exception('Invalid API version passed');
         }
         
-        $this->authCredentials = $authCredentials;
-        $this->apiVersion = $apiVersion;
+        $this->setAuthCredentials($authCredentials);
+        $this->setApiVersion($apiVersion);
         
         $this->curlHandle = curl_init();
         if (!$this->curlHandle) {
@@ -108,7 +108,7 @@ class OptimizelyApiClient
     public function setAuthCredentials($authCredentials)
     {
         if (!is_array($authCredentials) || count($authCredentials)==0) {
-            throw new Exception('Auth credentials must be an array');            
+            throw new Exception('Auth credentials must be an non-empty array');            
         }
         
         $this->authCredentials = $authCredentials;
@@ -317,7 +317,7 @@ class OptimizelyApiClient
                 !isset($decodedPayload['uuid']) ||
                 $httpCode != !isset($decodedPayload['code'])) {
                 throw new Exception('Optimizely API responded with error code ' . $httpCode . 
-                    ', but response format was unexpected. Request was ' . $method . ' "' . $url . '". Response was "' . $body . '"',
+                    '. Request was ' . $method . ' "' . $url . '". Response was "' . $body . '"',
                     Exception::CODE_API_ERROR, array(
                         'http_code' => $httpCode,
                         'rate_limit' => $rateLimit,

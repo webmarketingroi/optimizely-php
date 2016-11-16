@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
 /**

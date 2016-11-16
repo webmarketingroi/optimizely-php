@@ -114,6 +114,51 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($experiments[0]->getName()=='Blue Button Experiment');        
     }
     
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_BothProjectIdAndCampaignIdAreNull()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $experimentsService = new Experiments($optimizelyApiClientMock);
+        
+        $result = $experimentsService->listAll(null, null, false, 1, 25);
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $experimentsService = new Experiments($optimizelyApiClientMock);
+        
+        $result = $experimentsService->listAll(1000, null, false, -1, 25);
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPerPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $experimentsService = new Experiments($optimizelyApiClientMock);
+        
+        $result = $experimentsService->listAll(1000, null, false, 1, 10000);
+    }
+    
     public function testGet()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
@@ -211,6 +256,36 @@ class ExperimentsTest extends PHPUnit_Framework_TestCase
         
         $this->assertTrue($experiment instanceOf Experiment);
         $this->assertTrue($experiment->getName()=='Blue Button Experiment');        
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testGet_NotIntegerExperimentId()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $experimentsService = new Experiments($optimizelyApiClientMock);
+        
+        $result = $experimentsService->get('1');
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testGet_NegativeExperimentId()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $experimentsService = new Experiments($optimizelyApiClientMock);
+        
+        $result = $experimentsService->get(-1);
     }
     
     public function testGetResults()

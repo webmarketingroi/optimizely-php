@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Audience;
 
 /**
@@ -38,13 +39,11 @@ class Audiences
     public function listAll($projectId, $page=1, $perPage=25)
     {
         if ($page<0) {
-            throw new Exception('Invalid page number passed',
-                    Exception::CODE_INVALID_ARG);
+            throw new Exception('Invalid page number passed');
         }
         
-        if ($perPage<0) {
-            throw new Exception('Invalid page size passed',
-                    Exception::CODE_INVALID_ARG);
+        if ($perPage<0 || $perPage>100) {
+            throw new Exception('Invalid page size passed');
         }
         
         $result = $this->client->sendApiRequest('/audiences', 

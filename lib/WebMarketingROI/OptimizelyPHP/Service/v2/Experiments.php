@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Experiment;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentResults;
 
@@ -40,9 +41,16 @@ class Experiments
      */
     public function listAll($projectId, $campaignId=null, $includeClassic=false, $page=1, $perPage=25)
     {
-        if (empty($projectId) && empty($campaignId)) {
-            throw new Exception('Project ID or Campaign ID must be non-empty',
-                    Exception::ERROR_INVALID_ARG);
+        if ($projectId==null && $campaignId==null) {
+            throw new Exception('Project ID or Campaign ID must be non-null');
+        }
+        
+        if ($page<0) {
+            throw new Exception('Invalid page number passed');
+        }
+        
+        if ($perPage<0 || $perPage>100) {
+            throw new Exception('Invalid page size passed');
         }
         
         $result = $this->client->sendApiRequest('/experiments', 
@@ -75,6 +83,10 @@ class Experiments
         if (!is_int($experimentId)) {
             throw new Exception("Integer experiment ID expected, while got '$experimentId'",
                     Exception::CODE_INVALID_ARG);
+        }
+        
+        if ($experimentId<0) {
+            throw new Exception("A positive experiment ID expected");
         }
         
         $result = $this->client->sendApiRequest("/experiments/$experimentId");

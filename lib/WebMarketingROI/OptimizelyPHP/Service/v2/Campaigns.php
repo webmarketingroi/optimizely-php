@@ -6,6 +6,7 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Service\v2;
 
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Campaign;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\CampaignResults;
 
@@ -50,7 +51,7 @@ class Campaigns
             throw new Exception('Invalid page number passed');
         }
         
-        if ($perPage<0) {
+        if ($perPage<0 || $perPage>100) {
             throw new Exception('Invalid page size passed');
         }
         

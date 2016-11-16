@@ -3,6 +3,7 @@ namespace OptimizelyPHPTest\Service\v2;
 
 use OptimizelyPHPTest\Service\v2\BaseServiceTest;
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
+use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Projects;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
@@ -55,6 +56,36 @@ class ProjectsTest extends BaseServiceTest
         $this->assertTrue($projects[0]->getName()=='Some Optimizely Project');        
     }
     
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $result = $projectsService->listAll(-1, 25);
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPerPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $result = $projectsService->listAll(1, 1000);
+    }
+    
     public function testGet()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
@@ -96,6 +127,36 @@ class ProjectsTest extends BaseServiceTest
         
         $this->assertTrue($project instanceOf Project);
         $this->assertTrue($project->getName()=='Some Optimizely Project');        
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testGet_NotIntegerProjectId()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $result = $projectsService->get('1');
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testGet_NegativeProjectId()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $result = $projectsService->get(-1);
     }
     
     public function testCreate()
@@ -164,6 +225,21 @@ class ProjectsTest extends BaseServiceTest
         $this->assertTrue($createdProject->getAccountId()==12345);        
     }
     
+    /**
+     * @expectedException Exception
+     */
+    public function testCreate_InvalidProject()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $result = $projectsService->create(1);
+    }
+    
     public function testUpdate()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
@@ -229,6 +305,55 @@ class ProjectsTest extends BaseServiceTest
         $this->assertTrue($updatedProject->getAccountId()==12345);        
     }
     
+    /**
+     * @expectedException Exception
+     */
+    public function testUpdate_NotIntegerProjectId()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $project = new Project();
+        
+        $result = $projectsService->update('1000', $project);
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testUpdate_NegativeProjectId()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $project = new Project();
+        
+        $result = $projectsService->update(-1000, $project);
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testUpdate_InvalidProject()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $projectsService = new Projects($optimizelyApiClientMock);
+        
+        $result = $projectsService->update(1000, 1);
+    }
+    
     public function testIntegration()
     {
         if (!getenv('OPTIMIZELY_PHP_TEST_INTEGRATION')) 
@@ -239,8 +364,8 @@ class ProjectsTest extends BaseServiceTest
         $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
         $this->assertTrue($optimizelyClient!=null);
         
-        // Create new project
         $curDate = date('Y-m-d H:i:s');
+        /*// Create new project        
         $newProject = new Project(array(
             "name" => "Test Project $curDate",
             "account_id" => 12345,
@@ -261,41 +386,68 @@ class ProjectsTest extends BaseServiceTest
         
         $result = $optimizelyClient->projects()->create($newProject);
         
-        $this->assertEquals(200, $result->getHttpCode());
+        $this->assertEquals(200, $result->getHttpCode());        
+        $this->assertTrue($result->getRateLimit()>0);
+        $this->assertTrue($result->getRateLimitRemaining()>0);
+        $this->assertTrue($result->getRateLimitReset()>0);
         
         $createdProject = $result->getPayload();
         
-        $this->assertEquals("Test Project $curDate", $createdProject->getName());
+        $this->assertEquals("Test Project $curDate", $createdProject->getName());*/
         
         // List all existing projects and try to find the created project
-        $projectFound = false;
-        $projectId = null;
-        $page = 1;
-        for (;;) {            
-            $result = $optimizelyClient->projects()->listAll($page);
-            
-            $projects = $result->getPayload();
+        try {
+            $projectFound = false;
+            $projectId = null;
+            $page = 1;
+            for (;;) {            
+                $result = $optimizelyClient->projects()->listAll($page);
 
-            foreach ($projects as $project) {
-                if ($project->getName()=="Test Project $curDate") {
-                    $projectId = $project->getId();
-                    $found = true;
-                    break;
+                print_r($optimizelyClient->getDiagnosticsInfo());
+
+                $projects = $result->getPayload();
+
+                foreach ($projects as $project) {
+                    if ($project->getName()=="Test Project $curDate") {
+                        $projectId = $project->getId();
+                        $found = true;
+                        break;
+                    }
                 }
+
+                if ($result->getNextPage()==null)
+                    break;
+
+                $page ++;
             }
-
-            if ($result->getNextPage()==null)
-                break;
-
-            $page ++;
+        }
+        catch (Exception $e) {
+            print_r($optimizelyClient->getDiagnosticsInfo());
+            // Handle error.
+            $code = $e->getCode();
+            $httpCode = $e->getHttpCode();
+            $message = $e->getMessage();
+            $uuid = $e->getUuid();
+            echo "Exception caught: $message (code=$code http_code=$httpCode uuid=$uuid)\n";
         }
         
         $this->assertTrue($projectFound);
         
-        // Retrieve project by ID
+        // Try a non-existing project by ID - assume failure
+        try {
+            $result = $optimizelyClient->projects()->get(12345678);        
+        } 
+        catch(Exception $e) {
+            $this->assertEquals(Exception::CODE_API_ERROR, $e->getCode());
+            $this->assertEquals(400, $e->getHttpCode());
+            $this->assertTrue(strlen($e->getUuid())!=0);
+            $this->assertTrue($e->getRateLimit()>0);
+            $this->assertTrue($e->getRateLimitRemaining()>0);
+            $this->assertTrue($e->getRateLimitReset()>0);
+        }
         
-        $result = $optimizelyClient->projects()->get($projectId);
-        
+        // Retrieve existing project by ID        
+        $result = $optimizelyClient->projects()->get($projectId);        
         $project = $result->getPayload();
         
         $this->assertEquals("Test Project $curDate", $project->getName());

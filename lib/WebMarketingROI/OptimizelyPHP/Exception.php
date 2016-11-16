@@ -107,31 +107,55 @@ class Exception extends \Exception
         $this->uuid = $uuid;
     }    
     
+    /**
+     * Return rate limit.
+     * @return integer|null
+     */
     public function getRateLimit()
     {
         return $this->rateLimit;
     }
     
+    /**
+     * Set rate limit.
+     * @param integer|null $rateLimit
+     */
     public function setRateLimit($rateLimit)
     {
         $this->rateLimit = $rateLimit;
     }
     
+    /**
+     * Return the amount of calls remaining.
+     * @return integer|null
+     */
     public function getRateLimitRemaining()
     {
         return $this->rateLimitRemaining;
     }
     
+    /**
+     * Set the amount of calls remaining.
+     * @param integer|null $rateLimitRemaining
+     */
     public function setRateLimitRemaining($rateLimitRemaining)
     {
         $this->rateLimitRemaining = $rateLimitRemaining;
     }
     
+    /**
+     * Return the exact time that your fresh new rate limit kicks in.
+     * @return integer|null
+     */
     public function getRateLimitReset()
     {
         return $this->rateLimitReset;
     }
     
+    /**
+     * Set the exact time that your fresh new rate limit kicks in.
+     * @param integer|null $rateLimitReset
+     */
     public function setRateLimitReset($rateLimitReset)
     {
         $this->rateLimitReset = $rateLimitReset;

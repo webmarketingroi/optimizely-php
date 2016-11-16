@@ -75,6 +75,36 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($campaigns[0]->getName()=='Landing Page Optimization');        
     }
     
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $campaignsService = new Campaigns($optimizelyApiClientMock);
+        
+        $result = $campaignsService->listAll(1000, -1, 25);
+    }
+    
+    /**
+     * @expectedException Exception
+     */
+    public function testListAll_InvalidPerPage()
+    {
+        // Mock 'OptimizelyApiClient' object to avoid real API calls
+        $optimizelyApiClientMock = $this->getMockBuilder('\WebMarketingROI\OptimizelyPHP\OptimizelyApiClient')
+                            ->disableOriginalConstructor()
+                            ->getMock();
+        
+        $campaignsService = new Campaigns($optimizelyApiClientMock);
+        
+        $result = $campaignsService->listAll(1000, 1, 1000);
+    }
+    
     public function testGet()
     {
         // Mock 'OptimizelyApiClient' object to avoid real API calls
