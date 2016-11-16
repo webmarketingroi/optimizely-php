@@ -17,6 +17,12 @@ Installing with Composer:
 
 `php composer.phar require webmarketingroi/optimizely-php`
 
+The command above will install the latest stable version.
+Or, if you prefer a bleeding-edge version, install `dev-master` with the following
+command:
+
+`php composer.phar require webmarketingroi/optimizely-php dev-master`
+
 ## Usage
 
 First, you need to create an instance of the `OptimizelyApiClient` class. You can do that
@@ -70,10 +76,10 @@ try {
 
 } catch (Exception $e) {
     // Handle error.
-    $code = $e->getCode();
-    $httpCode = $e->getHttpCode();
-    $message = $e->getMessage();
-    $uuid = $e->getUuid();
+    $code = $e->getCode(); // Client-specific error code.
+    $httpCode = $e->getHttpCode(); // HTTP status code.
+    $message = $e->getMessage(); // Error message.
+    $uuid = $e->getUuid(); // Error UUID.
     echo "Exception caught: $message (code=$code http_code=$httpCode uuid=$uuid)\n";
 }
 ```

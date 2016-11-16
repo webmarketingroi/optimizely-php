@@ -230,12 +230,15 @@ class OptimizelyApiClient
         }
         $headers[] = "Content-length:" . strlen($content);            
         
-        // Set HTTP options.
-        if (!function_exists('curl_reset'))
-            $this->curlHandle = curl_init();            
-        else
+        // Reset CURL state.
+        if (!function_exists('curl_reset')) {
+            curl_close($this->curlHandle);
+            $this->curlHandle = curl_init(); 
+        } else {
             curl_reset($this->curlHandle);
+        }
         
+        // Set HTTP options.
         curl_setopt($this->curlHandle, CURLOPT_URL, $url);
         curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, $method);        
         if (count($postData)!=0) {
@@ -262,12 +265,12 @@ class OptimizelyApiClient
                     Exception::CODE_CURL_ERROR, $code, $error);
         }        
         
-        // Split headers and body
+        // Split response headers and body
         $headerSize = curl_getinfo($this->curlHandle, CURLINFO_HEADER_SIZE);
         $headers = substr($result, 0, $headerSize);
         $body = substr($result, $headerSize);
 
-        // Parse headers
+        // Parse response headers.
         $headers = explode("\n", $headers);
         $parsedHeaders = array();
         foreach ($headers as $i=>$header) {
@@ -281,7 +284,7 @@ class OptimizelyApiClient
             }
         }
         
-        // Get HTTP code
+        // Get HTTP code.
         $info = curl_getinfo($this->curlHandle);    
         $httpCode = $info['http_code'];
         
