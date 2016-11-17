@@ -143,7 +143,7 @@ $project->setConfidenceThreshold(0.9);
 $project->setPlatform('web');
 $project->setStatus('active');
 
-// On return, $result->getPayload() variable will contain the data of newly created project
+// On return, call $result->getPayload() to get the newly created project
 $result = $client->projects()->create($project);
 $createdProject = $result->getPayload();
 ```
@@ -161,7 +161,7 @@ $result = new Project(array(
         'status' => 'active'
     ));
 
-// On return, $result->getPayload() variable will contain the data of newly created project
+// On return, call $result->getPayload() to get the newly created project
 $result = $client->projects()->create($project);
 $createdProject = $result->getPayload();
 ```
@@ -174,9 +174,9 @@ $createdProject = $result->getPayload();
 // We assume that $project is of type Project and that you retrieved it earlier
 $project->setName('New Project Name');
 
-// On return, $result->getPayload() variable will contain the data of newly created project
+// On return, call $result->getPayload() to get the data of the updated project
 $result = $client->projects()->update($project);
-$createdProject = $result->getPayload();
+$updatedProject = $result->getPayload();
 ```
 
 ### More Code Examples
