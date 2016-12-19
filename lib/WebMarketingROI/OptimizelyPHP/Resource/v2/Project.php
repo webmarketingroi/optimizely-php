@@ -50,6 +50,12 @@ class Project
     private $platform;
     
     /**
+     * The language to generate example code in.
+     * @var array[string]
+     */
+    private $sdks;
+    
+    /**
      * The current status of the project. Can be 'active' or 'archived'.
      * @var string 
      */
@@ -103,6 +109,7 @@ class Project
                 case 'confidence_threshold': $this->setConfidenceThreshold($value); break;
                 case 'dcp_service_id': $this->setDcpServiceId($value); break;
                 case 'platform': $this->setPlatform($value); break;
+                case 'sdks': $this->setSdks($value); break;
                 case 'status': $this->setStatus($value); break;
                 case 'web_snippet': {
                     $webSnippet = new WebSnippet($value);
@@ -131,6 +138,7 @@ class Project
             'confidence_threshold' => $this->getConfidenceThreshold(),
             'dcp_service_id' => $this->getDcpServiceId(),
             'platform' => $this->getPlatform(),
+            'sdks' => $this->getSdks(),
             'status' => $this->getStatus(),
             'web_snippet' => $this->getWebSnippet()?$this->getWebSnippet()->toArray():null,
             'created' => $this->getCreated(),
@@ -198,6 +206,16 @@ class Project
     public function setPlatform($platform)
     {
         $this->platform = $platform;
+    }
+    
+    public function getSdks()
+    {
+        return $this->sdks;
+    }
+    
+    public function setSdks($sdks)
+    {
+        $this->sdks = $sdks;
     }
     
     public function getStatus()

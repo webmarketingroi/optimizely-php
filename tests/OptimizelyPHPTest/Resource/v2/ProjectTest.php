@@ -19,6 +19,7 @@ class ProjectTest extends PHPUnit_Framework_TestCase
         $project->setConfidenceThreshold(0.9);
         $project->setDcpServiceId('52425');
         $project->setPlatform('web');
+        $project->setSdks(['android']);
         $project->setStatus('active');
         $project->setIsClassic(true);
         $project->setSocketToken('fwerwr');
@@ -45,6 +46,7 @@ class ProjectTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0.9, $project->getConfidenceThreshold());
         $this->assertEquals('52425', $project->getDcpServiceId());
         $this->assertEquals('web', $project->getPlatform());
+        $this->assertEquals(['android'], $project->getSdks());
         $this->assertEquals('active', $project->getStatus());
         $this->assertEquals(true, $project->getIsClassic());
         $this->assertEquals('fwerwr', $project->getSocketToken());
@@ -68,6 +70,8 @@ class ProjectTest extends PHPUnit_Framework_TestCase
             'id' => '1523456',
             'account_id' => '54321',
             'name' => 'Some Optimizely Project',
+            'platform' => 'web',
+            'sdks' => ['php'],
             'created' => $curDate,
             'last_modified' => $curDate,
             'is_classic' => true,

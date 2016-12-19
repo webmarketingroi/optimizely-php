@@ -354,7 +354,7 @@ class ProjectsTest extends BaseServiceTest
         
         $result = $optimizelyClient->projects()->create($newProject);
         
-        $this->assertEquals(200, $result->getHttpCode());        
+        $this->assertEquals(201, $result->getHttpCode());        
         $this->assertTrue($result->getRateLimit()>0);
         $this->assertTrue($result->getRateLimitRemaining()>0);
         $this->assertTrue($result->getRateLimitReset()>0);
