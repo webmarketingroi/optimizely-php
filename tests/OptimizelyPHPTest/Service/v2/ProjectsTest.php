@@ -354,6 +354,8 @@ class ProjectsTest extends BaseServiceTest
         
         $result = $optimizelyClient->projects()->create($newProject);
         
+        //print_r($optimizelyClient->getDiagnosticsInfo());
+        
         $this->assertEquals(201, $result->getHttpCode());        
         $this->assertTrue($result->getRateLimit()>0);
         $this->assertTrue($result->getRateLimitRemaining()>0);
@@ -374,7 +376,7 @@ class ProjectsTest extends BaseServiceTest
                 echo " = Page $page\n";
                 $result = $optimizelyClient->projects()->listAll($page);
 
-                print_r($optimizelyClient->getDiagnosticsInfo());
+                //print_r($optimizelyClient->getDiagnosticsInfo());
 
                 $projects = $result->getPayload();
 

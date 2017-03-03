@@ -7,8 +7,10 @@ use WebMarketingROI\OptimizelyPHP\Result;
 use WebMarketingROI\OptimizelyPHP\Service\v2\Campaigns;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Campaign;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\CampaignResults;
+use OptimizelyPHPTest\Service\v2\BaseServiceTest;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
 
-class CampaignsTest extends PHPUnit_Framework_TestCase
+class CampaignsTest extends BaseServiceTest
 {
     public function testListAll()
     {
@@ -460,4 +462,97 @@ class CampaignsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(200, $result->getHttpCode());
         $this->assertEquals(null, $result->getPayload());
     }
+    
+    public function testIntegration()
+    {
+        if (!getenv('OPTIMIZELY_PHP_TEST_INTEGRATION')) 
+            $this->markTestSkipped('OPTIMIZELY_PHP_TEST_INTEGRATION env var is not set');
+        
+        $credentials = $this->loadCredentialsFromFile();
+        
+        $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
+        $this->assertTrue($optimizelyClient!=null);
+        
+        // Create new project        
+        $curDate = date('Y-m-d H:i:s');
+        $newProject = new Project(array(
+            "name" => "Test Project $curDate",
+            "account_id" => 12345,
+            "confidence_threshold" => 0.9,
+            "platform" => "web",
+            "status" => "active",
+            "web_snippet" => array(
+              "enable_force_variation" => false,
+              "exclude_disabled_experiments" => false,
+              "exclude_names" => true,
+              "include_jquery" => true,
+              "ip_anonymization" => false,
+              "ip_filter" => "^206\\.23\\.100\\.([5-9][0-9]|1([0-4][0-9]|50))$",
+              "library" => "jquery-1.11.3-trim",
+              "project_javascript" => "alert(\"Active Experiment\")"
+            )
+        ));
+        
+        $result = $optimizelyClient->projects()->create($newProject);
+        $createdProject = $result->getPayload();
+        
+        // Create new campaign in the project
+        $campaign = new Campaign(array(
+                "project_id" => $createdProject->getId(),
+                "changes" => array(
+                  array(
+                    "type" => "custom_code",
+                    "allow_additional_redirect" => true,
+                    "async" => true,
+                    "css_selector" => "a[href*=\"optimizely\"]",
+                    "dependencies" => array(
+                      '24',
+                      '26'
+                    ),
+                    "destination" => "https://app.optimizely.com/",
+                    "extension_id" => '1234',
+                    "preserve_parameters" => true,
+                    "src" => '524',
+                    "value" => "window.someGlobalFunction();"
+                  )
+                ),
+                "created" => "2016-10-18T03:27:04.067Z",
+                "earliest" => "2016-10-18T03:27:04.067Z",
+                "experiment_ids" => array(
+                  0
+                ),
+                "holdback" => 0,
+                "last_modified" => "2016-10-18T03:27:04.067Z",
+                "latest" => "2016-10-18T03:27:04.067Z",
+                "metrics" => array(
+                  array(
+                    "kind" => "string"
+                  )
+                ),
+                "name" => "Landing Page Optimization",
+                "page_ids" => array(
+                  0
+                ),
+                "status" => "not_started",
+                "type" => "a/b"
+        ));
+        
+        $result = $optimizelyClient->campaigns()->create($campaign);
+        $createdCampaign = $result->getPayload();
+        
+        $this->assertTrue($createdCampaign instanceOf Campaign);
+        $this->assertTrue($createdCampaign->getName()=='Landing Page Optimization');  
+        
+        // Update campaign
+        $createdCampaign->setName('Some new compaign name');
+        $result = $optimizelyClient->campaigns()->update($createdCampaign->getId(), $createdCampaign);
+        
+        // Make project archived        
+        $createdProject->setStatus('archived');
+        $result = $optimizelyClient->projects()->update($createdProject->getId(), $createdProject);
+        $updatedProject = $result->getPayload();
+        
+        $this->assertEquals('archived', $updatedProject->getStatus());
+    }
 }
+
