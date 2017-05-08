@@ -720,7 +720,7 @@ class ExperimentsTest extends BaseServiceTest
               )
         ));
         
-        $result = $experimentsService->update(1000, $experiment, true, true);
+        $result = $experimentsService->update(1000, $experiment, 'start');
         $updatedExperiment = $result->getPayload();
         
         $this->assertTrue($updatedExperiment instanceOf Experiment);
@@ -943,7 +943,7 @@ class ExperimentsTest extends BaseServiceTest
         
         // Update experiment
         $createdExperiment->setName('Some new experiment name');
-        $result = $optimizelyClient->experiments()->update($createdExperiment->getId(), $createdExperiment);
+        $result = $optimizelyClient->experiments()->update($createdExperiment->getId(), $createdExperiment, 'start');
         $updatedExperiment = $result->getPayload();                
         
         $this->assertTrue($updatedExperiment instanceOf Experiment);

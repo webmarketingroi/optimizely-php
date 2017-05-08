@@ -163,12 +163,11 @@ class Experiments
      * Update an Experiment by ID
      * @param integer $experimentId
      * @param Experiment $experiment
-     * @param boolean $overrideChanges If there are draft changes already in the experiment, you can override those changes by providing this query parameter.
-     * @param boolean $publish Whether to publish the changes to the world.
+     * @param string $action Action to change the state of the Experiment. 
      * @return Result
      * @throws Exception
      */
-    public function update($experimentId, $experiment, $overrideChanges, $publish) 
+    public function update($experimentId, $experiment, $action) 
     {
         if (!is_int($experimentId)) {
             throw new Exception("Expected argument of type Experiment");
@@ -183,8 +182,7 @@ class Experiments
         }
         
         $queryParams = array(
-            'override_changes' => $overrideChanges,
-            'publish' => $publish
+            'action' => $action
         );
         
         $postData = $experiment->toArray();
