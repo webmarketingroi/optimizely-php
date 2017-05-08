@@ -17,7 +17,7 @@ class CampaignTest extends PHPUnit_Framework_TestCase
         $change->setType('custom_code');
         $change->setAllowAdditionalRedirect(true);
         $change->setAsync(true);
-        $change->setCssSelector("a[href*=\"optimizely\"]");
+        $change->setSelector("a[href*=\"optimizely\"]");
         $change->setDependencies(array(24, 26));
         $change->setDestination('https://app.optimizely.com/');
         $change->setPreserveParameters(true);
@@ -34,8 +34,10 @@ class CampaignTest extends PHPUnit_Framework_TestCase
         $campaign->setLatest('2016-10-14T05:08:42.957Z');
         
         $metric = new Metric();
-        $metric->setKind('string');
-        $metric->setId(0);
+        $metric->setEventId(0);
+        $metric->setField('revenue');
+        $metric->setAggregator('unique');
+        $metric->setScope('session');
         $campaign->setMetrics(array($metric));
         
         $campaign->setName('Landing Page Optimization');
@@ -49,7 +51,7 @@ class CampaignTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Landing Page Optimization', $campaign->getName());        
         $this->assertEquals(2000, $campaign->getId());        
         $metrics = $campaign->getMetrics();
-        $this->assertEquals('string', $metrics[0]->getKind());      
+        $this->assertEquals('session', $metrics[0]->getScope());      
         $changes = $campaign->getChanges();
         $this->assertEquals('window.someGlobalFunction();', $changes[0]->getValue());        
     }
@@ -63,7 +65,7 @@ class CampaignTest extends PHPUnit_Framework_TestCase
                 "type" => "custom_code",
                 "allow_additional_redirect" => true,
                 "async" => true,
-                "css_selector" => "a[href*=\"optimizely\"]",
+                "selector" => "a[href*=\"optimizely\"]",
                 "dependencies" => array(
                   24,
                   26
@@ -85,7 +87,10 @@ class CampaignTest extends PHPUnit_Framework_TestCase
             "latest" => "2016-10-14T05:08:42.822Z",
             "metrics" => array(
               array(
-                "kind" => "string"
+                "aggregator" => "unique",
+                "event_id" => 0,
+                "field" => "revenue",
+                "scope" => "session"
               )
             ),
             "name" => "Landing Page Optimization",
@@ -102,7 +107,7 @@ class CampaignTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('2016-10-14T05:08:42.822Z', $campaign->getCreated());        
         $this->assertEquals('a/b', $campaign->getType());
         $metrics = $campaign->getMetrics();
-        $this->assertEquals('string', $metrics[0]->getKind());
+        $this->assertEquals('session', $metrics[0]->getScope());
         $changes = $campaign->getChanges();
         $this->assertEquals(524, $changes[0]->getSrc());
     }
@@ -116,7 +121,7 @@ class CampaignTest extends PHPUnit_Framework_TestCase
                 "type" => "custom_code",
                 "allow_additional_redirect" => true,
                 "async" => true,
-                "css_selector" => "a[href*=\"optimizely\"]",
+                "selector" => "a[href*=\"optimizely\"]",
                 "dependencies" => array(
                   24,
                   26
@@ -138,7 +143,10 @@ class CampaignTest extends PHPUnit_Framework_TestCase
             "latest" => "2016-10-14T05:08:42.822Z",
             "metrics" => array(
               array(
-                "kind" => "string"
+                "aggregator" => "unique",
+                "event_id" => 0,
+                "field" => "revenue",
+                "scope" => "session"
               )
             ),
             "name" => "Landing Page Optimization",

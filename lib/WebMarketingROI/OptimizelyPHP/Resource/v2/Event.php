@@ -101,7 +101,7 @@ class Event
      * @var boolean 
      */
     private $isEditable;
-    
+         
     /**
      * Constructor.
      */
@@ -122,7 +122,7 @@ class Event
                 case 'project_id': $this->setProjectId($value); break;
                 case 'id': $this->setId($value); break;
                 case 'is_classic': $this->setIsClassic($value); break;
-                case 'is_editable': $this->setIsEditable($value); break;
+                case 'is_editable': $this->setIsEditable($value); break;                
                 default:
                     throw new Exception('Unknown option: ' . $name);
             }
@@ -148,7 +148,7 @@ class Event
             'project_id' => $this->getProjectId(),
             'id' => $this->getId(),
             'is_classic' => $this->getIsClassic(),
-            'is_editable' => $this->getIsEditable()
+            'is_editable' => $this->getIsEditable(),            
         );
         
         // Remove options with empty values
@@ -299,7 +299,7 @@ class Event
     public function setIsEditable($isEditable)
     {
         $this->isEditable = $isEditable;
-    }
+    }        
 }
 
 

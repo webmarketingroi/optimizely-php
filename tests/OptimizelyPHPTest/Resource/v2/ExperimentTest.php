@@ -4,6 +4,7 @@ namespace OptimizelyPHPTest\Resource\v2;
 use PHPUnit_Framework_TestCase;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Experiment;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\ChangeAttribute;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Metric;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Schedule;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Variation;
@@ -27,22 +28,40 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
         $experiment->setStatus('active');
         $experiment->setIsClassic(true);
         $experiment->setId(9854);
+        $experiment->setType('a/b');
+        $experiment->setAudienceConditions("[\"and\", {\"audience_id\": 7000}, {\"audience_id\":7001}]");
         
         $change = new Change();
         $change->setType('custom_code');
         $change->setAllowAdditionalRedirect(true);
         $change->setAsync(true);
-        $change->setCssSelector("a[href*=\"optimizely\"]");
+        $change->setSelector("a[href*=\"optimizely\"]");
         $change->setDependencies(array(24, 26));
         $change->setDestination('https://app.optimizely.com/');
         $change->setPreserveParameters(true);
         $change->setSrc(524);
         $change->setValue('window.someGlobalFunction();');
         $change->setId('string');
+        $change->setSelector("a[href*=\"optimizely\"]");
+        $change->setRearrange("{\"insertSelector\": \".greyBox\", \"operator\": \"before\"}");
+        $change->setAttributes(new ChangeAttribute(array(
+            "class" => "intro",
+            "hide" => true,
+            "href" => "example.com",
+            "html" => "New Title",
+            "remove" => true,
+            "src" => "song.mp3",
+            "style" => "background-color:blue;",
+            "text" => "Some nice message"
+        )));
         $experiment->setChanges(array($change));
         
+        
         $metric = new Metric();
-        $metric->setKind('string');
+        $metric->setEventId(0);
+        $metric->setField('revenue');
+        $metric->setAggregator('unique');
+        $metric->setScope('session');
         $experiment->setMetrics(array($metric));
         
         $schedule = new Schedule();
@@ -79,8 +98,10 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(9854, $experiment->getId());
         $changes = $experiment->getChanges();
         $this->assertEquals('custom_code', $changes[0]->getType());
+        $this->assertEquals('intro', $changes[0]->getAttributes()->getClass());
+        $this->assertEquals(true, $changes[0]->getAttributes()->getHide());
         $metrics = $experiment->getMetrics();
-        $this->assertEquals('string', $metrics[0]->getKind());
+        $this->assertEquals('unique', $metrics[0]->getAggregator());
         $this->assertEquals('2016-10-14T03:16:51.754Z', $experiment->getSchedule()->getStartTime());
         $variations = $experiment->getVariations();
         $this->assertEquals('blue_button_variation', $variations[0]->getKey());
@@ -97,12 +118,22 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
               1432
             ),
             "campaign_id" => 2000,
+            "audience_conditions" => "[\"and\", {\"audience_id\": 7000}, {\"audience_id\":7001}]",
             "changes" => array(
               array(
                 "type" => "custom_code",
                 "allow_additional_redirect" => true,
                 "async" => true,
-                "css_selector" => "a[href*=\"optimizely\"]",
+                "attributes" => array(
+                    "class" => "intro",
+                    "hide" => true,
+                    "href" => "example.com",
+                    "html" => "New Title",
+                    "remove" => true,
+                    "src" => "song.mp3",
+                    "style" => "background-color:blue;",
+                    "text" => "Some nice message"
+                ),                
                 "dependencies" => array(
                   24,
                   26
@@ -110,16 +141,22 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
                 "destination" => "https://app.optimizely.com/",
                 "extension_id" => 1234,
                 "preserve_parameters" => true,
+                "rearrange" => "{\"insertSelector\": \".greyBox\", \"operator\": \"before\"}",
+                "selector" => "a[href*=\"optimizely\"]",
                 "src" => 524,
                 "value" => "window.someGlobalFunction();"
               )
             ),
+            "type" => "a/b",
             "description" => "string",
             "holdback" => 5000,
             "key" => "home_page_experiment",
             "metrics" => array(
               array(
-                "kind" => "string"
+                "aggregator" => "unique",
+                "event_id" => 0,
+                "field" => "revenue",
+                "scope" => "session"
               )
             ),
             "name" => "Blue Button Experiment",
@@ -138,7 +175,7 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
                         "type" => "custom_code",
                         "allow_additional_redirect" => true,
                         "async" => true,
-                        "css_selector" => "a[href*=\"optimizely\"]",
+                        "selector" => "a[href*=\"optimizely\"]",
                         "dependencies" => array(
                           24,
                           26
@@ -157,7 +194,7 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
                 "key" => "blue_button_variation",
                 "name" => "Blue Button",
                 "variation_id" => 0,
-                "weight" => 0
+                "weight" => 0,                
               )
             )
         );
@@ -183,7 +220,17 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
                 "type" => "custom_code",
                 "allow_additional_redirect" => true,
                 "async" => true,
-                "css_selector" => "a[href*=\"optimizely\"]",
+                "attributes" => array(
+                    "class" => "intro",
+                    "hide" => true,
+                    "href" => "example.com",
+                    "html" => "New Title",
+                    "remove" => true,
+                    "src" => "song.mp3",
+                    "style" => "background-color:blue;",
+                    "text" => "Some nice message"
+                ), 
+                "selector" => "a[href*=\"optimizely\"]",
                 "dependencies" => array(
                   24,
                   26
@@ -200,7 +247,10 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
             "key" => "home_page_experiment",
             "metrics" => array(
               array(
-                "kind" => "string"
+                "aggregator" => "unique",
+                "event_id" => 0,
+                "field" => "revenue",
+                "scope" => "session"
               )
             ),
             "name" => "Blue Button Experiment",
@@ -219,7 +269,7 @@ class ExperimentTest extends PHPUnit_Framework_TestCase
                         "type" => "custom_code",
                         "allow_additional_redirect" => true,
                         "async" => true,
-                        "css_selector" => "a[href*=\"optimizely\"]",
+                        "selector" => "a[href*=\"optimizely\"]",
                         "dependencies" => array(
                           24,
                           26

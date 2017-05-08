@@ -333,6 +333,8 @@ class OptimizelyApiClient
                     ));
             }
             
+            print_r($this->getDiagnosticsInfo());
+            
             throw new Exception($decodedPayload['message'], Exception::CODE_API_ERROR, 
                     array(
                         'http_code'=>$decodedPayload['code'], 
@@ -475,7 +477,8 @@ class OptimizelyApiClient
             'events',
             'experiments',
             'pages',
-            'projects'
+            'projects',
+            'attributes'
         );
         
         // Check if the service name is valid

@@ -96,7 +96,5 @@ class AudienceTest extends PHPUnit_Framework_TestCase
         
         $this->assertEquals($options, $audience->toArray());        
     }
-    
-    
 }
 

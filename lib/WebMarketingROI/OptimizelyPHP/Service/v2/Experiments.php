@@ -129,25 +129,24 @@ class Experiments
     /**
      * Create an experiment in a Project.
      * @param Experiment $experiment
-     * @param boolean $publish Set to true to make the the experiment live to the world upon creation.
+     * @param string $action Action to change the state of the Experiment. 
      * @return Result
      * @throw Exception
      */
-    public function create($experiment, $publish)
+    public function create($experiment, $action = null)
     {
         if (!($experiment instanceOf Experiment)) {
             throw new Exception("Expected argument of type Experiment",
                     Exception::CODE_INVALID_ARG);
         }
         
-        if (!is_bool($publish)) {
-            throw new Exception("Expected boolean publish argument",
+        if ($action!=null && !is_string($action)) {
+            throw new Exception("Expected string or null action argument",
                     Exception::CODE_INVALID_ARG);
         }
         
-        $queryParams = array(
-            'publish' => $publish,            
-        );
+        $queryParams = array();
+        if ($action!=null) $queryParams['action'] = $action;
         
         $postData = $experiment->toArray();
         

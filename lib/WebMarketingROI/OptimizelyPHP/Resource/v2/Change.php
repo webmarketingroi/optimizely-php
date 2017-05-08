@@ -85,6 +85,53 @@ class Change
     private $id;
     
     /**
+     * CSS selector to determine where changes are applied. Required for changes 
+     * of type 'attribute', 'insert_html', and 'insert_image'
+     * @var string
+     */
+    private $selector;
+    
+    /**
+     * New value(s) for the element(s) matched by 'selector'. This field is only 
+     * applicable to changes of type 'attribute'.
+     * @var ChangeAttribute
+     */
+    private $attributes;
+    
+    /**
+     * A directive to place the DOM element(s) matched by 'selector' to the position 
+     * of the element matched by 'insertSelector', with the relation specified by 
+     * 'operator'. The supplied example moves element matched by 'selector' above the element of class .greyBox
+     * @var array
+     */
+    private $rearrange;
+    
+    /**
+     * Configuration properties for the extension
+     * @var array
+     */
+    private $config;
+    
+    /**
+     * CSS to apply to element(s) matched by 'selector'.
+     * @var CssAttribute
+     */
+    private $css;
+    
+    /**
+     * Name of the change
+     * @var string
+     */
+    private $name;
+    
+    /**
+     * Where to instert HTML or image for types 'insert_html' and 'insert_image' 
+     * with respect to the element(s) matched by 'selector'
+     * @var string
+     */
+    private $operator;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -93,8 +140,7 @@ class Change
             switch ($name) {                
                 case 'type': $this->setType($value); break;
                 case 'allow_additional_redirect': $this->setAllowAdditionalRedirect($value); break;
-                case 'async': $this->setAsync($value); break;
-                case 'css_selector': $this->setCssSelector($value); break;
+                case 'async': $this->setAsync($value); break;                
                 case 'dependencies': $this->setDependencies($value); break;
                 case 'destination': $this->setDestination($value); break;
                 case 'extension_id': $this->setExtensionId($value); break;
@@ -102,8 +148,20 @@ class Change
                 case 'src': $this->setSrc($value); break;
                 case 'value': $this->setValue($value); break;
                 case 'id': $this->setId($value); break;
+                case 'selector': $this->setSelector($value); break;
+                case 'attributes': 
+                    $attrs = new ChangeAttribute($value);                    
+                    $this->setAttributes($attrs); 
+                    break;
+                case 'rearrange': $this->getRearrange($value); break;    
+                case 'config': $this->setConfig($value); break;                
+                case 'css': 
+                    $attr = new CssAttribute($value);
+                    $this->setCss($attr); break;                
+                case 'name': $this->setName($value); break;                
+                case 'operator': $this->setOperator($value); break;                
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Change entity: ' . $name);
             }
         }
     }
@@ -117,7 +175,6 @@ class Change
             'type' => $this->getType(),
             'allow_additional_redirect' => $this->getAllowAdditionalRedirect(),
             'async' => $this->getAsync(),
-            'css_selector' => $this->getCssSelector(),
             'dependencies' => $this->getDependencies(),
             'destination' => $this->getDestination(),
             'extension_id' => $this->getExtensionId(),
@@ -125,6 +182,13 @@ class Change
             'src' => $this->getSrc(),
             'value' => $this->getValue(),
             'id' => $this->getId(),            
+            'selector' => $this->getSelector(),
+            'attributes' => $this->getAttributes()?$this->getAttributes()->toArray():null,
+            'rearrange' => $this->getRearrange(),
+            'config' => $this->getConfig(),
+            'css' => $this->getCss()?$this->getCss()->toArray():null,
+            'name' => $this->getName(),
+            'operator' => $this->getOperator(),
         );
         
         // Remove options with empty values
@@ -165,16 +229,6 @@ class Change
     public function setAsync($async)
     {
         $this->async = $async;
-    }
-    
-    public function getCssSelector()
-    {
-        return $this->cssSelector;
-    }
-    
-    public function setCssSelector($cssSelector)
-    {
-        $this->cssSelector = $cssSelector;
     }
     
     public function getDependencies()
@@ -245,6 +299,76 @@ class Change
     public function setId($id)
     {
         $this->id = $id;
+    }
+    
+    public function getSelector()
+    {
+        return $this->selector;
+    }
+    
+    public function setSelector($selector)
+    {
+        $this->selector = $selector;
+    }
+    
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+    
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+    }
+    
+    public function getRearrange()
+    {
+        return $this->rearrange;
+    }
+    
+    public function setRearrange($rearrange)
+    {
+        $this->rearrange = $rearrange;
+    }
+    
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }
+    
+    public function getCss()
+    {
+        return $this->css;
+    }
+    
+    public function setCss($css)
+    {
+        $this->css = $css;
+    }
+    
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    
+    public function getOperator()
+    {
+        return $this->operator;
+    }
+    
+    public function setOperator($operator)
+    {
+        $this->operator = $operator;
     }
 }
 

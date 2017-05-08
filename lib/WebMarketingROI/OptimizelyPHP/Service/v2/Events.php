@@ -106,7 +106,7 @@ class Events
         
         $postData = $event->toArray();
         
-        $result = $this->client->sendApiRequest("/pages/$pageId/click_events", array(), 'POST', 
+        $result = $this->client->sendApiRequest("/pages/$pageId/events", array(), 'POST', 
                 $postData);
         
         $event = new ClickEvent($result->getDecodedJsonData());

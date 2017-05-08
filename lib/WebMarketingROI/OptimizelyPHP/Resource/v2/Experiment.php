@@ -117,6 +117,21 @@ class Experiment
     private $isClassic;
     
     /**
+     * Indicates whether this is a standalone a/b experiment or an experience within a personalization campaign
+     * Can be a/b or personalization
+     * @var string
+     */
+    private $type;
+    
+    /**
+     * The audiences that should see this experiment. If the field is null or 
+     * omitted, the experiment will target everyone. Multiple audiences can be 
+     * combined with "and" or "or" using the same structure as audience conditions
+     * @var string 
+     */
+    private $audienceConditions;
+        
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -160,8 +175,10 @@ class Experiment
                 }
                 case 'id': $this->setId($value); break;
                 case 'is_classic': $this->setIsClassic($value); break;                
+                case 'type': $this->setType($value); break;
+                case 'audience_conditions': $this->setAudienceConditions($value); break;                
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Experiment entity: ' . $name);
             }
         }
     }
@@ -188,6 +205,8 @@ class Experiment
             'variations' => array(),
             'id' => $this->getId(),
             'is_classic' => $this->getIsClassic(),
+            'type' => $this->getType(),
+            'audience_conditions' => $this->getAudienceConditions(),            
         );
         
         foreach ($this->getChanges() as $change) {
@@ -370,6 +389,36 @@ class Experiment
     public function setIsClassic($isClassic)
     {
         $this->isClassic = $isClassic;
+    }
+    
+    public function getType()
+    {
+        return $this->type;
+    }
+    
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+    
+    public function getAudienceConditions()
+    {
+        return $this->audienceConditions;
+    }
+    
+    public function setAudienceConditions($audienceConditions)
+    {
+        $this->audienceConditions = $audienceConditions;
+    }
+    
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    
+    public function setConfig($config)
+    {
+        $this->config = $config;
     }
 }
 

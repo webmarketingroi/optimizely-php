@@ -68,6 +68,14 @@ class Audience
     private $lastModified;
     
     /**
+     * Whether or not Audience is a classic Audience. If true, the Audience is 
+     * only compatible with classic Experiments. Otherwise, the Audience may be 
+     * used in Optimizely X Campaigns.
+     * @var boolean 
+     */
+    private $isClassic;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -83,6 +91,7 @@ class Audience
                 case 'created': $this->setCreated($value); break;
                 case 'id': $this->setId($value); break;
                 case 'last_modified': $this->setLastModified($value); break;
+                case 'is_classic': $this->getIsClassic($value); break;
                 default:
                     throw new Exception('Unknown option: ' . $name);
             }
@@ -103,7 +112,8 @@ class Audience
             'segmentation' => $this->segmentation,
             'created' => $this->created,
             'id' => $this->id,
-            'last_modified' => $this->lastModified
+            'last_modified' => $this->lastModified,
+            'is_classic' => $this->isClassic
         );
         
         // Remove options with empty values
@@ -204,6 +214,16 @@ class Audience
     public function setLastModified($lastModified)
     {
         $this->lastModified = $lastModified;
+    }
+    
+    public function getIsClassic()
+    {
+        return $this->isClassic;
+    }
+    
+    public function setIsClassic($isClassic)
+    {
+        $this->isClassic = $isClassic;
     }
 }
 

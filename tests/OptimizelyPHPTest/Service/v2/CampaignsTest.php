@@ -27,7 +27,7 @@ class CampaignsTest extends BaseServiceTest
                                 "type" => "custom_code",
                                 "allow_additional_redirect" => true,
                                 "async" => true,
-                                "css_selector" => "a[href*=\"optimizely\"]",
+                                "selector" => "a[href*=\"optimizely\"]",
                                 "dependencies" => array(
                                   24,
                                   26
@@ -50,8 +50,10 @@ class CampaignsTest extends BaseServiceTest
                             "latest" => "2016-10-18T03:27:04.123Z",
                             "metrics" => array(
                               array(
-                                "kind" => "string",
-                                "id" => 0
+                                "aggregator" => "unique",
+                                "event_id" => 0,
+                                "field" => "revenue",
+                                "scope" => "session"
                               )
                             ),
                             "name" => "Landing Page Optimization",
@@ -121,7 +123,7 @@ class CampaignsTest extends BaseServiceTest
                                 "type" => "custom_code",
                                 "allow_additional_redirect" => true,
                                 "async" => true,
-                                "css_selector" => "a[href*=\"optimizely\"]",
+                                "selector" => "a[href*=\"optimizely\"]",
                                 "dependencies" => array(
                                   24,
                                   26
@@ -144,8 +146,10 @@ class CampaignsTest extends BaseServiceTest
                             "latest" => "2016-10-18T03:27:04.139Z",
                             "metrics" => array(
                               array(
-                                "kind" => "string",
-                                "id" => 0
+                                "aggregator" => "unique",
+                                "event_id" => 0,
+                                "field" => "revenue",
+                                "scope" => "session"
                               )
                             ),
                             "name" => "Landing Page Optimization",
@@ -253,7 +257,7 @@ class CampaignsTest extends BaseServiceTest
                                 "type" => "custom_code",
                                 "allow_additional_redirect" => true, 
                                 "async" => true,
-                                "css_selector" => "a[href*=\"optimizely\"]",
+                                "selector" => "a[href*=\"optimizely\"]",
                                 "dependencies" => array(
                                   24,
                                   26
@@ -276,8 +280,10 @@ class CampaignsTest extends BaseServiceTest
                             "latest" => "2016-10-18T03:27:04.155Z",
                             "metrics" => array(
                               array(
-                                "kind" => "string",
-                                "id" => 0
+                                "aggregator" => "unique",
+                                "event_id" => 0,
+                                "field" => "revenue",
+                                "scope" => "session"
                               )
                             ),
                             "name" => "Landing Page Optimization",
@@ -301,7 +307,7 @@ class CampaignsTest extends BaseServiceTest
                     "type" => "custom_code",
                     "allow_additional_redirect" => true,
                     "async" => true,
-                    "css_selector" => "a[href*=\"optimizely\"]",
+                    "selector" => "a[href*=\"optimizely\"]",
                     "dependencies" => array(
                       24,
                       26
@@ -323,7 +329,10 @@ class CampaignsTest extends BaseServiceTest
                 "latest" => "2016-10-18T03:27:04.067Z",
                 "metrics" => array(
                   array(
-                    "kind" => "string"
+                    "aggregator" => "unique",
+                    "event_id" => 0,
+                    "field" => "revenue",
+                    "scope" => "session"
                   )
                 ),
                 "name" => "Landing Page Optimization",
@@ -355,7 +364,7 @@ class CampaignsTest extends BaseServiceTest
                                 "type" => "custom_code",
                                 "allow_additional_redirect" => true, 
                                 "async" => true,
-                                "css_selector" => "a[href*=\"optimizely\"]",
+                                "selector" => "a[href*=\"optimizely\"]",
                                 "dependencies" => array(
                                   24,
                                   26
@@ -378,8 +387,10 @@ class CampaignsTest extends BaseServiceTest
                             "latest" => "2016-10-18T03:27:04.155Z",
                             "metrics" => array(
                               array(
-                                "kind" => "string",
-                                "id" => 0
+                                "aggregator" => "unique",
+                                "event_id" => 0,
+                                "field" => "revenue",
+                                "scope" => "session"
                               )
                             ),
                             "name" => "Landing Page Optimization",
@@ -403,7 +414,7 @@ class CampaignsTest extends BaseServiceTest
                     "type" => "custom_code",
                     "allow_additional_redirect" => true,
                     "async" => true,
-                    "css_selector" => "a[href*=\"optimizely\"]",
+                    "selector" => "a[href*=\"optimizely\"]",
                     "dependencies" => array(
                       24,
                       26
@@ -425,7 +436,10 @@ class CampaignsTest extends BaseServiceTest
                 "latest" => "2016-10-18T03:27:04.067Z",
                 "metrics" => array(
                   array(
-                    "kind" => "string"
+                    "aggregator" => "unique",
+                    "event_id" => 0,
+                    "field" => "revenue",
+                    "scope" => "session"
                   )
                 ),
                 "name" => "Landing Page Optimization",
@@ -502,17 +516,6 @@ class CampaignsTest extends BaseServiceTest
                 "changes" => array(
                   array(
                     "type" => "custom_code",
-                    "allow_additional_redirect" => true,
-                    "async" => true,
-                    "css_selector" => "a[href*=\"optimizely\"]",
-                    "dependencies" => array(
-                      '24',
-                      '26'
-                    ),
-                    "destination" => "https://app.optimizely.com/",
-                    "extension_id" => '1234',
-                    "preserve_parameters" => true,
-                    "src" => '524',
                     "value" => "window.someGlobalFunction();"
                   )
                 ),
@@ -526,7 +529,10 @@ class CampaignsTest extends BaseServiceTest
                 "latest" => "2016-10-18T03:27:04.067Z",
                 "metrics" => array(
                   array(
-                    "kind" => "string"
+                    "aggregator" => "unique",
+                    "event_id" => 0,
+                    "field" => "revenue",
+                    "scope" => "session"
                   )
                 ),
                 "name" => "Landing Page Optimization",
@@ -544,7 +550,7 @@ class CampaignsTest extends BaseServiceTest
         $this->assertTrue($createdCampaign->getName()=='Landing Page Optimization');  
         
         // Update campaign
-        $createdCampaign->setName('Some new compaign name');
+        $createdCampaign->setName('Some new campaign name');
         $result = $optimizelyClient->campaigns()->update($createdCampaign->getId(), $createdCampaign);
         
         // Make project archived        
