@@ -351,7 +351,7 @@ class EventsTest extends BaseServiceTest
               "created" => "2016-10-18T05:07:04.153Z",
               "id" => 0,
               "is_classic" => false,
-              "is_editable" => true,
+              //"is_editable" => true,
               "page_id" => $createdPage->getId(),
               "project_id" => $createdProject->getId()
         ));
@@ -367,10 +367,10 @@ class EventsTest extends BaseServiceTest
         try {
             $page = 1;
             for (;;) {                            
-                $result = $optimizelyClient->events()->listAll($createdEvent->getId(), $page);
+                $result = $optimizelyClient->events()->listAll($createdProject->getId(), $page);
 
                 $events = $result->getPayload();
-
+                               
                 foreach ($events as $event) {
                     if ($event->getName()=="Add to Cart") {
                         $eventFound = true;
@@ -397,7 +397,7 @@ class EventsTest extends BaseServiceTest
         
         // Update page
         $createdEvent->setName('Add to Cart 2');
-        $result = $optimizelyClient->events()->update($createdEvent->getId(), $createdEvent);
+        $result = $optimizelyClient->events()->updateClickEvent($createdPage->getId(), $createdEvent->getId(), $createdEvent);
         $updatedEvent = $result->getPayload();                
         
         $this->assertTrue($updatedEvent instanceOf Event);

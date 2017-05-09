@@ -222,7 +222,7 @@ class AttributesTest extends BaseServiceTest
         // Create new attribute in the project
         $attribute = new Attribute(array(
             "key" => "subscriber_status",
-            "project_id" => 0,
+            "project_id" => $createdProject->getId(),
             "archived" => false,
             "description" => "string",
             "name" => "Subscriber Status",
@@ -242,12 +242,12 @@ class AttributesTest extends BaseServiceTest
         try {
             $page = 1;
             for (;;) {                            
-                $result = $optimizelyClient->attributes()->listAll($createdAttribute->getId(), $page);
+                $result = $optimizelyClient->attributes()->listAll($createdProject->getId(), $page);
 
                 $attributes = $result->getPayload();
 
                 foreach ($attributes as $attribute) {
-                    if ($audience->getName()=="Subscriber Status") {
+                    if ($attribute->getName()=="Subscriber Status") {
                         $attributeFound = true;
                         break;
                     }

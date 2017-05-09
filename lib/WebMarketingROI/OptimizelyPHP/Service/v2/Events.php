@@ -157,7 +157,7 @@ class Events
         
         $postData = $event->toArray();
                 
-        $result = $this->client->sendApiRequest("/pages/$pageId/click_events/$eventId", array(), 'PATCH', 
+        $result = $this->client->sendApiRequest("/pages/$pageId/events/$eventId", array(), 'PATCH', 
                 $postData);
         
         $event = new ClickEvent($result->getDecodedJsonData());

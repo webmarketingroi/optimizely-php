@@ -8,6 +8,7 @@ namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
 use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\EventFilter;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\InPageEventConfig;
 
 /**
  * An Optimizely event.
@@ -101,7 +102,13 @@ class Event
      * @var boolean 
      */
     private $isEditable;
-         
+    
+    /**
+     * 
+     * @var InPageEventConfig
+     */
+    private $config;
+    
     /**
      * Constructor.
      */
@@ -123,8 +130,9 @@ class Event
                 case 'id': $this->setId($value); break;
                 case 'is_classic': $this->setIsClassic($value); break;
                 case 'is_editable': $this->setIsEditable($value); break;                
+                case 'config': $this->setConfig(new InPageEventConfig($value)); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Event entity: ' . $name);
             }
         }
     }
@@ -149,6 +157,7 @@ class Event
             'id' => $this->getId(),
             'is_classic' => $this->getIsClassic(),
             'is_editable' => $this->getIsEditable(),            
+            'config' => $this->getConfig()?$this->getConfig()->toArray():null,
         );
         
         // Remove options with empty values
@@ -299,7 +308,17 @@ class Event
     public function setIsEditable($isEditable)
     {
         $this->isEditable = $isEditable;
-    }        
+    }  
+    
+    public function getConfig()
+    {
+        return $this->config;
+    }
+    
+    public function setConfig($config)
+    {
+        $this->config = $config;
+    }  
 }
 
 

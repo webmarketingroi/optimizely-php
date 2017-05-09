@@ -838,7 +838,7 @@ class ExperimentsTest extends BaseServiceTest
               )
             ),
             "audience_conditions" => "[\"and\", {\"audience_id\": 7000}, {\"audience_id\":7001}]",
-            "campaign_id" => 2000,
+            //"campaign_id" => 2000,
             "changes" => array(
               /*array(
                 "type" => "attribute",
