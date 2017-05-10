@@ -225,10 +225,7 @@ class AttributesTest extends BaseServiceTest
             "project_id" => $createdProject->getId(),
             "archived" => false,
             "description" => "string",
-            "name" => "Subscriber Status",
-            "condition_type" => "custom_attribute",
-            "id" => 0,
-            "last_modified" => "2017-05-08T03:34:01.035Z"
+            "name" => "Subscriber Status",            
         ));
         
         $result = $optimizelyClient->attributes()->create($attribute);

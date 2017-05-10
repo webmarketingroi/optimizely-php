@@ -8,6 +8,9 @@ use WebMarketingROI\OptimizelyPHP\Service\v2\Experiments;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Experiment;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentResults;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Page;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\ClickEvent;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Audience;
 
 class ExperimentsTest extends BaseServiceTest
 {
@@ -55,7 +58,7 @@ class ExperimentsTest extends BaseServiceTest
                                 "aggregator" => "unique",
                                 "event_id" => 0,
                                 "field" => "revenue",
-                                "scope" => "session"
+                                "scope" => "visitor"
                               )
                             ),
                             "name" => "Blue Button Experiment",
@@ -779,16 +782,72 @@ class ExperimentsTest extends BaseServiceTest
         $result = $optimizelyClient->projects()->create($newProject);
         $createdProject = $result->getPayload();
         
+        // Create new page in the project
+        $page = new Page(array(
+            "edit_url" => "https://www.optimizely.com",
+            "name" => "Home Page",
+            "project_id" => $createdProject->getId(),
+            "activation_code" => "string",
+            "activation_type" => "immediate",
+            "archived" => false,
+            "category" => "article",
+            "conditions" => "[\"and\", {\"type\": \"url\", \"match_type\": \"substring\", \"value\": \"optimize\"}]",
+            "key" => "home_page",
+            "page_type" => "single_url",
+            "created" => "2016-10-18T05:07:04.113Z",
+            "id" => 4000,
+            "last_modified" => "2016-10-18T05:07:04.113Z"
+        ));
+        
+        $result = $optimizelyClient->pages()->create($page);
+        $createdPage = $result->getPayload();
+        
+        // Create new event in the project
+        $event = new ClickEvent(array(
+              "event_filter" => array(
+                "filter_type" => "target_selector",
+                "selector" => ".menu-options"
+              ),
+              "name" => "Add to Cart",
+              "archived" => true,
+              "category" => "add_to_cart",
+              "description" => "Some simple event",
+              "event_type" => "click",
+              "key" => "add_to_cart",
+              "created" => "2016-10-18T05:07:04.153Z",
+              "id" => 0,
+              "is_classic" => false,
+              //"is_editable" => true,
+              "page_id" => $createdPage->getId(),
+              "project_id" => $createdProject->getId()
+        ));
+        
+        $result = $optimizelyClient->events()->createClickEvent($createdPage->getId(), $event);
+        $createdEvent = $result->getPayload();
+        
+        // Create new audience in the project
+        $audience = new Audience(array(
+            "project_id" => $createdProject->getId(),
+            "archived" => false,
+            "conditions" => "[\"and\", {\"type\": \"language\", \"value\": \"es\"}, {\"type\": \"location\", \"value\": \"US\"}]",
+            "description" => "People that speak spanish and are in San Francisco",
+            "name" => "Spanish speaking San Franciscans",
+            "segmentation" => true
+        ));
+        
+        $result = $optimizelyClient->audiences()->create($audience);
+        $createdAudience = $result->getPayload();
+        
         // Create new experiment in the project
         $experiment = new Experiment(array(
             "project_id" => $createdProject->getId(),
-            "variations" => array(
+            /*"variations" => array(
               array(
                 "weight" => 0,
                 "actions" => array(
                   array(
                     "changes" => array(
-                      /*array(
+                      array(
                         "type" => "attribute",
                         "allow_additional_redirect" => true,
                         "async" => true,
@@ -827,17 +886,17 @@ class ExperimentsTest extends BaseServiceTest
                         "rearrange" => "{\"insertSelector\": \".greyBox\", \"operator\": \"before\"}",
                         "selector" => "a[href*=\"optimizely\"]",
                         "value" => "window.someGlobalFunction();"
-                      )*/
+                      )
                     ),
-                    "page_id" => 0
+                    "page_id" => $createdPage->getId(),
                   )
                 ),
                 "archived" => true,
                 "key" => "blue_button_variation",
                 "name" => "Blue Button"
               )
-            ),
-            "audience_conditions" => "[\"and\", {\"audience_id\": 7000}, {\"audience_id\":7001}]",
+            ),//
+            //"audience_conditions" => "[{\"audience_id\": " . $createdAudience->getId() . "}]",
             //"campaign_id" => 2000,
             "changes" => array(
               /*array(
@@ -879,25 +938,25 @@ class ExperimentsTest extends BaseServiceTest
                 "rearrange" => array("insertSelector" => ".greyBox", "operator" => "before"),
                 "selector" => "a[href*=\"optimizely\"]",
                 "value" => "window.someGlobalFunction();"
-              )*/
-            ),
+              )
+            ),*/
             "description" => "string",
             "holdback" => 5000,
             "key" => "home_page_experiment",
             "metrics" => array(
               array(
                 "aggregator" => "unique",
-                "event_id" => 0,
+                "event_id" => $createdEvent->getId(),
                 "field" => "revenue",
-                "scope" => "session"
+                "scope" => "visitor"
               )
             ),
             "name" => "Blue Button Experiment",
-            "schedule" => array(
+            /*"schedule" => array(
               "start_time" => "string",
               "stop_time" => "string",
               "time_zone" => "GMT-01:00"
-            ),
+            ),*/
             "type" => "a/b"    
         ));
                 

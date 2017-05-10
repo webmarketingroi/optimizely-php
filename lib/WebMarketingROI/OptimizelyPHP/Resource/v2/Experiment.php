@@ -192,33 +192,45 @@ class Experiment
             'project_id' => $this->getProjectId(),
             'audience_ids' => $this->getAudienceIds(),
             'campaign_id' => $this->getCampaignId(),
-            'changes' => array(),
             'created' => $this->getCreated(),
             'description' => $this->getDescription(),
             'holdback' => $this->getHoldback(),
             'key' => $this->getKey(),
             'last_modified' => $this->getLastModified(),
-            'metrics' => array(),
             'name' => $this->getName(),
             'schedule' => $this->getSchedule()?$this->getSchedule()->toArray():null,
-            'status' => $this->getStatus(),
-            'variations' => array(),
+            'status' => $this->getStatus(),            
             'id' => $this->getId(),
             'is_classic' => $this->getIsClassic(),
             'type' => $this->getType(),
             'audience_conditions' => $this->getAudienceConditions(),            
         );
         
-        foreach ($this->getChanges() as $change) {
-            $options['changes'][] = $change->toArray();
+        if ($this->getChanges()) {
+            
+            $options['changes'] = array();
+            
+            foreach ($this->getChanges() as $change) {
+                $options['changes'][] = $change->toArray();
+            }
         }
         
-        foreach ($this->getMetrics() as $metric) {
-            $options['metrics'][] = $metric->toArray();
+        if ($this->getMetrics()) {
+            
+            $options['metrics'] = array();
+            
+            foreach ($this->getMetrics() as $metric) {
+                $options['metrics'][] = $metric->toArray();
+            }
         }
         
-        foreach ($this->getVariations() as $variation) {
-            $options['variations'][] = $variation->toArray();
+        if ($this->getVariations()) {
+            
+            $options['variations'] = array();
+            
+            foreach ($this->getVariations() as $variation) {
+                $options['variations'][] = $variation->toArray();
+            }
         }
         
         // Remove options with empty values
