@@ -199,3 +199,7 @@ environment variable as follows
 `export OPTIMIZELY_PHP_TEST_INTEGRATION=1`
 
 and then run unit tests.
+
+# Open source projects using optimizely-php
+
+* [optimizelyBillingUnpauser](https://github.com/LCD344/optimizelyBillingUnpauser). This is a simple script that checks if none of your optimizely experiments are running (presumably due to passing your payment limit for the month) and then it resumes the latest ones to be paused (assuming those are the ones optimizely paused for you).
