@@ -7,7 +7,7 @@
 [![Latest Unstable Version](https://poser.pugx.org/webmarketingroi/optimizely-php/v/unstable.svg)](https://packagist.org/packages/webmarketingroi/optimizely-php)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/webmarketingroi/optimizely-php/?branch=master)
 
-A PHP wrapper library for the Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/), proudly created and open sourced by Optimizely Solutions Partner, (Web Marketing ROI)[https://www.webmarketingroi.com.au/].
+A PHP wrapper library for the Optimizely REST API v2.0 (https://developers.optimizely.com/rest/v2/), proudly created and open sourced by Optimizely Solutions Partner, [Web Marketing ROI](https://www.webmarketingroi.com.au/).
 
 ## Installation
 
