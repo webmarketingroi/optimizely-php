@@ -841,17 +841,17 @@ class ExperimentsTest extends BaseServiceTest
         // Create new experiment in the project
         $experiment = new Experiment(array(
             "project_id" => $createdProject->getId(),
-            "variations" => [
-            [
+            "variations" => array(
+            array(
               "weight" => 10000,
-              "actions" => [
-                [
-                  "changes" => [
-                    [
+              "actions" => array(
+                array(
+                  "changes" => array(
+                    array(
                       "type" => "attribute",
                       //"allow_additional_redirect" => true,
                       "async" => true,
-                      "attributes" => [
+                      "attributes" => array(
                         "class" => "intro",
                         "hide" => true,
                         "href" => "example.com",
@@ -860,9 +860,9 @@ class ExperimentsTest extends BaseServiceTest
                         "src" => "song.mp3",
                         "style" => "background-color:blue;",
                         "text" => "Some nice message"
-                      ],
+                      ),
                       //"config" => ["name" => "Flash Sale Today!", "color" => "blue"],
-                      "css" => [
+                      "css" => array(
                         "background-color" => "string",
                         "background-image" => "string",
                         "border-color" => "string",
@@ -874,7 +874,7 @@ class ExperimentsTest extends BaseServiceTest
                         "height" => "string",
                         "position" => "string",
                         "width" => "string"
-                      ],
+                      ),
                       /*"dependencies" => [
                         '24',
                         '26'
@@ -886,16 +886,16 @@ class ExperimentsTest extends BaseServiceTest
                       "rearrange" => "{\"insertSelector\": \".greyBox\", \"operator\": \"before\"}",
                       "selector" => "a[href*=\"optimizely\"]",
                       //"value" => "window.someGlobalFunction();"
-                    ]
-                  ],
+                    )
+                  ),
                   "page_id" => $createdPage->getId(),
-                ]
-              ],
+                )
+              ),
               "archived" => false,
               "key" => "blue_button_variation",
               "name" => "Blue Button"
-            ]
-          ],
+            )
+          ),
             "description" => "string",
             "holdback" => 5000,
             "key" => "home_page_experiment",
