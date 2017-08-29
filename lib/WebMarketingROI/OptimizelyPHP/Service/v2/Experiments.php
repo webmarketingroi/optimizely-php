@@ -169,10 +169,6 @@ class Experiments
      */
     public function update($experimentId, $experiment, $action) 
     {
-        if (!is_int($experimentId)) {
-            throw new Exception("Expected argument of type Experiment");
-        }
-        
         if ($experimentId<0) {
             throw new Exception("Expected positive experiment ID argument");
         }

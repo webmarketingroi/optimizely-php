@@ -130,7 +130,19 @@ class Experiment
      * @var string 
      */
     private $audienceConditions;
-        
+    
+    /**
+     * Traffic allocation policy across variations in this experiment
+     * @var string 
+     */
+    private $allocationPolicy;
+    
+    /**
+     * The first time the Experiment was activated
+     * @var type 
+     */
+    private $earliest;
+    
     /**
      * Constructor.
      */
@@ -176,7 +188,9 @@ class Experiment
                 case 'id': $this->setId($value); break;
                 case 'is_classic': $this->setIsClassic($value); break;                
                 case 'type': $this->setType($value); break;
-                case 'audience_conditions': $this->setAudienceConditions($value); break;                
+                case 'audience_conditions': $this->setAudienceConditions($value); break;
+                case 'allocation_policy': $this->setAllocationPolicy($value); break;
+                case 'earliest': $this->setEarliest($value); break;
                 default:
                     throw new Exception('Unknown option found in the Experiment entity: ' . $name);
             }
@@ -203,7 +217,9 @@ class Experiment
             'id' => $this->getId(),
             'is_classic' => $this->getIsClassic(),
             'type' => $this->getType(),
-            'audience_conditions' => $this->getAudienceConditions(),            
+            'audience_conditions' => $this->getAudienceConditions(),  
+            'allocation_policy' => $this->getAllocationPolicy(),
+            'earliest' => $this->getEarliest(),
         );
         
         if ($this->getChanges()) {
@@ -431,6 +447,26 @@ class Experiment
     public function setConfig($config)
     {
         $this->config = $config;
+    }
+    
+    public function getAllocationPolicy()
+    {
+        return $this->allocationPolicy;
+    }
+    
+    public function setAllocationPolicy($allocationPolicy)
+    {
+        $this->allocationPolicy = $allocationPolicy;
+    }
+    
+    public function getEarliest()
+    {
+        return $this->earliest;
+    }
+    
+    public function setEarliest($earliest)
+    {
+        $this->earliest = $earliest;
     }
 }
 

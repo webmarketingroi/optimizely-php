@@ -333,7 +333,7 @@ class OptimizelyApiClient
                     ));
             }
             
-            print_r($this->getDiagnosticsInfo());
+            //print_r($this->getDiagnosticsInfo());
             
             throw new Exception($decodedPayload['message'], Exception::CODE_API_ERROR, 
                     array(

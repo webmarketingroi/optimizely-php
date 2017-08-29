@@ -841,111 +841,67 @@ class ExperimentsTest extends BaseServiceTest
         // Create new experiment in the project
         $experiment = new Experiment(array(
             "project_id" => $createdProject->getId(),
-            /*"variations" => array(
-              array(
-                "weight" => 0,
-                "actions" => array(
-                  array(
-                    "changes" => array(
-                      array(
-                        "type" => "attribute",
-                        "allow_additional_redirect" => true,
-                        "async" => true,
-                        "attributes" => array(
-                          "class" => "intro",
-                          "hide" => true,
-                          "href" => "example.com",
-                          "html" => "New Title",
-                          "remove" => true,
-                          "src" => "song.mp3",
-                          "style" => "background-color:blue;",
-                          "text" => "Some nice message"
-                        ),
-                        "config" => array("name" => "Flash Sale Today!", "color" => "blue"),
-                        "css" => array(
-                          "background-color" => "string",
-                          "background-image" => "string",
-                          "border-color" => "string",
-                          "border-style" => "string",
-                          "border-width" => "string",
-                          "color" => "string",
-                          "font-size" => "string",
-                          "font-weight" => "string",
-                          "height" => "string",
-                          "position" => "string",
-                          "width" => "string"
-                        ),
-                        "dependencies" => array(
-                          '24',
-                          '26'
-                        ),
-                        "destination" => "https://app.optimizely.com/",
-                        "name" => "Setting button text",
-                        "operator" => "after",
-                        "preserve_parameters" => true,
-                        "rearrange" => "{\"insertSelector\": \".greyBox\", \"operator\": \"before\"}",
-                        "selector" => "a[href*=\"optimizely\"]",
-                        "value" => "window.someGlobalFunction();"
-                      )
-                    ),
-                    "page_id" => $createdPage->getId(),
-                  )
-                ),
-                "archived" => true,
-                "key" => "blue_button_variation",
-                "name" => "Blue Button"
-              )
-            ),//
-            //"audience_conditions" => "[{\"audience_id\": " . $createdAudience->getId() . "}]",
-            //"campaign_id" => 2000,
-            "changes" => array(
-              /*array(
-                "type" => "attribute",
-                "allow_additional_redirect" => true,
-                "async" => true,
-                "attributes" => array(
-                  "class" => "intro",
-                  "hide" => true,
-                  "href" => "example.com",
-                  "html" => "New Title",
-                  "remove" => true,
-                  "src" => "song.mp3",
-                  "style" => "background-color:blue;",
-                  "text" => "Some nice message"
-                ),
-                "config" => array("name" => "Flash Sale Today!", "color" => "blue"),
-                "css" => array(
-                  "background-color" => "string",
-                  "background-image" => "string",
-                  "border-color" => "string",
-                  "border-style" => "string",
-                  "border-width" => "string",
-                  "color" => "string",
-                  "font-size" => "string",
-                  "font-weight" => "string",
-                  "height" => "string",
-                  "position" => "string",
-                  "width" => "string"
-                ),
-                "dependencies" => array(
-                  '24',
-                  '26'
-                ),
-                "destination" => "https://app.optimizely.com/",
-                "name" => "Setting button text",
-                "operator" => "after",
-                "preserve_parameters" => true,
-                "rearrange" => array("insertSelector" => ".greyBox", "operator" => "before"),
-                "selector" => "a[href*=\"optimizely\"]",
-                "value" => "window.someGlobalFunction();"
-              )
-            ),*/
+            "variations" => [
+            [
+              "weight" => 10000,
+              "actions" => [
+                [
+                  "changes" => [
+                    [
+                      "type" => "attribute",
+                      //"allow_additional_redirect" => true,
+                      "async" => true,
+                      "attributes" => [
+                        "class" => "intro",
+                        "hide" => true,
+                        "href" => "example.com",
+                        "html" => "New Title",
+                        "remove" => true,
+                        "src" => "song.mp3",
+                        "style" => "background-color:blue;",
+                        "text" => "Some nice message"
+                      ],
+                      //"config" => ["name" => "Flash Sale Today!", "color" => "blue"],
+                      "css" => [
+                        "background-color" => "string",
+                        "background-image" => "string",
+                        "border-color" => "string",
+                        "border-style" => "string",
+                        "border-width" => "string",
+                        "color" => "string",
+                        "font-size" => "string",
+                        "font-weight" => "string",
+                        "height" => "string",
+                        "position" => "string",
+                        "width" => "string"
+                      ],
+                      /*"dependencies" => [
+                        '24',
+                        '26'
+                      ],*/
+                      //"destination" => "https://app.optimizely.com/",
+                      "name" => "Setting button text",
+                      //"operator" => "after",
+                      //"preserve_parameters" => true,
+                      "rearrange" => "{\"insertSelector\": \".greyBox\", \"operator\": \"before\"}",
+                      "selector" => "a[href*=\"optimizely\"]",
+                      //"value" => "window.someGlobalFunction();"
+                    ]
+                  ],
+                  "page_id" => $createdPage->getId(),
+                ]
+              ],
+              "archived" => false,
+              "key" => "blue_button_variation",
+              "name" => "Blue Button"
+            ]
+          ],
             "description" => "string",
             "holdback" => 5000,
             "key" => "home_page_experiment",
             "metrics" => array(
               array(
-                "aggregator" => "unique",
+                "aggregator" => "sum",
                 "event_id" => $createdEvent->getId(),
                 "field" => "revenue",
                 "scope" => "visitor"
@@ -972,7 +928,7 @@ class ExperimentsTest extends BaseServiceTest
         try {
             $page = 1;
             for (;;) {                            
-                $result = $optimizelyClient->experiments()->listAll($page);
+                $result = $optimizelyClient->experiments()->listAll($createdProject->getId(), null, false, $page);
 
                 $experiments = $result->getPayload();
 

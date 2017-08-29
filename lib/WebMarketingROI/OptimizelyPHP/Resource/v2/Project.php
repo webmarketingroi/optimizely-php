@@ -98,6 +98,12 @@ class Project
     private $socketToken;
     
     /**
+     * A short description of the Project
+     * @var string 
+     */
+    private $description;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -121,6 +127,7 @@ class Project
                 case 'is_classic': $this->setIsClassic($value); break;
                 case 'last_modified': $this->setLastModified($value); break;
                 case 'socket_token': $this->setSocketToken($value); break;
+                case 'description': $this->setDescription($value); break;
                 default:
                     throw new Exception('Unknown option found in the Project entity: ' . $name);
             }
@@ -145,7 +152,8 @@ class Project
             'id' => $this->getId(),
             'is_classic' => $this->getIsClassic(),
             'last_modified' => $this->getLastModified(),
-            'socket_token' => $this->getSocketToken()
+            'socket_token' => $this->getSocketToken(),
+            'description' => $this->getDescription(),
         );
         
         // Remove options with empty values
@@ -286,6 +294,16 @@ class Project
     public function setSocketToken($socketToken)
     {
         $this->socketToken = $socketToken;
+    }
+    
+    public function getDescription()
+    {
+        return $this->description;
+    }
+    
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 }
 

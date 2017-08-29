@@ -101,6 +101,12 @@ class Campaign
     private $id;
     
     /**
+     *
+     * @var type 
+     */
+    private $experimentPriorities;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -133,8 +139,9 @@ class Campaign
                 case 'status': $this->setStatus($value); break;
                 case 'type': $this->setType($value); break;
                 case 'id': $this->setId($value); break;
+                case 'experiment_priorities': $this->setExperimentPriorities($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Campaign entity: ' . $name);
             }
         }
     }
@@ -158,7 +165,8 @@ class Campaign
             'page_ids' => $this->getPageIds(),
             'status' => $this->getStatus(),
             'type' => $this->getType(),
-            'id' => $this->getId()
+            'id' => $this->getId(),
+            'experiment_priorities' => $this->getExperimentPriorities(),
         );
         
         foreach ($this->getChanges() as $change) {
@@ -317,6 +325,16 @@ class Campaign
     public function setId($id)
     {
         $this->id = $id;
+    }
+    
+    public function getExperimentPriorities()
+    {
+        return $this->experimentPriorities;
+    }
+    
+    public function setExperimentPriorities($experimentPriorities)
+    {
+        $this->experimentPriorities = $experimentPriorities;
     }
 }
 

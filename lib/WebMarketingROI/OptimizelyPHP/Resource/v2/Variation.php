@@ -52,6 +52,12 @@ class Variation
     private $weight;
     
     /**
+     * Current status of the variation
+     * @var string 
+     */
+    private $status;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -70,6 +76,7 @@ class Variation
                 case 'name': $this->setName($value); break;
                 case 'variation_id': $this->setVariationId($value); break;
                 case 'weight': $this->setWeight($value); break;
+                case 'status': $this->setStatus($value); break;
                 default:
                     throw new Exception('Unknown option: ' . $name);
             }
@@ -87,7 +94,8 @@ class Variation
             'key' => $this->getKey(),
             'name' => $this->getName(),
             'variation_id' => $this->getVariationId(),
-            'weight' => $this->getWeight()
+            'weight' => $this->getWeight(),
+            'status' => $this->getStatus(),
         );
         
         foreach ($this->getActions() as $action) {
@@ -162,6 +170,16 @@ class Variation
     public function setWeight($weight)
     {
         $this->weight = $weight;
+    }
+    
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }
 

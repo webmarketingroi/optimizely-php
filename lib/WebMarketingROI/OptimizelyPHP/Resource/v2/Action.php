@@ -27,6 +27,12 @@ class Action
     private $pageId;
     
     /**
+     * The share link for the provided Variation and Page combination
+     * @var string 
+     */
+    private $shareLink;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -41,8 +47,9 @@ class Action
                     $this->setChanges($changes); break;
                 }
                 case 'page_id': $this->setPageId($value); break;
+                case 'share_link': $this->setShareLink($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Action entity: ' . $name);
             }
         }
     }
@@ -54,7 +61,8 @@ class Action
     {
         $options = array(
             'changes' => array(),
-            'page_id' => $this->getPageId(),            
+            'page_id' => $this->getPageId(),   
+            'share_link' => $this->getShareLink(),
         );
         
         foreach ($this->getChanges() as $change) {
@@ -89,6 +97,16 @@ class Action
     public function setPageId($pageId)
     {
         $this->pageId = $pageId;
+    }
+    
+    public function getShareLink()
+    {
+        return $this->shareLink;
+    }
+    
+    public function setShareLink($shareLink)
+    {
+        $this->shareLink = $shareLink;
     }
 }
 

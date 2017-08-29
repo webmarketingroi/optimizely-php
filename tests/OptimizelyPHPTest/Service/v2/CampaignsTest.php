@@ -9,6 +9,8 @@ use WebMarketingROI\OptimizelyPHP\Resource\v2\Campaign;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\CampaignResults;
 use OptimizelyPHPTest\Service\v2\BaseServiceTest;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Project;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Page;
+
 
 class CampaignsTest extends BaseServiceTest
 {
@@ -510,6 +512,29 @@ class CampaignsTest extends BaseServiceTest
         $result = $optimizelyClient->projects()->create($newProject);
         $createdProject = $result->getPayload();
         
+        // Create new page in the project
+        $page = new Page(array(
+            "edit_url" => "https://www.optimizely.com",
+            "name" => "Home Page",
+            "project_id" => $createdProject->getId(),
+            "activation_code" => "string",
+            "activation_type" => "immediate",
+            "archived" => false,
+            "category" => "article",
+            "conditions" => "[\"and\", {\"type\": \"url\", \"match_type\": \"substring\", \"value\": \"optimize\"}]",
+            "key" => "home_page",
+            "page_type" => "single_url",
+            "created" => "2016-10-18T05:07:04.113Z",
+            "id" => 4000,
+            "last_modified" => "2016-10-18T05:07:04.113Z"
+        ));
+        
+        $result = $optimizelyClient->pages()->create($page);
+        $createdPage = $result->getPayload();
+        
+        $this->assertTrue($createdPage instanceOf Page);
+        $this->assertTrue($createdPage->getName()=='Home Page');  
+        
         // Create new campaign in the project
         $campaign = new Campaign(array(
                 "project_id" => $createdProject->getId(),
@@ -529,7 +554,7 @@ class CampaignsTest extends BaseServiceTest
                 "latest" => "2016-10-18T03:27:04.067Z",
                 "metrics" => array(
                   array(
-                    "aggregator" => "unique",
+                    "aggregator" => "sum",
                     "event_id" => 0,
                     "field" => "revenue",
                     "scope" => "session"
@@ -537,7 +562,7 @@ class CampaignsTest extends BaseServiceTest
                 ),
                 "name" => "Landing Page Optimization",
                 "page_ids" => array(
-                  0
+                  $createdPage->getId(),
                 ),
                 "status" => "not_started",
                 "type" => "a/b"
