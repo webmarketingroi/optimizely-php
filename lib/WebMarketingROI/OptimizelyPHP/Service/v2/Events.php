@@ -117,12 +117,12 @@ class Events
     
     /**
      * Creates a new custom event.
-     * @param integer $pageId
+     * @param integer $projectId
      * @param CustomEvent $event
      * @return Result
      * @throws Exception
      */
-    public function createCustomEvent($pageId, $event)
+    public function createCustomEvent($projectId, $event)
     {
         if (!($event instanceOf CustomEvent)) {
             throw new Exception("Expected argument of type CustomEvent",
@@ -131,7 +131,7 @@ class Events
         
         $postData = $event->toArray();
         
-        $result = $this->client->sendApiRequest("/pages/$pageId/custom_events", array(), 'POST', 
+        $result = $this->client->sendApiRequest("/projects/$projectId/custom_events", array(), 'POST', 
                 $postData);
         
         $event = new CustomEvent($result->getDecodedJsonData());
@@ -168,13 +168,13 @@ class Events
     
     /**
      * Updates the given custom event.
-     * @param integer $pageId
+     * @param integer $projectId
      * @param integer $eventId
      * @param CustomEvent $event
      * @return Result
      * @throws Exception
      */
-    public function updateCustomEvent($pageId, $eventId, $event) 
+    public function updateCustomEvent($projectId, $eventId, $event) 
     {
         if (!($event instanceOf CustomEvent)) {
             throw new Exception("Expected argument of type CustomEvent",
@@ -183,7 +183,7 @@ class Events
         
         $postData = $event->toArray();
                 
-        $result = $this->client->sendApiRequest("/pages/$pageId/custom_events/$eventId", array(), 'PATCH', 
+        $result = $this->client->sendApiRequest("/projects/$projectId/custom_events/$eventId", array(), 'PATCH', 
                 $postData);        
         
         $event = new CustomEvent($result->getDecodedJsonData());
