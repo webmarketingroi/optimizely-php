@@ -787,7 +787,7 @@ class ExperimentsTest extends BaseServiceTest
             "edit_url" => "https://www.optimizely.com",
             "name" => "Home Page",
             "project_id" => $createdProject->getId(),
-            "activation_code" => "string",
+            "activation_code" => "function callbackFn(activate, options) { activate(); }",
             "activation_type" => "immediate",
             "archived" => false,
             "category" => "article",

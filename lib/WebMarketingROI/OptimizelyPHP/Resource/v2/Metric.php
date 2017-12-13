@@ -48,6 +48,11 @@ class Metric
     private $scope;
     
     /**
+     * The winning direction of this metric
+     */
+    private $winningDirection;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -58,6 +63,7 @@ class Metric
                 case 'aggregator': $this->setAggregator($value); break;
                 case 'field': $this->setField($value); break;
                 case 'scope': $this->setScope($value); break;
+                case 'winning_direction' : $this->setWinningDirection($value);  break;
                 default:
                     throw new Exception('Unknown option found in the Metric entity: ' . $name);
             }
@@ -74,6 +80,7 @@ class Metric
             'aggregator' => $this->getAggregator(),
             'field' => $this->getField(),
             'scope' => $this->getScope(),
+            'winning_direction' => $this->getWinningDirection(),
         );
         
         // Remove options with empty values
@@ -124,6 +131,16 @@ class Metric
     public function setScope($scope)
     {
         $this->scope = $scope;
+    }
+    
+    public function getWinningDirection()
+    {
+        return $this->winningDirection;
+    }
+    
+    public function setWinningDirection($winningDirection)
+    {
+        $this->winningDirection = $winningDirection;
     }
 }
 

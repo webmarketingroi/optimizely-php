@@ -144,6 +144,11 @@ class Experiment
     private $earliest;
     
     /**
+     * A list of Page IDs used in the Experiment. url_targeting or page_ids, but not both.
+     */
+    private $pageIds;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -191,6 +196,7 @@ class Experiment
                 case 'audience_conditions': $this->setAudienceConditions($value); break;
                 case 'allocation_policy': $this->setAllocationPolicy($value); break;
                 case 'earliest': $this->setEarliest($value); break;
+                case 'page_ids': $this->setPageIds($value); break;
                 default:
                     throw new Exception('Unknown option found in the Experiment entity: ' . $name);
             }
@@ -220,6 +226,7 @@ class Experiment
             'audience_conditions' => $this->getAudienceConditions(),  
             'allocation_policy' => $this->getAllocationPolicy(),
             'earliest' => $this->getEarliest(),
+            'page_ids' => $this->getPageIds(),
         );
         
         if ($this->getChanges()) {
@@ -467,6 +474,16 @@ class Experiment
     public function setEarliest($earliest)
     {
         $this->earliest = $earliest;
+    }
+    
+    public function getPageIds()
+    {
+        return $this->pageIds;
+    }
+    
+    public function setPageIds($pageIds)
+    {
+        $this->pageIds = $pageIds;
     }
 }
 
