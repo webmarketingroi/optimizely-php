@@ -149,6 +149,12 @@ class Experiment
     private $pageIds;
     
     /**
+     * The last time the Experiment was activated (not present if it is still activated)
+     * @var type 
+     */
+    private $latest;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -197,6 +203,7 @@ class Experiment
                 case 'allocation_policy': $this->setAllocationPolicy($value); break;
                 case 'earliest': $this->setEarliest($value); break;
                 case 'page_ids': $this->setPageIds($value); break;
+                case 'latest': $this->setLatest($value); break;
                 default:
                     throw new Exception('Unknown option found in the Experiment entity: ' . $name);
             }
@@ -227,6 +234,7 @@ class Experiment
             'allocation_policy' => $this->getAllocationPolicy(),
             'earliest' => $this->getEarliest(),
             'page_ids' => $this->getPageIds(),
+            'latest' => $this->getLatest(),
         );
         
         if ($this->getChanges()) {
@@ -484,6 +492,16 @@ class Experiment
     public function setPageIds($pageIds)
     {
         $this->pageIds = $pageIds;
+    }
+    
+    public function getLatest()
+    {
+        return $this->latest;
+    }
+    
+    public function setLatest($latest)
+    {
+        $this->latest = $latest;
     }
 }
 
