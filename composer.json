@@ -1,7 +1,7 @@
 {
     "name": "webmarketingroi/optimizely-php",
     "description": "A PHP wrapper around Optimizely REST API",
-    "license": "BSD-like",
+    "license": "MIT",
     "keywords": [
         "optimizely",
         "php"
