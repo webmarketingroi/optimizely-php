@@ -88,7 +88,7 @@ class VariantResults
                 case 'value': $this->setValue($value); break;
                 case 'variation_id': $this->setVariationId($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the VariantResults entity: ' . $name);
             }
         }
     }

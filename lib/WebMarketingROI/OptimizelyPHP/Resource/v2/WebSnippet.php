@@ -98,7 +98,7 @@ class WebSnippet
                 case 'code_revision': $this->setCodeRevision($value); break;
                 case 'js_file_size': $this->setJsFileSize($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in WebSnippet entity: ' . $name);
             }
         }
     }

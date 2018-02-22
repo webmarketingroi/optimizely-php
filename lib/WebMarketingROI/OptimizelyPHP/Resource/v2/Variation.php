@@ -78,7 +78,7 @@ class Variation
                 case 'weight': $this->setWeight($value); break;
                 case 'status': $this->setStatus($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Variation entity: ' . $name);
             }
         }
     }

@@ -75,7 +75,7 @@ class ExperimentResults
                 case 'reach': $this->setReach(new ExperimentVariationReach($value)); break;
                 case 'start_time': $this->setStartTime($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the ExperimentVariationReach entity: ' . $name);
             }
         }
     }

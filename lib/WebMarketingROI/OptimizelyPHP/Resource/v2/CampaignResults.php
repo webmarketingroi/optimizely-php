@@ -67,7 +67,7 @@ class CampaignResults
                 }
                 case 'start_time': $this->setStartTime($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in CampaignResults entity: ' . $name);
             }
         }
     }
