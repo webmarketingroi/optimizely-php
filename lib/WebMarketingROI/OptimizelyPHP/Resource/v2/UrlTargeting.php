@@ -6,16 +6,10 @@
  */
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
-use WebMarketingROI\OptimizelyPHP\Exception;
-use WebMarketingROI\OptimizelyPHP\Resource\v2\Schedule;
-use WebMarketingROI\OptimizelyPHP\Resource\v2\Variation;
-use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
-use WebMarketingROI\OptimizelyPHP\Resource\v2\Metric;
-
 /**
  * An Optimizely experiment.
  */
-class Experiment
+class UrlTargeting
 {
     /**
      * Conditions to activate the experiment; our knowledge base article on 
