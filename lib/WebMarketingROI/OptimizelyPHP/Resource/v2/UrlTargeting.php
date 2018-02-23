@@ -58,7 +58,7 @@ class UrlTargeting
     {
         foreach ($options as $name=>$value) {
             switch ($name) {
-                case 'project_id': $this->setConditions($value); break;
+                case 'conditions': $this->setConditions($value); break;
                 case 'edit_url': $this->setEditUrl($value); break;
                 case 'activation_code': $this->setActivationCode($value); break;
                 case 'activation_type': $this->setActivationType($value); break;
@@ -77,7 +77,7 @@ class UrlTargeting
     public function toArray()
     {
         $options = array(
-            'project_id' => $this->getProjectId(),
+            'conditions' => $this->getConditions(),
             'edit_url' => $this->getEditUrl(),
             'activation_code' => $this->getActivationCode(),
             'activation_type' => $this->getActivationType(),
@@ -88,14 +88,14 @@ class UrlTargeting
         return $cleanedOptions;
     }
     
-    public function getProjectId()
+    public function getConditions()
     {
-        return $this->projectId;
+        return $this->conditions;
     }
     
-    public function setProjectId($projectId)
+    public function setConditions($conditions)
     {
-        $this->projectId = $projectId;
+        $this->conditions = $conditions;
     }
     
     public function getEditUrl()
