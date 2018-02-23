@@ -39,10 +39,6 @@ class Campaigns
      */
     public function listAll($projectId, $page=1, $perPage=25)
     {
-        if (!is_int($projectId)) {
-            throw new Exception("Integer project ID expected, while got '$projectId'");
-        }
-        
         if ($projectId<0) {
             throw new Exception("Expected positive integer project ID");
         }
