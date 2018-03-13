@@ -42,7 +42,7 @@ class Schedule
                 case 'stop_time': $this->setStopTime($value); break;
                 case 'time_zone': $this->setTimezone($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Schedule entity: ' . $name);
             }
         }
     }

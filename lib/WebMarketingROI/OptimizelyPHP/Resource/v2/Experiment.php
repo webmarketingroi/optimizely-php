@@ -11,6 +11,7 @@ use WebMarketingROI\OptimizelyPHP\Resource\v2\Schedule;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Variation;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Change;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\Metric;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\UrlTargeting;
 
 /**
  * An Optimizely experiment.
@@ -149,6 +150,21 @@ class Experiment
     private $pageIds;
     
     /**
+     * The last time the Experiment was activated (not present if it is still activated)
+     * @var type 
+     */
+    private $latest;
+    
+    /**
+     * Rules for which URLs this experiment should target. This is an alternative 
+     * to page_ids, for cases when you don't need to reuse an existing page or 
+     * target multiple pages. When creating an experiment any variations without 
+     * a page ID will apply to the URL Targeting page.
+     * @var type 
+     */
+    private $urlTargeting;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -197,6 +213,8 @@ class Experiment
                 case 'allocation_policy': $this->setAllocationPolicy($value); break;
                 case 'earliest': $this->setEarliest($value); break;
                 case 'page_ids': $this->setPageIds($value); break;
+                case 'latest': $this->setLatest($value); break;
+                case 'url_targeting': $this->setUrlTargeting(new UrlTargeting($value)); break;
                 default:
                     throw new Exception('Unknown option found in the Experiment entity: ' . $name);
             }
@@ -227,6 +245,8 @@ class Experiment
             'allocation_policy' => $this->getAllocationPolicy(),
             'earliest' => $this->getEarliest(),
             'page_ids' => $this->getPageIds(),
+            'latest' => $this->getLatest(),
+            'url_targeting' => $this->getUrlTargeting(),
         );
         
         if ($this->getChanges()) {
@@ -484,6 +504,26 @@ class Experiment
     public function setPageIds($pageIds)
     {
         $this->pageIds = $pageIds;
+    }
+    
+    public function getLatest()
+    {
+        return $this->latest;
+    }
+    
+    public function setLatest($latest)
+    {
+        $this->latest = $latest;
+    }
+    
+    public function getUrlTargeting()
+    {
+        return $this->urlTargeting;
+    }
+    
+    public function setUrlTargeting($urlTargeting)
+    {
+        $this->urlTargeting = $urlTargeting;
     }
 }
 

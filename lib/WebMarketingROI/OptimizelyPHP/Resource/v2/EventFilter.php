@@ -35,7 +35,7 @@ class EventFilter
                 case 'filter_type': $this->setFilterType($value); break;
                 case 'selector': $this->setSelector($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the EventFilter entity: ' . $name);
             }
         }
     }

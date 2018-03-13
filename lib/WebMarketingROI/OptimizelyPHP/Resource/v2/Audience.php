@@ -93,7 +93,7 @@ class Audience
                 case 'last_modified': $this->setLastModified($value); break;
                 case 'is_classic': $this->getIsClassic($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Audience entity: ' . $name);
             }
         }
     }

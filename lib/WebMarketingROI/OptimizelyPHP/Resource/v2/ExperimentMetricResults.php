@@ -74,7 +74,7 @@ class ExperimentMetricResults
                 case 'unit': $this->setUnit($value); break;
                 case 'variation_results': $this->setVariationResults($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the ExperimentMetricResults entity: ' . $name);
             }
         }
     }

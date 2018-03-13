@@ -58,6 +58,12 @@ class Variation
     private $status;
     
     /**
+     * A description of the variation.
+     * @var type 
+     */
+    private $description;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -77,8 +83,9 @@ class Variation
                 case 'variation_id': $this->setVariationId($value); break;
                 case 'weight': $this->setWeight($value); break;
                 case 'status': $this->setStatus($value); break;
+                case 'description': $this->setDescription($value); break;
                 default:
-                    throw new Exception('Unknown option: ' . $name);
+                    throw new Exception('Unknown option found in the Variation entity: ' . $name);
             }
         }
     }
@@ -96,6 +103,7 @@ class Variation
             'variation_id' => $this->getVariationId(),
             'weight' => $this->getWeight(),
             'status' => $this->getStatus(),
+            'description' => $this->getDescription(),
         );
         
         foreach ($this->getActions() as $action) {
@@ -180,6 +188,16 @@ class Variation
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+    
+    public function getDescription()
+    {
+        return $this->description;
+    }
+    
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 }
 
