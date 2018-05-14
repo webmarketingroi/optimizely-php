@@ -179,6 +179,55 @@ $result = $client->projects()->update($project);
 $updatedProject = $result->getPayload();
 ```
 
+#### Getting the List of Running Campaigns
+
+```php
+$page = 1;
+for (;;)
+{
+    // Get the next page of Campaigns.
+    $result = $client->campaigns()->listAll($page, 25);
+
+    // Retrieve Campaigns from Result object.
+    $campaigns = $result->getPayload();
+
+    // Iterate through retrieved Campaigns
+    foreach ($campaigns as $campaign) {
+
+        if ($campaign->getStatus()!='active')
+            continue;
+
+        echo "Name: " . $campaign->getName() . "\n";
+        echo "Type: " . $campaign->getType() . "\n";
+        echo "Status: " . $campaign->getStatus() . "\n";
+        echo "\n";
+    }
+
+    // Determine if there are more Campaigns.
+    if ($result->getNextPage()==null)
+        break;
+
+    // Increment page counter. 
+    $page ++;
+}
+```
+
+#### Adding a New Campaign
+
+```php
+<?php
+use WebMarketingROI\OptimizelyPHP\Resource\v2\Campaign;
+
+$campaign = new Campaign();
+$campaign->setName('Test Campaign');
+$campaign->setType('a/b');
+$campaign->setStatus('active');
+
+// On return, call $result->getPayload() to get the newly created Campaign
+$result = $client->campaigns()->create($campaign);
+$createdCampaign = $result->getPayload();
+```
+
 ### More Code Examples
 
 For additional code examples, please refer to the *examples* directory.

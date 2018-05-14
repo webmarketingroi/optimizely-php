@@ -226,7 +226,7 @@ class OptimizelyApiClient
             );
         $content = '';
         if (count($postData)!=0) {
-            $content = json_encode($postData);            
+            $content = json_encode($postData, JSON_NUMERIC_CHECK);            
         }
         $headers[] = "Content-length:" . strlen($content);            
         
