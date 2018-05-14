@@ -100,7 +100,7 @@ class ExperimentResults
             'metrics' => array(),
             'reach' => $this->getReach()?$this->getReach()->toArray():null,
             'start_time' => $this->getStartTime(),
-            'stats_config' => $this->getStatsConfig()->toArray(),
+            'stats_config' => $this->getStatsConfig()?$this->getStatsConfig()->toArray():null,
         );
         
         foreach ($this->getMetrics() as $metric) {

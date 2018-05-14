@@ -119,8 +119,8 @@ class ExperimentMetricResults
                 case 'unit': $this->setUnit($value); break;
                 case 'results': {
                     $results = [];
-                    foreach ($value as $result) {
-                        $results[] = new VariantResults($result);
+                    foreach ($value as $key=>$result) {
+                        $results[$key] = new VariantResults($result);
                     }
                     $this->setResults($results); break;
                 }
@@ -138,7 +138,7 @@ class ExperimentMetricResults
      */
     public function toArray()
     {
-        return array(
+        $options = array(
             'aggregator' => $this->getAggregator(),
             'event_id' => $this->getEventId(),
             'event_name' => $this->getEventName(),
@@ -147,11 +147,24 @@ class ExperimentMetricResults
             'metric_id' => $this->getMetricId(),
             'priority' => $this->getPriority(),
             'unit' => $this->getUnit(),
-            'results' => $this->getResults()->toArray(),
             'name' => $this->getName(),
             'scope' => $this->getScope(),
             'winning_direction' => $this->getWinningDirection(),
+            'results' => array(),
         );
+        
+        foreach ($this->getResults() as $key=>$result) {
+            $options['results'][$key] = $result->toArray();
+        }
+        
+        // Remove options with empty values
+        $cleanedOptions = array();
+        foreach ($options as $name=>$value) {
+            if ($value!==null)
+                $cleanedOptions[$name] = $value;
+        }
+        
+        return $cleanedOptions;
     }
     
     public function getAggregator()

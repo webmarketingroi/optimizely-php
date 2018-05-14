@@ -14,13 +14,13 @@ class ExperimentResultsTest extends PHPUnit_Framework_TestCase
             "experiment_id" => 3000,
             "metrics" => array(
               array(
-                "event" => "string",
+                "event_id" => "string",
                 "event_name" => "string",
                 "measure" => "conversions",
                 "metric_id" => "string",
                 "priority" => 1,
                 "unit" => "session",
-                "variation_results" => array(
+                "results" => array(
                   "9000" => array(
                     "experiment_id" => 0,
                     "is_baseline" => true,
@@ -87,13 +87,13 @@ class ExperimentResultsTest extends PHPUnit_Framework_TestCase
             "experiment_id" => 3000,
             "metrics" => array(
               array(
-                "event" => "string",
+                "event_id" => "string",
                 "event_name" => "string",
                 "measure" => "conversions",
                 "metric_id" => "string",
                 "priority" => 1,
                 "unit" => "session",
-                "variation_results" => array(
+                "results" => array(
                   "9000" => array(
                     "experiment_id" => 0,
                     "is_baseline" => true,
