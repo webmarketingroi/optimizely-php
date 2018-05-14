@@ -28,6 +28,12 @@ class VariantResults
     private $isBaseline;
     
     /**
+     *
+     * @var type 
+     */
+    private $level;
+    
+    /**
      * The relative difference in performance of this variant vs. the baseline 
      * variant. Lift is calculated as follows: (Winning Conversion Rate % - Old 
      * Conversion Rate %) - Old Conversion Rate % = % Improvement
@@ -72,6 +78,18 @@ class VariantResults
     private $variationId;
     
     /**
+     *
+     * @var type 
+     */
+    private $samples;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $variance;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -80,6 +98,7 @@ class VariantResults
             switch ($name) {                
                 case 'experiment_id': $this->setExperimentId($value); break;
                 case 'is_baseline': $this->setIsBaseline($value); break;
+                case 'level': $this->setLevel($value); break;
                 case 'lift': $this->setLift(new Datapoint($value)); break;
                 case 'name': $this->setName($value); break;
                 case 'rate': $this->setRate($value); break;
@@ -87,6 +106,8 @@ class VariantResults
                 case 'total_increase': $this->setTotalIncrease(new Datapoint($value)); break;
                 case 'value': $this->setValue($value); break;
                 case 'variation_id': $this->setVariationId($value); break;
+                case 'samples': $this->setSamples($value); break;
+                case 'variance': $this->setVariance($value); break;
                 default:
                     throw new Exception('Unknown option found in the VariantResults entity: ' . $name);
             }
@@ -101,13 +122,16 @@ class VariantResults
         $options = array(
             'experiment_id' => $this->getExperimentId(),
             'is_baseline' => $this->getIsBaseline(),
+            'level' => $this->getLevel(),
             'lift' => $this->getLift()?$this->getLift()->toArray():null,
             'name' => $this->getName(),
             'rate' => $this->getRate(),
             'scope' => $this->getScope(),
             'total_increase' => $this->getTotalIncrease()?$this->getTotalIncrease()->toArray():null,
             'value' => $this->getValue(),
-            'variation_id' => $this->getVariationId()
+            'variation_id' => $this->getVariationId(),
+            'samples' => $this->getSamples(),
+            'variance' => $this->getVariance(),
         );
         
         // Remove options with empty values
@@ -138,6 +162,16 @@ class VariantResults
     public function setIsBaseline($isBaseline)
     {
         $this->isBaseline = $isBaseline;
+    }
+    
+    public function getLevel()
+    {
+        return $this->level;
+    }
+    
+    public function setLevel($level)
+    {
+        $this->level = $level;
     }
     
     public function getLift()
@@ -208,6 +242,26 @@ class VariantResults
     public function setVariationId($variationId)
     {
         $this->variationId = $variationId;
+    }
+    
+    public function getSamples()
+    {
+        return $this->samples;
+    }
+    
+    public function setSamples($samples)
+    {
+        $this->samples = $samples;
+    }
+    
+    public function getVariance()
+    {
+        return $this->variance;
+    }
+    
+    public function setVariance($variance)
+    {
+        $this->variance = $variance;
     }
 }
 

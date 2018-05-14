@@ -9,6 +9,7 @@ namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 use WebMarketingROI\OptimizelyPHP\Exception;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentMetricResults;
 use WebMarketingROI\OptimizelyPHP\Resource\v2\ExperimentVariationReach;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\StatsConfig;
 
 /**
  * Optimizely experiment results.
@@ -55,6 +56,12 @@ class ExperimentResults
     private $startTime;
     
     /**
+     *
+     * @var StatsConfig 
+     */
+    private $statsConfig;
+    
+    /**
      * Constructor.
      */
     public function __construct($options = array())
@@ -74,8 +81,9 @@ class ExperimentResults
                 }
                 case 'reach': $this->setReach(new ExperimentVariationReach($value)); break;
                 case 'start_time': $this->setStartTime($value); break;
+                case 'stats_config': $this->setStatsConfig(new StatsConfig($value)); break;
                 default:
-                    throw new Exception('Unknown option found in the ExperimentVariationReach entity: ' . $name);
+                    throw new Exception('Unknown option found in the ExperimentResults entity: ' . $name);
             }
         }
     }
@@ -91,7 +99,8 @@ class ExperimentResults
             'experiment_id' => $this->getExperimentId(),
             'metrics' => array(),
             'reach' => $this->getReach()?$this->getReach()->toArray():null,
-            'start_time' => $this->getStartTime()
+            'start_time' => $this->getStartTime(),
+            'stats_config' => $this->getStatsConfig()->toArray(),
         );
         
         foreach ($this->getMetrics() as $metric) {
@@ -166,6 +175,16 @@ class ExperimentResults
     public function setStartTime($startTime)
     {
         $this->startTime = $startTime;
+    }
+    
+    public function getStatsConfig()
+    {
+        return $this->statsConfig;
+    }
+    
+    public function setStatsConfig($statsConfig)
+    {
+        $this->statsConfig = $statsConfig;
     }
 }
 

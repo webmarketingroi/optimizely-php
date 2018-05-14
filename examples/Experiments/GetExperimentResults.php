@@ -1,6 +1,6 @@
 <?php
 /* 
- * This example retrieves all experiments for the given project from the Optimizely account.
+ * This example retrieves the results of the given experiment for the given project from the Optimizely account.
  * 
  * To use this example, you will need to use "authorization code grant" and 
  * generate OAuth 2.0 client ID, client secret, refresh token, and, optionally,
@@ -9,7 +9,7 @@
  * and put your credentials there.
  * 
  * Usage: 
- *      php GetExperiments.php <project_id>
+ *      php GetExperimentResults.php <experiment_id>
  */
 
 use WebMarketingROI\OptimizelyPHP\OptimizelyApiClient;
@@ -25,7 +25,7 @@ include dirname(__FILE__) . '/../Utils.php';
 if ($argc!=2) {
     die('Expected 1 command-line argument, while got ' . $argc-1);
 }
-$projectId = $argv[1];
+$experimentId = $argv[1];
 
 // Get OAuth 2.0 credentials from auth_credentials.json and access_token.json files.
 $credentials = load_credentials_from_file();
@@ -34,35 +34,33 @@ $credentials = load_credentials_from_file();
 $optimizelyClient = new OptimizelyApiClient($credentials, 'v2');
 
 // Get projects.
-echo "The list of Optimizely experiments\n";
+echo "The results of experiment $experimentId\n";
 echo "==================================\n";
 echo "\n";
 
-$page = 1;
 try {
     
-    for (;;) {
+    $result = $optimizelyClient->experiments()->getResults($experimentId);
     
-        $result = $optimizelyClient->experiments()->listAll($projectId, null, true, $page, 25);
-        $experiments = $result->getPayload();
-        
-        foreach ($experiments as $experiment) {
-            echo "ID: " . $experiment->getId() . "\n";
-            echo "Name: " . $experiment->getName() . "\n";
-            echo "Description: " . $experiment->getDescription() . "\n";
-            echo "Status: " . $experiment->getStatus() . "\n";
-            echo "Created: " . $experiment->getCreated() . "\n";
-            
-            echo "\n";
+    $experimentResults = $result->getPayload();
+
+    echo "Confidence threshold: " . $experimentResults->getConfidenceThreshold(). "\n";
+    echo "Start time: " . $experimentResults->getStartTime(). "\n";
+    echo "End time: " . $experimentResults->getEndTime(). "\n";
+    echo "Metrics:\n";
+    
+    foreach ($experimentResults->getMetrics() as $metric) {
+        echo " - Metric Name: " . $metric->getName() . "\n";
+        foreach ($metric->getResults() as $metricResult) {
+            echo "   - Variation Name: " . $metricResult->getName() . "\n";
+            echo "     Is baseline: " . ($metricResult->getIsBaseline()?'true':'false') . "\n";
+            if ($metricResult->getLift()) {
+                echo "     Is significant: " . ($metricResult->getLift()->getIsSignificant()?'true':'false') . "\n";
+            }
         }
-    
-        // Determine if there are more projects.
-        if ($result->getNextPage()==null)
-            break;
-        
-        // Increment page counter.
-        $page ++;
-    }    
+    }
+
+    echo "\n";
     
 } catch (Exception $e) {
     // Handle error.

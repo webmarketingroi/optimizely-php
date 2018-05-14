@@ -108,11 +108,6 @@ class Experiments
      */
     public function getResults($experimentId, $baselineVariationId = null, $startTime = null, $endTime = null)
     {
-        if (!is_int($experimentId)) {
-            throw new Exception("Integer experiment ID expected, while got '$experimentId'",
-                    Exception::CODE_INVALID_ARG);
-        }
-        
         $result = $this->client->sendApiRequest("/experiments/$experimentId/results",
                 array(
                     'baseline_variation_id' => $baselineVariationId,

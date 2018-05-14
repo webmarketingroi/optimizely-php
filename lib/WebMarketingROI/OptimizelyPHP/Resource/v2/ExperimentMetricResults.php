@@ -7,6 +7,7 @@
 namespace WebMarketingROI\OptimizelyPHP\Resource\v2;
 
 use WebMarketingROI\OptimizelyPHP\Exception;
+use WebMarketingROI\OptimizelyPHP\Resource\v2\VariantResults;
 
 /**
  * Optimizely experiment metric results.
@@ -14,16 +15,37 @@ use WebMarketingROI\OptimizelyPHP\Exception;
 class ExperimentMetricResults
 {
     /**
+     * The aggregation function for the numerator of the metric. 'unique' measures 
+     * the number of unique visitors/sessions that include the specified Event. 
+     * 'count' measures the total number of occurrences of Event for the scope 
+     * (visitor/session). 'sum' is the sum of the 'field' value. 'exit' measures 
+     * the ratio of sessions with last activation occurring on the target page to 
+     * the sessions that activated the target page at least once during the session. 
+     * 'bounce' measures the ratio of sessions that with first and last activation 
+     * occurring on the target page to the sessions with first activation on the 
+     * target page. For both 'exit' and 'bounce', the eventId must be the ID of a Page.
+     * 
+     * @var string 
+     */
+    private $aggregator;
+    
+    /**
      * 
      * @var string
      */
-    private $event;
+    private $eventId;
     
     /**
      *
      * @var string
      */
     private $eventName;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $field;
     
     /**
      * Conversions indicate the total number of visitors or sessions where the 
@@ -54,10 +76,31 @@ class ExperimentMetricResults
     private $unit;
     
     /**
-     * A map of results for each Variation in the Experiment keyed by Variation ID
-     * @var array[VariantResults]
+     * 
+     * @var string 
      */
-    private $variationResults;
+    private $name;
+    
+    /**
+     * A map of results for each variation in the Experiment keyed by variation ID. 
+     * For Personalization Campaigns, the special variant 'baseline' represents 
+     * visitors that have been held back from any change in experience for the Experiment
+     * 
+     * @var object[VariantResults]
+     */
+    private $results;
+    
+    /**
+     *
+     * @var string 
+     */
+    private $scope;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $winningDirection;
     
     /**
      * Constructor.
@@ -66,13 +109,24 @@ class ExperimentMetricResults
     {
         foreach ($options as $name=>$value) {
             switch ($name) {                
-                case 'event': $this->setEvent($value); break;
+                case 'aggregator': $this->setAggregator($value); break;
+                case 'event_id': $this->setEventId($value); break;
                 case 'event_name': $this->setEventName($value); break;
+                case 'field': $this->setField($value); break;
                 case 'measure': $this->setMeasure($value); break;
                 case 'metric_id': $this->setMetricId($value); break;
                 case 'priority': $this->setPriority($value); break;
                 case 'unit': $this->setUnit($value); break;
-                case 'variation_results': $this->setVariationResults($value); break;
+                case 'results': {
+                    $results = [];
+                    foreach ($value as $result) {
+                        $results[] = new VariantResults($result);
+                    }
+                    $this->setResults($results); break;
+                }
+                case 'name': $this->setName($value); break;
+                case 'scope': $this->setScope($value); break;
+                case 'winning_direction': $this->setWinningDirection($value); break;
                 default:
                     throw new Exception('Unknown option found in the ExperimentMetricResults entity: ' . $name);
             }
@@ -85,24 +139,39 @@ class ExperimentMetricResults
     public function toArray()
     {
         return array(
-            'event' => $this->getEvent(),
+            'aggregator' => $this->getAggregator(),
+            'event_id' => $this->getEventId(),
             'event_name' => $this->getEventName(),
+            'field' => $this->getField(),
             'measure' => $this->getMeasure(),
             'metric_id' => $this->getMetricId(),
             'priority' => $this->getPriority(),
             'unit' => $this->getUnit(),
-            'variation_results' => $this->getVariationResults(),
+            'results' => $this->getResults()->toArray(),
+            'name' => $this->getName(),
+            'scope' => $this->getScope(),
+            'winning_direction' => $this->getWinningDirection(),
         );
     }
     
-    public function getEvent()
+    public function getAggregator()
     {
-        return $this->event;
+        return $this->aggregator;
     }
     
-    public function setEvent($event)
+    public function setAggregator($aggregator)
     {
-        $this->event = $event;
+        $this->aggregator = $aggregator;
+    }
+    
+    public function getEventId()
+    {
+        return $this->eventId;
+    }
+    
+    public function setEventId($eventId)
+    {
+        $this->eventId = $eventId;
     }
     
     public function getEventName()
@@ -113,6 +182,16 @@ class ExperimentMetricResults
     public function setEventName($eventName)
     {
         $this->eventName = $eventName;
+    }
+    
+    public function getField()
+    {
+        return $this->field;
+    }
+    
+    public function setField($field)
+    {
+        $this->field = $field;
     }
     
     public function getMeasure()
@@ -155,14 +234,44 @@ class ExperimentMetricResults
         $this->unit = $unit;
     }
     
-    public function getVariationResults()
+    public function getResults()
     {
-        return $this->variationResults;
+        return $this->results;
     }
     
-    public function setVariationResults($variationResults)
+    public function setResults($results)
     {
-        $this->variationResults = $variationResults;
+        $this->results = $results;
+    }
+    
+    public function getName()
+    {
+        return $this->name;
+    }
+    
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    
+    public function getScope()
+    {
+        return $this->scope;
+    }
+    
+    public function setScope($scope)
+    {
+        $this->scope = $scope;
+    }
+    
+    public function getWinningDirection()
+    {
+        return $this->winningDirection;
+    }
+    
+    public function setWinningDirection($winningDirection)
+    {
+        $this->winningDirection = $winningDirection;
     }
 }
 

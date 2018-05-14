@@ -54,6 +54,13 @@ class Datapoint
      * @var integer 
      */
     private $visitorsRemaining;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $liftStatus;
+    
     /**
      * Constructor.
      */
@@ -67,6 +74,7 @@ class Datapoint
                 case 'significance': $this->setSignificance($value); break;
                 case 'value': $this->setValue($value); break;
                 case 'visitors_remaining': $this->setVisitorsRemaining($value); break;
+                case 'lift_status': $this->setLiftStatus($value); break;
                 default:
                     throw new Exception('Unknown option found in the Datapoint entity: ' . $name);
             }
@@ -84,7 +92,8 @@ class Datapoint
             'is_significant' => $this->getIsSignificant(),
             'significance' => $this->getSignificance(),
             'value' => $this->getValue(),            
-            'visitors_remaining' => $this->getVisitorsRemaining(),            
+            'visitors_remaining' => $this->getVisitorsRemaining(),
+            'lift_status' => $this->getLiftStatus(),
         );
         
         // Remove options with empty values
@@ -155,6 +164,16 @@ class Datapoint
     public function setVisitorsRemaining($visitorsRemaining)
     {
         $this->visitorsRemaining = $visitorsRemaining;
+    }
+    
+    public function getLiftStatus()
+    {
+        return $this->liftStatus;
+    }
+    
+    public function setLiftStatus($liftStatus)
+    {
+        $this->liftStatus = $liftStatus;
     }
 }
 
