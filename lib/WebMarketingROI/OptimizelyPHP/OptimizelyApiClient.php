@@ -478,7 +478,8 @@ class OptimizelyApiClient
             'experiments',
             'pages',
             'projects',
-            'attributes'
+            'attributes',
+            'plan',
         );
         
         // Check if the service name is valid

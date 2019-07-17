@@ -41,6 +41,12 @@ class Event
     private $created;
     
     /**
+     * Last modified date.
+     * @var string
+     */
+    private $lastModified;
+    
+    /**
      * A description for this Event
      * @var string 
      */
@@ -120,6 +126,7 @@ class Event
                 case 'archived': $this->setArchived($value); break;
                 case 'category': $this->setCategory($value); break;
                 case 'created': $this->setCreated($value); break;
+                case 'last_modified': $this->setLastModified($value); break;
                 case 'description': $this->setDescription($value); break;
                 case 'event_filter': $this->setEventFilter(new EventFilter($value)); break;
                 case 'event_type': $this->setEventType($value); break;
@@ -147,6 +154,7 @@ class Event
             'archived' => $this->getArchived(),
             'category' => $this->getCategory(),
             'created' => $this->getCreated(),
+            'last_modified' => $this->getLastModified(),
             'description' => $this->getDescription(),
             'event_filter' => $this->getEventFilter()?$this->getEventFilter()->toArray():null,
             'event_type' => $this->getEventType(),
@@ -208,6 +216,16 @@ class Event
     public function setCreated($created)
     {
         $this->created = $created;
+    }
+    
+    public function getLastModified()
+    {
+        return $this->lastModified;
+    }
+    
+    public function setLastModified($lastModified)
+    {
+        $this->lastModified = $lastModified;
     }
         
     public function getDescription()
